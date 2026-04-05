@@ -1215,7 +1215,7 @@ canvas {
 
         <div class="disclaimer-box">
             <p id="runtime-warning-text" class="disclaimer-text">
-                Go to the Google Doc to find the Portal and other Horion apps.
+                Visit the Google Doc to see a updated portal link to forever stay unblocked!
             </p>
             <a id="runtime-warning-link" href="https://docs.google.com/document/d/e/2PACX-1vS7zNM-V5HT60eoCjMcBXUL9oeXFQRWDeCW2wxKtCp5zlxjM2VhqhsipZLXXZ51q-HWi48ti90deumm/pub" target="_blank" class="doc-btn">Google Doc</a>
         </div>
@@ -1234,12 +1234,18 @@ canvas {
         </div>
 
         <div class="recent-changes-container">
-            <div class="recent-label">RECENT CHANGES: 2.0)</div>
+            <div class="recent-label">RECENT CHANGES: 2.0</div>
             <div class="change-log">
                 > Biggest update ever!<br>
                 > Completely combined games and TV <br>
                 > Changed method to be unblockable<br>
-                > Added a native github link
+                > Added a native github link with more features for use at home<br>
+                > Changed gn-math, youtube, and live sports to work inside the page <br>
+                > New method to launch new types of games<br>
+                > Featured tons of new games and shows<br>
+                > Added a custom port to Sandboxels <br>
+                > New launcher <br>
+                > LOADS OF BUG FIXES AND VISUAL IMPROVEMENTS<br>
             </div>
         </div>
     </div>
@@ -1340,7 +1346,8 @@ canvas {
     // ==========================================
     // 1. DATA CONFIGURATION
     // ==========================================
-    const OFFICIAL_GITHUB_URL = 'https://github.com/';
+    const OFFICIAL_GITHUB_URL = 'https://crosmakesgames.github.io/horion/';
+    const PORTAL_DOC_URL = 'https://docs.google.com/document/d/e/2PACX-1vS7zNM-V5HT60eoCjMcBXUL9oeXFQRWDeCW2wxKtCp5zlxjM2VhqhsipZLXXZ51q-HWi48ti90deumm/pub';
     const LAUNCHER_URL = 'https://example.com/launcher';
     let launchedFromAboutBlankBridge = false;
 
@@ -1400,15 +1407,13 @@ canvas {
         const hostHref = getRuntimeHostHref();
         const launchedFromAbout = isAboutLaunchHref(hostHref);
 
+        warningText.textContent = 'Visit the Google Doc to see a updated portal link to forever stay unblocked!';
+        warningLink.textContent = 'Google Doc';
+        warningLink.href = PORTAL_DOC_URL;
+
         if (launchedFromAbout) {
-            warningText.textContent = 'You are on the about:blank launched version.';
-            warningLink.textContent = 'Official GitHub';
-            warningLink.href = OFFICIAL_GITHUB_URL;
             serverValue.textContent = 'LAUNCHER';
         } else {
-            warningText.textContent = 'You are on the official github link. For a unblocked version visit the launcher.';
-            warningLink.textContent = 'Open Launcher';
-            warningLink.href = LAUNCHER_URL;
             serverValue.textContent = 'GITHUB';
         }
     }
@@ -7199,7 +7204,6 @@ function launchSportsTool() {
         }
 
         function init() {
-            const showBetaNotice = shouldShowBetaModalForNormalGamesRoute();
             const initialRoute = parseRouteFromUrl();
             const shouldUseStoredRoute = !hasExplicitRouteInUrl();
             const storedRoute = shouldUseStoredRoute ? loadRouteSnapshot() : null;
@@ -7219,9 +7223,6 @@ function launchSportsTool() {
             loadEmbeddedApps();
             syncUrlWithState(false);
             saveRouteSnapshot();
-            if (showBetaNotice) {
-                showBetaModalIfNeeded();
-            }
 
             window.addEventListener('popstate', () => {
                 const route = parseRouteFromUrl();
