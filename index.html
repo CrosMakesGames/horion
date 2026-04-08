@@ -1469,7 +1469,7 @@ canvas {
        { filename: 'clFNAF4', displayname: 'Fnaf 4', image: 'https://pizzaedition.win/images/games/fnaf4-min.png' },
        { filename: 'https://svaaps.github.io/eaglercrafthtml/', displayname: 'Minecraft 1.9', image: 'https://media.sketchfab.com/models/84938a8f3f8d4a0aa64aaa9c4e4d27d3/thumbnails/f5d49a3c2cdb4424b7f062d340d2a4a7/aafef2fcd26b40f5bea48725065c6542.jpeg', type: 'special' },
        { filename: 'clsubwaysurfersbarcelona', displayname: 'Subway Surfers: Barcelona', image: 'https://vodogame.com/games/subway-surf-barcelona/thumb_1.jpg' },
-    { filename: 'https://nzp.gay', displayname: 'Nazi Zombies', image: 'https://subwaysurfers-game.io/storage/images/games/monaco/monac300jpg.jpg', type: 'special' },
+    { filename: 'https://nzp.gay', displayname: 'Nazi Zombies', image: 'https://avatars.githubusercontent.com/u/91418801?s=280&v=4', type: 'special' },
        { filename: 'clducklife3', displayname: 'Duck Life 3', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/f5671816-e95b-4d41-adb7-411708f431ba/ducklife-3.png' },
        { filename: 'clinkgame', displayname: 'Ink Game', image: 'https://i1.sndcdn.com/artworks-JyBMur02gm43IDuc-eZfeLA-t500x500.png' },
        { filename: 'clsupermariobros3real', displayname: 'Super Mario Bros 3', image: 'https://assets-prd.ignimgs.com/2021/12/08/smb3-1638922753441.jpg?crop=1%3A1%2Csmart&format=jpg&auto=webp&quality=80' },
@@ -3988,12 +3988,18 @@ canvas {
             const isSkribbl = specialUrl.includes('skribbl.io');
             const isGarticPhone = specialUrl.includes('garticphone.com');
             const isBloob = specialUrl.includes('bloob.io');
+            const isZombsRoyale = specialUrl.includes('zombsroyale.io');
+            const isEvIO = specialUrl.includes('ev.io');
             if (isSkribbl) {
                 openSkribblLobbyPopup(game.filename, game.displayname);
             } else if (isGarticPhone) {
                 openGarticPhoneLobbyPopup(game.filename, game.displayname);
             } else if (isBloob) {
                 openBloobLobbyPopup(game.filename, game.displayname);
+            } else if (isZombsRoyale) {
+                openZombsRoyaleLobbyPopup(game.filename, game.displayname);
+            } else if (isEvIO) {
+                openEvIOLobbyPopup(game.filename, game.displayname);
             } else {
                 openSpecial(game.filename, game.displayname);
             }
@@ -4408,6 +4414,63 @@ function openInlinePage(targetUrl, titleText, options) {
 const GN_MATH_PRIMARY_URL = 'https://gn-math.dev/';
 const GN_MATH_FALLBACK_URL = 'https://gn-math.github.io/gn-math-DONTDMCA/';
 
+function runFetchWithTimeout(url, options, timeoutMs) {
+    const safeTimeout = Number(timeoutMs) > 0 ? Number(timeoutMs) : 3500;
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            if (controller) controller.abort();
+            reject(new Error('timeout'));
+        }, safeTimeout);
+
+        fetch(url, {
+            ...(options || {}),
+            signal: controller ? controller.signal : undefined
+        })
+            .then((response) => {
+                clearTimeout(timer);
+                resolve(response);
+            })
+            .catch((error) => {
+                clearTimeout(timer);
+                reject(error);
+            });
+    });
+}
+
+async function probeGNMathPrimary(targetUrl, timeoutMs) {
+    const safeUrl = String(targetUrl || '').trim();
+    if (!safeUrl) return false;
+
+    try {
+        const response = await runFetchWithTimeout(safeUrl, {
+            method: 'GET',
+            cache: 'no-store',
+            mode: 'cors'
+        }, timeoutMs);
+
+        const bodyText = await response.text();
+        const lowerBody = String(bodyText || '').toLowerCase();
+        if (lowerBody.includes('cannot load games error')) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        try {
+            await runFetchWithTimeout(safeUrl, {
+                method: 'GET',
+                cache: 'no-store',
+                mode: 'no-cors'
+            }, timeoutMs);
+            return true;
+        } catch (secondaryError) {
+            return false;
+        }
+    }
+}
+
 function probeUrlReachable(targetUrl, timeoutMs) {
     const safeUrl = String(targetUrl || '').trim();
     const safeTimeout = Number(timeoutMs) > 0 ? Number(timeoutMs) : 3500;
@@ -4440,7 +4503,7 @@ function probeUrlReachable(targetUrl, timeoutMs) {
 }
 
 function openGNMathWithFallback() {
-    return probeUrlReachable(GN_MATH_PRIMARY_URL, 3500)
+    return probeGNMathPrimary(GN_MATH_PRIMARY_URL, 3500)
         .then((isPrimaryReachable) => {
             const launchUrl = isPrimaryReachable ? GN_MATH_PRIMARY_URL : GN_MATH_FALLBACK_URL;
             return openInlinePage(launchUrl, 'GN-Math', { blockNewTabs: true });
@@ -4467,7 +4530,7 @@ function openGNMath() {
 }
 
 function openSkribblLobbyPopup(defaultUrl, titleText) {
-        const safeDefault = String(defaultUrl || 'https://skribbl.io/').trim() || 'https://skribbl.io/';
+    const safeDefault = String(defaultUrl || 'https://skribbl.io/?').trim() || 'https://skribbl.io/?';
     const safeTitle = String(titleText || 'skribbl.io');
         const existingOverlay = document.getElementById('skribbl-lobby-overlay');
         if (existingOverlay) existingOverlay.remove();
@@ -4577,12 +4640,14 @@ function openSkribblLobbyPopup(defaultUrl, titleText) {
         });
         document.addEventListener('keydown', keyHandler);
 
+        joinInput.value = safeDefault;
         refreshContinueState();
+        joinInput.setSelectionRange(joinInput.value.length, joinInput.value.length);
         joinInput.focus();
 }
 
 function openGarticPhoneLobbyPopup(defaultUrl, titleText) {
-        const safeDefault = String(defaultUrl || 'https://garticphone.com/').trim() || 'https://garticphone.com/';
+        const safeDefault = String(defaultUrl || 'https://garticphone.com/en/').trim() || 'https://garticphone.com/en/';
     const safeTitle = String(titleText || 'Gartic Phone');
         const existingOverlay = document.getElementById('gartic-lobby-overlay');
         if (existingOverlay) existingOverlay.remove();
@@ -4644,7 +4709,7 @@ function openGarticPhoneLobbyPopup(defaultUrl, titleText) {
                     return `${baseOrigin}/en/?c=${encodeURIComponent(inviteCode)}`;
                 }
 
-                return parsedUrl.toString();
+                return null;
             } catch (err) {
                 if (!/^[A-Za-z0-9_-]{3,40}$/.test(rawValue)) return null;
                 return `${baseOrigin}/en/?c=${encodeURIComponent(rawValue)}`;
@@ -4711,8 +4776,252 @@ function openGarticPhoneLobbyPopup(defaultUrl, titleText) {
         });
         document.addEventListener('keydown', keyHandler);
 
+        codeInput.value = safeDefault;
         refreshContinueState();
+        codeInput.setSelectionRange(codeInput.value.length, codeInput.value.length);
         codeInput.focus();
+}
+
+function openZombsRoyaleLobbyPopup(defaultUrl, titleText) {
+        const safeDefault = String(defaultUrl || 'https://zombsroyale.io/party/').trim() || 'https://zombsroyale.io/party/';
+    const safeTitle = String(titleText || 'Zombs Royale');
+        const existingOverlay = document.getElementById('zombs-lobby-overlay');
+        if (existingOverlay) existingOverlay.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'zombs-lobby-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.inset = '0';
+        overlay.style.background = 'rgba(0, 0, 0, 0.78)';
+        overlay.style.backdropFilter = 'blur(4px)';
+        overlay.style.zIndex = '99999';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.padding = '16px';
+
+        overlay.innerHTML = `
+            <div id="zombs-lobby-panel" style="width:min(460px,100%);border:1px solid rgba(80,180,255,0.35);background:rgba(8,20,34,0.95);border-radius:12px;padding:16px;box-shadow:0 0 24px rgba(0,149,255,0.2);font-family:Inter,sans-serif;color:#eaf6ff;">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+                    <h2 style="margin:0;font-size:1.05rem;letter-spacing:0.04em;">Zombs Royale Lobby Options</h2>
+                    <button id="zombs-close-btn" type="button" style="border:1px solid rgba(120,160,190,0.5);border-radius:8px;background:rgba(5,10,16,0.8);color:#d6ecff;width:34px;height:34px;cursor:pointer;font-size:1rem;line-height:1;">x</button>
+                </div>
+                <p style="margin:0 0 14px;font-size:0.85rem;color:#9dc3dc;line-height:1.5;">Start a new lobby, or paste a party invite link.</p>
+                <button id="zombs-create-btn" type="button" style="width:100%;border:1px solid rgba(78,208,255,0.55);border-radius:10px;background:linear-gradient(135deg,rgba(0,123,255,0.28),rgba(0,218,255,0.16));color:#e8fbff;padding:11px 12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Start Lobby</button>
+                <div style="height:1px;background:rgba(160,208,235,0.22);margin:10px 0 12px;"></div>
+                <label for="zombs-join-link" style="display:block;margin-bottom:6px;font-size:0.78rem;color:#9fc4db;letter-spacing:0.04em;">Party Link</label>
+                <input id="zombs-join-link" type="url" placeholder="https://zombsroyale.io/party/abc123" autocomplete="off" style="width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid rgba(128,174,202,0.45);background:rgba(0,0,0,0.34);color:#eef8ff;outline:none;margin-bottom:10px;" />
+                <button id="zombs-continue-btn" type="button" disabled style="width:100%;border-radius:10px;padding:11px 12px;font-weight:700;margin-bottom:0;opacity:0.5;cursor:not-allowed;border:1px solid rgba(121,121,121,0.45);background:rgba(80,80,80,0.28);color:#e8fbff;">Join Lobby</button>
+            </div>
+        `;
+
+        const normalizeJoinTarget = function (value) {
+            const rawValue = String(value || '').trim();
+            if (!rawValue) return null;
+
+            try {
+                const parsedUrl = new URL(rawValue);
+                const host = parsedUrl.hostname.toLowerCase();
+                if (!(host === 'zombsroyale.io' || host.endsWith('.zombsroyale.io'))) return null;
+
+                const parts = parsedUrl.pathname.split('/').filter(Boolean);
+                if (parts[0] === 'party' && parts[1] && /^[A-Za-z0-9_-]{2,80}$/.test(parts[1])) {
+                    return `https://zombsroyale.io/party/${encodeURIComponent(parts[1])}`;
+                }
+
+                return null;
+            } catch (err) {
+                if (!/^[A-Za-z0-9_-]{2,80}$/.test(rawValue)) return null;
+                return `https://zombsroyale.io/party/${encodeURIComponent(rawValue)}`;
+            }
+        };
+
+        document.body.appendChild(overlay);
+
+        const panel = document.getElementById('zombs-lobby-panel');
+        const closeBtn = document.getElementById('zombs-close-btn');
+        const createBtn = document.getElementById('zombs-create-btn');
+        const continueBtn = document.getElementById('zombs-continue-btn');
+        const joinInput = document.getElementById('zombs-join-link');
+
+        const closeModal = function () {
+            document.removeEventListener('keydown', keyHandler);
+            overlay.remove();
+        };
+
+        const keyHandler = function (event) {
+            if (event.key === 'Escape') closeModal();
+            if (event.key === 'Enter' && document.activeElement === joinInput && !continueBtn.disabled) {
+                event.preventDefault();
+                continueBtn.click();
+            }
+        };
+
+        const refreshContinueState = function () {
+            const targetUrl = normalizeJoinTarget(joinInput.value);
+            if (targetUrl) {
+                continueBtn.disabled = false;
+                continueBtn.dataset.targetUrl = targetUrl;
+                continueBtn.style.opacity = '1';
+                continueBtn.style.cursor = 'pointer';
+                continueBtn.style.borderColor = 'rgba(78,208,255,0.55)';
+                continueBtn.style.background = 'linear-gradient(135deg, rgba(0,123,255,0.28), rgba(0,218,255,0.16))';
+            } else {
+                continueBtn.disabled = true;
+                continueBtn.dataset.targetUrl = '';
+                continueBtn.style.opacity = '0.5';
+                continueBtn.style.cursor = 'not-allowed';
+                continueBtn.style.borderColor = 'rgba(121,121,121,0.45)';
+                continueBtn.style.background = 'rgba(80,80,80,0.28)';
+            }
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        createBtn.addEventListener('click', function () {
+            closeModal();
+            launchSite('https://zombsroyale.io/', safeTitle);
+        });
+        continueBtn.addEventListener('click', function () {
+            const target = continueBtn.dataset.targetUrl;
+            if (!target) return;
+            closeModal();
+            launchSite(target, safeTitle);
+        });
+        joinInput.addEventListener('input', refreshContinueState);
+        overlay.addEventListener('click', function (event) {
+            if (event.target === overlay) closeModal();
+        });
+        panel.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+        document.addEventListener('keydown', keyHandler);
+
+        joinInput.value = safeDefault;
+        refreshContinueState();
+        joinInput.setSelectionRange(joinInput.value.length, joinInput.value.length);
+        joinInput.focus();
+}
+
+function openEvIOLobbyPopup(defaultUrl, titleText) {
+        const safeDefault = String(defaultUrl || 'https://ev.io/?game=lobby-').trim() || 'https://ev.io/?game=lobby-';
+    const safeTitle = String(titleText || 'ev.io');
+        const existingOverlay = document.getElementById('evio-lobby-overlay');
+        if (existingOverlay) existingOverlay.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'evio-lobby-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.inset = '0';
+        overlay.style.background = 'rgba(0, 0, 0, 0.78)';
+        overlay.style.backdropFilter = 'blur(4px)';
+        overlay.style.zIndex = '99999';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.padding = '16px';
+
+        overlay.innerHTML = `
+            <div id="evio-lobby-panel" style="width:min(460px,100%);border:1px solid rgba(80,180,255,0.35);background:rgba(8,20,34,0.95);border-radius:12px;padding:16px;box-shadow:0 0 24px rgba(0,149,255,0.2);font-family:Inter,sans-serif;color:#eaf6ff;">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+                    <h2 style="margin:0;font-size:1.05rem;letter-spacing:0.04em;">ev.io Lobby Options</h2>
+                    <button id="evio-close-btn" type="button" style="border:1px solid rgba(120,160,190,0.5);border-radius:8px;background:rgba(5,10,16,0.8);color:#d6ecff;width:34px;height:34px;cursor:pointer;font-size:1rem;line-height:1;">x</button>
+                </div>
+                <p style="margin:0 0 14px;font-size:0.85rem;color:#9dc3dc;line-height:1.5;">Start a new lobby, or paste a lobby invite link.</p>
+                <button id="evio-create-btn" type="button" style="width:100%;border:1px solid rgba(78,208,255,0.55);border-radius:10px;background:linear-gradient(135deg,rgba(0,123,255,0.28),rgba(0,218,255,0.16));color:#e8fbff;padding:11px 12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Start Lobby</button>
+                <div style="height:1px;background:rgba(160,208,235,0.22);margin:10px 0 12px;"></div>
+                <label for="evio-join-link" style="display:block;margin-bottom:6px;font-size:0.78rem;color:#9fc4db;letter-spacing:0.04em;">Lobby Link</label>
+                <input id="evio-join-link" type="url" placeholder="https://ev.io/?game=lobby-abc123" autocomplete="off" style="width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid rgba(128,174,202,0.45);background:rgba(0,0,0,0.34);color:#eef8ff;outline:none;margin-bottom:10px;" />
+                <button id="evio-continue-btn" type="button" disabled style="width:100%;border-radius:10px;padding:11px 12px;font-weight:700;margin-bottom:0;opacity:0.5;cursor:not-allowed;border:1px solid rgba(121,121,121,0.45);background:rgba(80,80,80,0.28);color:#e8fbff;">Join Lobby</button>
+            </div>
+        `;
+
+        const normalizeJoinTarget = function (value) {
+            const rawValue = String(value || '').trim();
+            if (!rawValue) return null;
+
+            try {
+                const parsedUrl = new URL(rawValue);
+                const host = parsedUrl.hostname.toLowerCase();
+                if (!(host === 'ev.io' || host.endsWith('.ev.io'))) return null;
+
+                const gameParam = String(parsedUrl.searchParams.get('game') || '').trim();
+                if (!gameParam.toLowerCase().startsWith('lobby-')) return null;
+
+                const lobbyCode = gameParam.slice(6);
+                if (!/^[A-Za-z0-9_-]{2,80}$/.test(lobbyCode)) return null;
+
+                return `https://ev.io/?game=lobby-${encodeURIComponent(lobbyCode)}`;
+            } catch (err) {
+                const normalized = rawValue.replace(/^lobby-/i, '');
+                if (!/^[A-Za-z0-9_-]{2,80}$/.test(normalized)) return null;
+                return `https://ev.io/?game=lobby-${encodeURIComponent(normalized)}`;
+            }
+        };
+
+        document.body.appendChild(overlay);
+
+        const panel = document.getElementById('evio-lobby-panel');
+        const closeBtn = document.getElementById('evio-close-btn');
+        const createBtn = document.getElementById('evio-create-btn');
+        const continueBtn = document.getElementById('evio-continue-btn');
+        const joinInput = document.getElementById('evio-join-link');
+
+        const closeModal = function () {
+            document.removeEventListener('keydown', keyHandler);
+            overlay.remove();
+        };
+
+        const keyHandler = function (event) {
+            if (event.key === 'Escape') closeModal();
+            if (event.key === 'Enter' && document.activeElement === joinInput && !continueBtn.disabled) {
+                event.preventDefault();
+                continueBtn.click();
+            }
+        };
+
+        const refreshContinueState = function () {
+            const targetUrl = normalizeJoinTarget(joinInput.value);
+            if (targetUrl) {
+                continueBtn.disabled = false;
+                continueBtn.dataset.targetUrl = targetUrl;
+                continueBtn.style.opacity = '1';
+                continueBtn.style.cursor = 'pointer';
+                continueBtn.style.borderColor = 'rgba(78,208,255,0.55)';
+                continueBtn.style.background = 'linear-gradient(135deg, rgba(0,123,255,0.28), rgba(0,218,255,0.16))';
+            } else {
+                continueBtn.disabled = true;
+                continueBtn.dataset.targetUrl = '';
+                continueBtn.style.opacity = '0.5';
+                continueBtn.style.cursor = 'not-allowed';
+                continueBtn.style.borderColor = 'rgba(121,121,121,0.45)';
+                continueBtn.style.background = 'rgba(80,80,80,0.28)';
+            }
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        createBtn.addEventListener('click', function () {
+            closeModal();
+            launchSite('https://ev.io/', safeTitle);
+        });
+        continueBtn.addEventListener('click', function () {
+            const target = continueBtn.dataset.targetUrl;
+            if (!target) return;
+            closeModal();
+            launchSite(target, safeTitle);
+        });
+        joinInput.addEventListener('input', refreshContinueState);
+        overlay.addEventListener('click', function (event) {
+            if (event.target === overlay) closeModal();
+        });
+        panel.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+        document.addEventListener('keydown', keyHandler);
+
+        joinInput.value = safeDefault;
+        refreshContinueState();
+        joinInput.setSelectionRange(joinInput.value.length, joinInput.value.length);
+        joinInput.focus();
 }
 
 function openBloobLobbyPopup(defaultUrl, titleText) {
