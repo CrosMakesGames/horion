@@ -1469,7 +1469,7 @@ canvas {
        { filename: 'clFNAF4', displayname: 'Fnaf 4', image: 'https://pizzaedition.win/images/games/fnaf4-min.png' },
        { filename: 'https://svaaps.github.io/eaglercrafthtml/', displayname: 'Minecraft 1.9', image: 'https://media.sketchfab.com/models/84938a8f3f8d4a0aa64aaa9c4e4d27d3/thumbnails/f5d49a3c2cdb4424b7f062d340d2a4a7/aafef2fcd26b40f5bea48725065c6542.jpeg', type: 'special' },
        { filename: 'clsubwaysurfersbarcelona', displayname: 'Subway Surfers: Barcelona', image: 'https://vodogame.com/games/subway-surf-barcelona/thumb_1.jpg' },
-       { filename: 'clsubwaysurfersmonaco', displayname: 'Subway Surfers: Moncao', image: 'https://subwaysurfers-game.io/storage/images/games/monaco/monac300jpg.jpg' },
+    { filename: 'https://nzp.gay', displayname: 'Nazi Zombies', image: 'https://subwaysurfers-game.io/storage/images/games/monaco/monac300jpg.jpg', type: 'special' },
        { filename: 'clducklife3', displayname: 'Duck Life 3', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/f5671816-e95b-4d41-adb7-411708f431ba/ducklife-3.png' },
        { filename: 'clinkgame', displayname: 'Ink Game', image: 'https://i1.sndcdn.com/artworks-JyBMur02gm43IDuc-eZfeLA-t500x500.png' },
        { filename: 'clsupermariobros3real', displayname: 'Super Mario Bros 3', image: 'https://assets-prd.ignimgs.com/2021/12/08/smb3-1638922753441.jpg?crop=1%3A1%2Csmart&format=jpg&auto=webp&quality=80' },
@@ -1513,7 +1513,7 @@ canvas {
   { filename: 'https://www.openguessr.com/', displayname: "OpenGuessr", image: 'https://somerandomstuff1.wordpress.com/wp-content/uploads/2019/02/geoguessr1.png', type: 'special' },
      { filename: 'https://moomoo.io/', displayname: "MooMoo.io", image: 'https://kevin.games/assets/cache_image/games/moomoo-io_200x200_98b.jpg', type: 'special' },
        { filename: 'cldungeonsanddegenerategamblers', displayname: "Dungeons and Degenerate Gamblers", image: 'https://assets-prd.ignimgs.com/2024/05/27/dungeons-and-degenerate-gamblers-button-1716811260241.jpg' },
-       { filename: 'https://play2048.co/', displayname: "2048", image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg', type: 'special' },
+    { filename: 'https://uberspot.github.io/2048/', displayname: "2048", image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg', type: 'special' },
 
     ];
 
@@ -4308,27 +4308,12 @@ function launchSite(targetUrl, pageTitle) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 
-    let hostname = '';
-    try {
-        hostname = new URL(normalizedUrl).hostname.toLowerCase();
-    } catch (error) {
-        hostname = '';
-    }
-
-    // Some canvas-heavy games (like diep.io) freeze inside our sandboxed iframe.
-    const shouldOpenDirect = hostname === 'diep.io' || hostname.endsWith('.diep.io');
-
     // 1. Open the new window
     const win = window.open('about:blank', '_blank');
     
     if (!win) {
         alert("Popup blocked! Please allow popups for this site.");
         return false;
-    }
-
-    if (shouldOpenDirect) {
-        win.location.replace(normalizedUrl);
-        return true;
     }
 
     // 2. Define the content to inject
@@ -4420,15 +4405,58 @@ function openInlinePage(targetUrl, titleText, options) {
     return true;
 }
 
+const GN_MATH_PRIMARY_URL = 'https://gn-math.dev/';
+const GN_MATH_FALLBACK_URL = 'https://gn-math.github.io/gn-math-DONTDMCA/';
+
+function probeUrlReachable(targetUrl, timeoutMs) {
+    const safeUrl = String(targetUrl || '').trim();
+    const safeTimeout = Number(timeoutMs) > 0 ? Number(timeoutMs) : 3500;
+    if (!safeUrl) return Promise.resolve(false);
+
+    return new Promise((resolve) => {
+        let didResolve = false;
+        const finish = (value) => {
+            if (didResolve) return;
+            didResolve = true;
+            resolve(Boolean(value));
+        };
+
+        const controller = typeof AbortController === 'function' ? new AbortController() : null;
+        const timer = setTimeout(() => {
+            if (controller) controller.abort();
+            finish(false);
+        }, safeTimeout);
+
+        fetch(safeUrl, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store',
+            signal: controller ? controller.signal : undefined
+        })
+            .then(() => finish(true))
+            .catch(() => finish(false))
+            .finally(() => clearTimeout(timer));
+    });
+}
+
+function openGNMathWithFallback() {
+    return probeUrlReachable(GN_MATH_PRIMARY_URL, 3500)
+        .then((isPrimaryReachable) => {
+            const launchUrl = isPrimaryReachable ? GN_MATH_PRIMARY_URL : GN_MATH_FALLBACK_URL;
+            return openInlinePage(launchUrl, 'GN-Math', { blockNewTabs: true });
+        })
+        .catch(() => openInlinePage(GN_MATH_FALLBACK_URL, 'GN-Math', { blockNewTabs: true }));
+}
+
 // Ensure these functions use the correct variable names
 function openTestingExtension() {
     setGamesTaskbarHighlight('btn-gnmath');
-    openInlinePage('https://gn-math.dev/', 'GN-Math', { blockNewTabs: true });
+    openGNMathWithFallback();
 }
 
 function openGNMath() {
     setGamesTaskbarHighlight('btn-gnmath');
-    openInlinePage('https://gn-math.dev/', 'GN-Math', { blockNewTabs: true });
+    openGNMathWithFallback();
     try {
         if (window.parent && window.parent !== window && typeof window.parent.onGamesViewChange === 'function') {
             window.parent.onGamesViewChange('gnmath');
@@ -6763,8 +6791,6 @@ function launchSportsTool() {
 
             updateShellTitle();
 
-            injectModeButton('games-frame');
-            injectModeButton('tv-frame');
             isApplyingRoute = false;
             syncUrlWithState(false);
         }
@@ -6800,50 +6826,6 @@ function launchSportsTool() {
                 view: resolvedView,
                 details: resolvedDetails
             };
-        }
-
-        function injectModeButton(frameId) {
-            withFrame(frameId, (win, doc) => {
-                if (!doc) return;
-                const navRight = doc.querySelector('.nav-right');
-                if (!navRight) return;
-
-                const existing = doc.getElementById('horion-combo-mode-btn');
-                const targetMode = frameId === 'games-frame' ? 'tv' : 'games';
-                const label = targetMode === 'tv' ? 'TV' : 'Games';
-
-                if (existing) {
-                    existing.textContent = label;
-                    existing.dataset.targetMode = targetMode;
-                    return;
-                }
-
-                const btn = doc.createElement('button');
-                btn.id = 'horion-combo-mode-btn';
-                btn.type = 'button';
-                btn.className = 'nav-item';
-                btn.textContent = label;
-                btn.dataset.targetMode = targetMode;
-                btn.style.marginLeft = '12px';
-                btn.style.border = '1px solid rgba(0, 229, 255, 0.36)';
-                btn.style.borderRadius = '999px';
-                btn.style.padding = '8px 14px';
-                btn.style.background = 'linear-gradient(135deg, rgba(0,112,255,0.2), rgba(0,229,255,0.12))';
-                btn.style.color = '#98f7ff';
-                btn.style.fontFamily = 'JetBrains Mono, monospace';
-                btn.style.fontSize = '0.72rem';
-                btn.style.fontWeight = '700';
-                btn.style.letterSpacing = '0.12em';
-                btn.style.textTransform = 'uppercase';
-                btn.style.cursor = 'pointer';
-                btn.style.boxShadow = '0 0 14px rgba(0, 181, 255, 0.2)';
-                btn.onclick = () => {
-                    if (window.parent && typeof window.parent.switchMode === 'function') {
-                        window.parent.switchMode(targetMode);
-                    }
-                };
-                navRight.appendChild(btn);
-            });
         }
 
         function updateModeDock() {
@@ -7165,9 +7147,6 @@ function launchSportsTool() {
 
             updateShellTitle();
 
-            injectModeButton('games-frame');
-            injectModeButton('tv-frame');
-
             if (!isApplyingRoute && shouldPush) {
                 syncUrlWithState(true);
             }
@@ -7187,7 +7166,6 @@ function launchSportsTool() {
                 const pendingGamesView = frameState.pendingGamesView;
                 frameState.pendingGamesView = null;
                 navigateGames(pendingGamesView || model.currentGamesView);
-                injectModeButton('games-frame');
             });
 
             document.getElementById('tv-frame').addEventListener('load', () => {
@@ -7199,7 +7177,6 @@ function launchSportsTool() {
                 } else {
                     navigateTv(model.currentTvView, model.currentTvDetails);
                 }
-                injectModeButton('tv-frame');
             });
         }
 
@@ -7233,8 +7210,6 @@ function launchSportsTool() {
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) return;
                 enforceShellLayoutIntegrity();
-                injectModeButton('games-frame');
-                injectModeButton('tv-frame');
 
                 if (model.mode === 'games') {
                     navigateGames(model.currentGamesView);
