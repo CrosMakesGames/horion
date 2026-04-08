@@ -4411,8 +4411,8 @@ function openInlinePage(targetUrl, titleText, options) {
     return true;
 }
 
-const GN_MATH_PRIMARY_URL = 'https://gn-math.github.io/gn-math-DONTDMCA/';
-const GN_MATH_FALLBACK_URL = 'https://gn-math.dev/';
+const GN_MATH_PRIMARY_URL = 'https://gn-math.dev/';
+const GN_MATH_FALLBACK_URL = 'https://gn-math.github.io/gn-math-DONTDMCA/';
 
 function runFetchWithTimeout(url, options, timeoutMs) {
     const safeTimeout = Number(timeoutMs) > 0 ? Number(timeoutMs) : 3500;
@@ -4458,16 +4458,7 @@ async function probeGNMathPrimary(targetUrl, timeoutMs) {
 
         return true;
     } catch (error) {
-        try {
-            await runFetchWithTimeout(safeUrl, {
-                method: 'GET',
-                cache: 'no-store',
-                mode: 'no-cors'
-            }, timeoutMs);
-            return true;
-        } catch (secondaryError) {
-            return false;
-        }
+        return false;
     }
 }
 
