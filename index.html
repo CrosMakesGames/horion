@@ -336,20 +336,6 @@
         <button class="mode-chip" id="mode-tv" data-mode-target="tv" type="button" aria-pressed="false">TV</button>
     </div>
 
-    <div id="beta-modal-overlay" class="beta-modal-overlay" aria-hidden="true">
-        <div class="beta-modal" role="dialog" aria-modal="true" aria-labelledby="beta-modal-title">
-            <h3 id="beta-modal-title">Horion 2.0 Beta</h3>
-            <p>
-                Horion 2.0 is currently in beta. You may run into bugs, broken pages, or random UI issues while testing.
-                Please report anything you find so it can be fixed faster.
-            </p>
-            <div class="beta-modal-actions">
-                <button id="beta-modal-close" class="beta-dismiss" type="button">Continue</button>
-                <a class="beta-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfB9PSqEptKQutHkIWXa8QjFNBELP1fGXX-q5lzFFelRvGqIg/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">Open Bug Report Form</a>
-            </div>
-        </div>
-    </div>
-
                 <textarea id="games-app-template" hidden>
 <!DOCTYPE html>
 <html lang="en">
@@ -1264,18 +1250,11 @@ canvas {
         </div>
 
         <div class="recent-changes-container">
-            <div class="recent-label">RECENT CHANGES: 2.0</div>
+            <div class="recent-label">RECENT CHANGES: 2.1</div>
             <div class="change-log">
                 > Biggest update ever!<br>
-                > Completely combined games and TV <br>
-                > Changed method to be unblockable<br>
-                > Added a native github link with more features for use at home<br>
-                > Changed gn-math, youtube, and live sports to work inside the page <br>
-                > New method to launch new types of games<br>
-                > Featured tons of new games and shows<br>
-                > Added a custom port to Sandboxels <br>
-                > New launcher <br>
-                > LOADS OF BUG FIXES AND VISUAL IMPROVEMENTS<br>
+                > 2.1 brought on major bug fixes and QOL<br>
+                > Along with a all-new horion live sports beta
             </div>
         </div>
     </div>
@@ -1336,7 +1315,7 @@ canvas {
     <div class="info-grid">
         <div class="info-card">
             <span class="card-label">CURRENT BUILD</span>
-            <span class="card-value">v2.0</span>
+            <span class="card-value">v2.1</span>
         </div>
         <div class="info-card">
             <span class="card-label">SELECTED SERVER</span>
@@ -1348,7 +1327,7 @@ canvas {
         </div>
         <div class="info-card">
             <span class="card-label">LAST UPDATE</span>
-            <span class="card-value">2026.4.5</span>
+            <span class="card-value">2026.4.11</span>
         </div>
     </div>
 
@@ -5506,8 +5485,8 @@ function openSpecial(gamelink, gameTitle) {
         .nav-item.youtube-btn { color: #00ccd0ff; }
         .nav-item.youtube-btn:hover { color: #00e8ed; }
 
-        .nav-item.sports-btn { color: #2e8b57; }
-        .nav-item.sports-btn:hover { color: #3cb371; }
+        .nav-item.sports-btn { color: #ffffff; }
+        .nav-item.sports-btn:hover { color: var(--neon-blue); }
 
         /* --- CONTENT CONTAINER --- */
         .content-container {
@@ -6168,17 +6147,7 @@ function openSpecial(gamelink, gameTitle) {
             <!-- Grid injected via JS -->
         </div>
 
-        <!-- Home Footer -->
-        <div class="home-footer">
-            <div class="footer-version">v1.5.0 - HORION TV</div>
-            <div class="footer-changes">
-                <span>RECENT CHANGES:</span>
-                <ul>
-                    <li>Added Live Sports page</li>
-                    <li>Bug fixes</li>
-                </ul>
-            </div>
-        </div>
+        
     </div>
 
     <!-- BROWSE VIEW -->
@@ -6199,7 +6168,7 @@ function openSpecial(gamelink, gameTitle) {
 
     <div id="view-sports" class="view-section">
         <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
-        <p class="sports-beta-note">You are viewing the Live Sports Horion beta. To see the OG live sports, click <a href="#" onclick="openOriginalSports(event)">'this'</a>.</p>
+        <p class="sports-beta-note">You are viewing the Live Sports Horion beta. To see the OG live sports, click <a href="#" onclick="openOriginalSports(event)">this</a>.</p>
 
         <div class="sports-toolbar">
             <select id="sports-feed-select" class="season-select" onchange="onSportsFeedChanged(this.value)">
