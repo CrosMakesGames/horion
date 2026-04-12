@@ -919,6 +919,19 @@ body {
     margin-bottom: 15px;
 }
 
+.credits-logo-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 18px;
+}
+
+.credits-logo {
+    width: min(180px, 70%);
+    height: auto;
+    display: block;
+}
+
 .credit-link {
     display: block;
     color: var(--hacker-blue);
@@ -1351,6 +1364,9 @@ canvas {
     <div class="credits-section">
         <div class="credits-title">CREDITS & LINKS</div>
         <p> <b>Developed By:</b><br> CMG</p>
+        <div class="credits-logo-wrap">
+            <img src="./cmg.png" alt="CMG logo" class="credits-logo">
+        </div>
         </p><br><br>
         <a href="https://sites.google.com/view/cmakesgames/my-sites-home" target="_blank" class="credit-link">> CMG Home</a>
         <a href="https://docs.google.com/document/d/e/2PACX-1vS7zNM-V5HT60eoCjMcBXUL9oeXFQRWDeCW2wxKtCp5zlxjM2VhqhsipZLXXZ51q-HWi48ti90deumm/pub" target="_blank" class="credit-link">> Links Document</a>
@@ -1507,7 +1523,7 @@ canvas {
        { filename: 'https://8-ball-pool-html-5.vercel.app', displayname: "8 Ball: Classic", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6rcox2LJIE1FGsChgBipA0Dv_CFxbKu-yw&s', type: 'special'},
        { filename: 'clburritobisonlaunchalibre', displayname: "Burrito Bison: Launcha Libre", image: 'https://play-lh.googleusercontent.com/vpTgm9u7-GzZP_MceTWpDi0HbinXd_4phCoTwf4ZspFL-115FtNRdo_SU1p-khLDnLA' },
        { filename: 'clgun-spin', displayname: "Gun Spin", image: 'https://images.dwncdn.net/images/t_app-icon-l/p/39d0a468-21ab-466d-a65b-5585c02dd7ad/15864794/gunspin-logo' },
-       { filename: 'clOrangeRoulette', displayname: "Orange Roulette", image: 'https://img.itch.zone/aW1nLzIxMDk0ODY4LnBuZw==/original/AyTT6T.png' },
+       { filename: 'https://nerd.com', displayname: "Nerd.com Videos", image: 'https://www.nerd.com/img/nerd/pwa-512x512.png', type: 'special' },
        { filename: 'clbowmaster', displayname: "Bow Masters", image: 'https://play-lh.googleusercontent.com/rsQyCuie6S8Munc2Hv6IMpePP1g3c0okLkyKRXd1IimOryIBMZqymGKaOg7bZ6NMkhj3' },
        { filename: 'cl10morebullets', displayname: "10 Bullets", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS2tFiDxHiykGIEajSXpaYIRXpOHCT6vZv6g&s' },
        { filename: 'https://mehmetmhy.github.io/tetris/', displayname: "Tetris", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSJVXUjr9K0zjk9F96LagL6iTk_hu4_yNLkQ&s', type: 'special' },
@@ -4335,51 +4351,37 @@ canvas {
     return baseTag + navigationGuard + sanitizedHtml;
 }
 
-function launchSite(targetUrl, pageTitle) {
+function launchSite(targetUrl, pageTitle, options) {
     const normalizedUrl = String(targetUrl || '').trim();
-    if (!normalizedUrl) {
-        return false;
-    }
+    if (!normalizedUrl) return false;
+    const opts = options || {};
+    const blockNewTabs = Boolean(opts.blockNewTabs);
     const safeTitle = String(pageTitle || 'Horion Game')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    const safeUrl = normalizedUrl
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;');
+    const sandboxAttr = blockNewTabs
+        ? ' sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-downloads allow-presentation"'
+        : '';
 
-    // 1. Open the new window
     const win = window.open('about:blank', '_blank');
-    
     if (!win) {
-        alert("Popup blocked! Please allow popups for this site.");
+        alert('Pop-up blocked! Please allow popups for this site.');
         return false;
     }
 
-    // 2. Define the content to inject
-    const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>${safeTitle}</title>
-            <base target="_self">
-            <style>
-                body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
-                iframe { border: none; width: 100%; height: 100%; }
-            </style>
-        </head>
-        <body>
-            <iframe 
-                src="${normalizedUrl}" 
-                allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture"
-                sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock"
-                allowfullscreen
-            ></iframe>
-        </body>
-        </html>
-    `;
+    try {
+        win.opener = null;
+    } catch (err) {
+        // Some browsers may not allow updating opener.
+    }
 
-    // 3. Write to the new window
     win.document.open();
-    win.document.write(htmlContent);
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"' + sandboxAttr + '></iframe></body></html>');
     win.document.close();
     
     return true;
@@ -4388,6 +4390,10 @@ function launchSite(targetUrl, pageTitle) {
 function openInlinePage(targetUrl, titleText, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
+
+    const opts = options || {};
+    const blockNewTabs = Boolean(opts.blockNewTabs);
+    const allowSandbox = Boolean(opts.allowSandbox);
 
     const existing = document.getElementById('horion-inline-page');
     if (existing) existing.remove();
@@ -4418,7 +4424,7 @@ function openInlinePage(targetUrl, titleText, options) {
         host.style.top = top + 'px';
     };
 
-    const closeInlineView = function () {
+    let closeInlineView = function () {
         window.removeEventListener('resize', applyOffset);
         document.removeEventListener('keydown', onKeydown);
         host.remove();
@@ -4431,7 +4437,12 @@ function openInlinePage(targetUrl, titleText, options) {
     document.body.appendChild(host);
     const hostFrame = document.getElementById('horion-inline-host-frame');
     if (hostFrame && hostFrame.contentWindow && hostFrame.contentWindow.document) {
-        const wrapperHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${String(titleText || 'Extension')}</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="${normalizedUrl}" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock" allowfullscreen></iframe></body></html>`;
+        const sandboxAttr = (allowSandbox || blockNewTabs)
+            ? ' sandbox="allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-presentation"'
+            : '';
+        const titleAttr = String(titleText || 'Extension');
+
+        const wrapperHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + titleAttr + '</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="' + normalizedUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock"' + sandboxAttr + '></iframe></body></html>';
         hostFrame.contentWindow.document.open();
         hostFrame.contentWindow.document.write(wrapperHtml);
         hostFrame.contentWindow.document.close();
@@ -4530,18 +4541,8 @@ function openGNMathWithFallback() {
     gnMathFallbackActive = false;
     updateGNMathFallbackNotice();
 
-    return probeGNMathPrimary(GN_MATH_PRIMARY_URL, 3500)
-        .then((isPrimaryReachable) => {
-            gnMathFallbackActive = !isPrimaryReachable;
-            updateGNMathFallbackNotice();
-            const launchUrl = isPrimaryReachable ? GN_MATH_PRIMARY_URL : GN_MATH_FALLBACK_URL;
-            return openInlinePage(launchUrl, 'GN-Math', { blockNewTabs: true });
-        })
-        .catch(() => {
-            gnMathFallbackActive = true;
-            updateGNMathFallbackNotice();
-            return openInlinePage(GN_MATH_FALLBACK_URL, 'GN-Math', { blockNewTabs: true });
-        });
+    // Always attempt GN-Math primary domain first.
+    return launchSite(GN_MATH_PRIMARY_URL, 'GN-Math', { blockNewTabs: true });
 }
 
 // Ensure these functions use the correct variable names
@@ -4599,19 +4600,24 @@ function openSkribblLobbyPopup(defaultUrl, titleText) {
         `;
 
         const normalizeJoinLink = function (value) {
+            const rawValue = String(value || '').trim();
+            if (!rawValue) return null;
             try {
-                const url = new URL(String(value || '').trim());
+                const url = new URL(rawValue);
                 const host = url.hostname.toLowerCase();
-                if (!(host === 'skribbl.io' || host.endsWith('.skribbl.io'))) return null;
+                if (!(host === 'skribbl.io' || host.endsWith('.skribbl.io'))) {
+                    return `https://skribbl.io/?${encodeURIComponent(rawValue)}`;
+                }
 
                 const hasCode =
                     (url.search && url.search.length > 1) ||
                     (url.hash && url.hash.length > 1) ||
                     (url.pathname && url.pathname !== '/' && url.pathname.replace(/\//g, '').length > 0);
 
-                return hasCode ? url.toString() : null;
-            } catch (err) {
+                if (hasCode) return url.toString();
                 return null;
+            } catch (err) {
+                return `https://skribbl.io/?${encodeURIComponent(rawValue)}`;
             }
         };
 
@@ -4737,16 +4743,23 @@ function openGarticPhoneLobbyPopup(defaultUrl, titleText) {
             try {
                 const parsedUrl = new URL(rawValue);
                 const host = parsedUrl.hostname.toLowerCase();
-                if (!(host === 'garticphone.com' || host.endsWith('.garticphone.com'))) return null;
+                if (!(host === 'garticphone.com' || host.endsWith('.garticphone.com'))) {
+                    return `${baseOrigin}/en/?c=${encodeURIComponent(rawValue)}`;
+                }
 
                 const inviteCode = String(parsedUrl.searchParams.get('c') || '').trim();
-                if (inviteCode && /^[A-Za-z0-9_-]{3,40}$/.test(inviteCode)) {
+                if (inviteCode) {
                     return `${baseOrigin}/en/?c=${encodeURIComponent(inviteCode)}`;
+                }
+
+                const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+                const lastPart = pathParts[pathParts.length - 1];
+                if (lastPart && lastPart !== 'en') {
+                    return `${baseOrigin}/en/?c=${encodeURIComponent(lastPart)}`;
                 }
 
                 return null;
             } catch (err) {
-                if (!/^[A-Za-z0-9_-]{3,40}$/.test(rawValue)) return null;
                 return `${baseOrigin}/en/?c=${encodeURIComponent(rawValue)}`;
             }
         };
@@ -4857,16 +4870,22 @@ function openZombsRoyaleLobbyPopup(defaultUrl, titleText) {
             try {
                 const parsedUrl = new URL(rawValue);
                 const host = parsedUrl.hostname.toLowerCase();
-                if (!(host === 'zombsroyale.io' || host.endsWith('.zombsroyale.io'))) return null;
+                if (!(host === 'zombsroyale.io' || host.endsWith('.zombsroyale.io'))) {
+                    return `https://zombsroyale.io/party/${encodeURIComponent(rawValue)}`;
+                }
 
                 const parts = parsedUrl.pathname.split('/').filter(Boolean);
-                if (parts[0] === 'party' && parts[1] && /^[A-Za-z0-9_-]{2,80}$/.test(parts[1])) {
+                if (parts[0] === 'party' && parts[1]) {
                     return `https://zombsroyale.io/party/${encodeURIComponent(parts[1])}`;
+                }
+
+                const lastPart = parts[parts.length - 1];
+                if (lastPart && lastPart !== 'party') {
+                    return `https://zombsroyale.io/party/${encodeURIComponent(lastPart)}`;
                 }
 
                 return null;
             } catch (err) {
-                if (!/^[A-Za-z0-9_-]{2,80}$/.test(rawValue)) return null;
                 return `https://zombsroyale.io/party/${encodeURIComponent(rawValue)}`;
             }
         };
@@ -4977,18 +4996,27 @@ function openEvIOLobbyPopup(defaultUrl, titleText) {
             try {
                 const parsedUrl = new URL(rawValue);
                 const host = parsedUrl.hostname.toLowerCase();
-                if (!(host === 'ev.io' || host.endsWith('.ev.io'))) return null;
+                if (!(host === 'ev.io' || host.endsWith('.ev.io'))) {
+                    const normalized = rawValue.replace(/^lobby-/i, '');
+                    return `https://ev.io/?game=lobby-${encodeURIComponent(normalized)}`;
+                }
 
                 const gameParam = String(parsedUrl.searchParams.get('game') || '').trim();
-                if (!gameParam.toLowerCase().startsWith('lobby-')) return null;
+                if (gameParam.toLowerCase().startsWith('lobby-')) {
+                    const lobbyCode = gameParam.slice(6);
+                    return `https://ev.io/?game=lobby-${encodeURIComponent(lobbyCode)}`;
+                }
 
-                const lobbyCode = gameParam.slice(6);
-                if (!/^[A-Za-z0-9_-]{2,80}$/.test(lobbyCode)) return null;
+                const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+                const lastPart = pathParts[pathParts.length - 1];
+                if (lastPart) {
+                     const normalized = lastPart.replace(/^lobby-/i, '');
+                     return `https://ev.io/?game=lobby-${encodeURIComponent(normalized)}`;
+                }
 
-                return `https://ev.io/?game=lobby-${encodeURIComponent(lobbyCode)}`;
+                return null;
             } catch (err) {
                 const normalized = rawValue.replace(/^lobby-/i, '');
-                if (!/^[A-Za-z0-9_-]{2,80}$/.test(normalized)) return null;
                 return `https://ev.io/?game=lobby-${encodeURIComponent(normalized)}`;
             }
         };
@@ -5115,7 +5143,9 @@ function openBloobLobbyPopup(defaultUrl, titleText) {
             try {
                 const parsedUrl = new URL(rawValue);
                 const host = parsedUrl.hostname.toLowerCase();
-                if (!(host === 'bloob.io' || host.endsWith('.bloob.io'))) return null;
+                if (!(host === 'bloob.io' || host.endsWith('.bloob.io'))) {
+                    return `${baseOrigin}/?matchId=${encodeURIComponent(rawValue)}`;
+                }
 
                 const paramMatchId = String(
                     parsedUrl.searchParams.get('matchId') ||
@@ -5125,13 +5155,20 @@ function openBloobLobbyPopup(defaultUrl, titleText) {
                     ''
                 ).trim();
 
-                if (paramMatchId && /^[A-Za-z0-9_-]{3,40}$/.test(paramMatchId)) {
+                if (paramMatchId) {
                     return `${baseOrigin}/?matchId=${encodeURIComponent(paramMatchId)}`;
                 }
 
+                const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+                const lastPart = pathParts[pathParts.length - 1];
+                if (lastPart) {
+                    return `${baseOrigin}/?matchId=${encodeURIComponent(lastPart)}`;
+                }
+
+                if (parsedUrl.pathname === '/' && !parsedUrl.search) return null;
+
                 return parsedUrl.toString();
             } catch (err) {
-                if (!/^[A-Za-z0-9_-]{3,40}$/.test(rawValue)) return null;
                 return `${baseOrigin}/?matchId=${encodeURIComponent(rawValue)}`;
             }
         };
@@ -6661,46 +6698,140 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     // 7. YOUTUBE NAV LAUNCHER LOGIC
     // ==========================================
 
-    function launchSite(targetUrl) {
-    // 1. Open the new window
+function launchSite(targetUrl, options) {
+    const normalizedUrl = String(targetUrl || '').trim();
+    if (!normalizedUrl) return false;
+    const opts = options || {};
+    const blockNewTabs = Boolean(opts.blockNewTabs);
+    const safeUrl = normalizedUrl
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;');
+    const sandboxAttr = blockNewTabs
+        ? ' sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-downloads allow-presentation"'
+        : '';
+
     const win = window.open('about:blank', '_blank');
-    
     if (!win) {
-        alert("Popup blocked! Please allow popups for this site.");
+        alert('Pop-up blocked! Please allow popups for this site.');
         return false;
     }
 
-    // 2. Define the content to inject
-    // The <base target="_self"> ensures all clicks stay inside the iframe's context
-    const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Horion TV</title>
-            <style>
-                body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #   000; }
-                iframe { border: none; width: 100%; height: 100%; }
-            </style>
-        </head>
-        <body>
-            <iframe src="${targetUrl}" allow="autoplay; encrypted-media; fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock"></iframe>
-            <script>
-            <\/script>
-        </body>
-        </html>
-    `;
+    try {
+        win.opener = null;
+    } catch (err) {
+        // Some browsers may not allow updating opener.
+    }
 
-    // 3. Write to the new window
     win.document.open();
-    win.document.write(htmlContent);
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Horion TV</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"' + sandboxAttr + '></iframe></body></html>');
     win.document.close();
     
     return true;
 }
 
+function buildTvProxiedInlineHtml(html, baseUrl) {
+    const safeBase = String(baseUrl).replace(/"/g, '&quot;');
+    const baseTag = `<base href="${safeBase}" target="_self">`;
+
+    const sanitizedHtml = String(html)
+        .replace(/<meta[^>]*http-equiv=["']content-security-policy["'][^>]*>/gi, '')
+        .replace(/<meta[^>]*http-equiv=["']x-content-security-policy["'][^>]*>/gi, '')
+        .replace(/<base[^>]*>/gi, '');
+
+    const guardScript = `
+<script>
+(function () {
+    const toAbsoluteUrl = function (value) {
+        try {
+            return new URL(value, document.baseURI).href;
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const isSkippableHref = function (href) {
+        if (!href) return true;
+        const lower = String(href).trim().toLowerCase();
+        return lower.startsWith('#') || lower.startsWith('javascript:') || lower.startsWith('mailto:') || lower.startsWith('tel:');
+    };
+
+    const navigateInline = function (url) {
+        if (!url || typeof window.__horionNavigate !== 'function') return;
+        window.__horionNavigate(url);
+    };
+
+    const forceSameTabTargets = function () {
+        document.querySelectorAll('a[target], form[target]').forEach(function (node) {
+            node.setAttribute('target', '_self');
+        });
+    };
+
+    const originalOpen = window.open;
+    window.open = function (url) {
+        const resolved = toAbsoluteUrl(url || '');
+        if (resolved) {
+            navigateInline(resolved);
+            return window;
+        }
+        return originalOpen ? originalOpen.apply(window, arguments) : window;
+    };
+
+    forceSameTabTargets();
+    const observer = new MutationObserver(forceSameTabTargets);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    document.addEventListener('click', function (event) {
+        const target = event.target && event.target.closest ? event.target.closest('a[href], [data-href], button[data-href]') : null;
+        if (!target) return;
+
+        const href = target.getAttribute('href') || target.getAttribute('data-href');
+        if (isSkippableHref(href)) return;
+
+        const resolved = toAbsoluteUrl(href);
+        if (!resolved) return;
+
+        event.preventDefault();
+        navigateInline(resolved);
+    }, true);
+
+    document.addEventListener('submit', function (event) {
+        const form = event.target;
+        if (!form || !form.getAttribute) return;
+
+        const method = (form.getAttribute('method') || 'get').toLowerCase();
+        const action = form.getAttribute('action') || window.location.href;
+        const resolvedAction = toAbsoluteUrl(action);
+        if (!resolvedAction || method !== 'get') return;
+
+        event.preventDefault();
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+        const nextUrl = new URL(resolvedAction);
+        params.forEach(function (value, key) {
+            nextUrl.searchParams.set(key, value);
+        });
+        navigateInline(nextUrl.href);
+    }, true);
+})();
+<\/script>`;
+
+    if (/<head[^>]*>/i.test(sanitizedHtml)) {
+        return sanitizedHtml.replace(/<head[^>]*>/i, function (match) {
+            return match + baseTag + guardScript;
+        });
+    }
+
+    return baseTag + guardScript + sanitizedHtml;
+}
+
 function openInlineTvPage(targetUrl, titleText, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
+
+    const opts = options || {};
+    const blockNewTabs = Boolean(opts.blockNewTabs);
+    const useProxyGuard = Boolean(opts.useProxyGuard);
+    const fullscreen = Boolean(opts.fullscreen);
 
     const existing = document.getElementById('horion-tv-inline-page');
     if (existing) existing.remove();
@@ -6726,6 +6857,10 @@ function openInlineTvPage(targetUrl, titleText, options) {
     `;
 
     const applyOffset = function () {
+        if (fullscreen) {
+            host.style.top = '0px';
+            return;
+        }
         const nav = document.querySelector('.hud-nav');
         const top = nav ? Math.max(0, Math.round(nav.getBoundingClientRect().bottom)) : 0;
         host.style.top = top + 'px';
@@ -6743,12 +6878,62 @@ function openInlineTvPage(targetUrl, titleText, options) {
 
     document.body.appendChild(host);
     const hostFrame = document.getElementById('horion-tv-inline-host-frame');
-    if (hostFrame && hostFrame.contentWindow && hostFrame.contentWindow.document) {
-        const wrapperHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${String(titleText || 'TV Tool')}</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="${normalizedUrl}" allow="autoplay; encrypted-media; fullscreen; clipboard-read; clipboard-write; picture-in-picture; screen-wake-lock" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock" allowfullscreen></iframe></body></html>`;
+    const inlineNavToken = 'horion-tv-inline-nav-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+    let isClosing = false;
+
+    const renderDirectWrapper = function () {
+        if (!hostFrame || !hostFrame.contentWindow || !hostFrame.contentWindow.document) return;
+        const titleAttr = String(titleText || 'TV Tool');
+        const wrapperHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + titleAttr + '</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="' + normalizedUrl + '" allow="autoplay; encrypted-media; fullscreen; clipboard-read; clipboard-write; picture-in-picture; screen-wake-lock"></iframe></body></html>';
         hostFrame.contentWindow.document.open();
         hostFrame.contentWindow.document.write(wrapperHtml);
         hostFrame.contentWindow.document.close();
+    };
+
+    const renderProxiedPage = function (urlValue) {
+        const safeUrl = String(urlValue || '').trim();
+        if (!safeUrl || isClosing || !hostFrame || !hostFrame.contentWindow || !hostFrame.contentWindow.document) return;
+
+        fetch(safeUrl)
+            .then((response) => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then((htmlText) => {
+                if (isClosing || !hostFrame.contentWindow || !hostFrame.contentWindow.document) return;
+                const proxiedHtml = buildTvProxiedInlineHtml(htmlText, safeUrl);
+                hostFrame.contentWindow.__horionNavigate = function (nextUrl) {
+                    window.postMessage({ type: 'HORION_TV_INLINE_NAV', token: inlineNavToken, url: nextUrl }, '*');
+                };
+                hostFrame.contentWindow.document.open();
+                hostFrame.contentWindow.document.write(proxiedHtml);
+                hostFrame.contentWindow.document.close();
+            })
+            .catch((error) => {
+                console.warn('Inline proxy fetch failed, falling back to direct iframe wrapper.', error);
+                renderDirectWrapper();
+            });
+    };
+
+    const onInlineMessage = function (event) {
+        const data = event && event.data ? event.data : null;
+        if (!data || data.type !== 'HORION_TV_INLINE_NAV' || data.token !== inlineNavToken) return;
+        renderProxiedPage(data.url);
+    };
+
+    if (useProxyGuard && blockNewTabs) {
+        window.addEventListener('message', onInlineMessage);
+        renderProxiedPage(normalizedUrl);
+    } else {
+        renderDirectWrapper();
     }
+
+    const originalCloseInlineView = closeInlineView;
+    closeInlineView = function () {
+        isClosing = true;
+        window.removeEventListener('message', onInlineMessage);
+        originalCloseInlineView();
+    };
 
     applyOffset();
     window.addEventListener('resize', applyOffset);
@@ -6760,6 +6945,7 @@ function openInlineTvPage(targetUrl, titleText, options) {
 // Ensure these functions use the correct variable names
 function launchYoutubeTool() {
     setTvTaskbarHighlight('nav-youtube');
+    document.title = 'YouTube - Horion TV';
     try {
         if (window.parent && window.parent !== window && typeof window.parent.onTvViewChange === 'function') {
             window.parent.onTvViewChange('youtube');
@@ -6767,11 +6953,12 @@ function launchYoutubeTool() {
     } catch (err) {
         // Ignore parent messaging errors.
     }
-    openInlineTvPage('https://fastytm.com/', 'YouTube');
+    launchSite('https://fastytm.com/');
 }
 
 function launchSportsTool() {
         setTvTaskbarHighlight('nav-sports');
+        document.title = 'Live Sports - Horion TV';
         try {
             if (window.parent && window.parent !== window && typeof window.parent.onTvViewChange === 'function') {
                 window.parent.onTvViewChange('sports');
@@ -6779,8 +6966,7 @@ function launchSportsTool() {
         } catch (err) {
             // Ignore parent messaging errors.
         }
-        // Keep Sports inside the inline host that renders through about:blank.
-        openInlineTvPage('https://streami.su/', 'Live Sports', { blockNewTabs: true });
+        launchSite('https://streami.su/', { blockNewTabs: true });
     }
 
     // ==========================================
@@ -6835,6 +7021,8 @@ function launchSportsTool() {
         const validGamesViews = new Set(['home', 'favorites', 'featured', 'database', 'extensions', 'more']);
         const specialGamesViews = new Set(['gnmath']);
         const validTvViews = new Set(['home', 'browse', 'continue', 'details', 'youtube', 'sports']);
+        const launchOnlyGamesViews = new Set(['gnmath']);
+        const launchOnlyTvViews = new Set(['youtube', 'sports']);
         let isApplyingRoute = false;
         let switchTrackTimer = null;
         let switchTrackTransitionHandler = null;
@@ -6931,6 +7119,16 @@ function launchSportsTool() {
                 return;
             }
 
+            if (model.currentTvView === 'sports') {
+                document.title = 'Live Sports - Horion TV';
+                return;
+            }
+
+            if (model.currentTvView === 'youtube') {
+                document.title = 'YouTube - Horion TV';
+                return;
+            }
+
             if (model.currentTvView === 'details' && model.currentTvDetails && model.currentTvDetails.title) {
                 document.title = `${model.currentTvDetails.title} - Horion TV`;
                 return;
@@ -7012,13 +7210,24 @@ function launchSportsTool() {
             );
         }
 
+        function getRefreshSafeGamesView(view) {
+            return view === 'gnmath' ? 'home' : resolveGamesView(view);
+        }
+
+        function getRefreshSafeTvView(view) {
+            if (view === 'youtube' || view === 'sports') return 'home';
+            return validTvViews.has(view) ? view : 'home';
+        }
+
         function saveRouteSnapshot() {
             try {
+                const safeGamesView = getRefreshSafeGamesView(model.currentGamesView);
+                const safeTvView = getRefreshSafeTvView(model.currentTvView);
                 const payload = {
                     mode: model.mode,
-                    gamesView: model.currentGamesView,
-                    tvView: model.currentTvView,
-                    tvDetails: model.currentTvDetails || null
+                    gamesView: safeGamesView,
+                    tvView: safeTvView,
+                    tvDetails: safeTvView === 'details' ? (model.currentTvDetails || null) : null
                 };
                 localStorage.setItem(ROUTE_STORAGE_KEY, JSON.stringify(payload));
             } catch (err) {
@@ -7036,10 +7245,8 @@ function launchSportsTool() {
                 const mode = validModes.has(parsed.mode) ? parsed.mode : null;
                 if (!mode) return null;
 
-                const gamesView = (validGamesViews.has(parsed.gamesView) || specialGamesViews.has(parsed.gamesView))
-                    ? parsed.gamesView
-                    : 'home';
-                const tvView = validTvViews.has(parsed.tvView) ? parsed.tvView : 'home';
+                const gamesView = getRefreshSafeGamesView(parsed.gamesView);
+                const tvView = getRefreshSafeTvView(parsed.tvView);
                 let tvDetails = tvView === 'details' ? normalizeTvDetails(parsed.tvDetails) : null;
                 if (tvView === 'details' && !tvDetails) {
                     tvDetails = null;
@@ -7053,15 +7260,18 @@ function launchSportsTool() {
 
         function syncUrlWithState(push) {
             const url = new URL(window.location.href);
+            const routeGamesView = getRefreshSafeGamesView(model.currentGamesView);
+            const routeTvView = getRefreshSafeTvView(model.currentTvView);
+
             url.searchParams.set('type', model.mode);
-            url.searchParams.set('page', model.mode === 'games' ? model.currentGamesView : model.currentTvView);
+            url.searchParams.set('page', model.mode === 'games' ? routeGamesView : routeTvView);
 
             // Remove old dual-view params so URL only reflects the active side.
             url.searchParams.delete('mode');
             url.searchParams.delete('games');
             url.searchParams.delete('tv');
 
-            if (model.mode === 'tv' && model.currentTvView === 'details' && model.currentTvDetails) {
+            if (model.mode === 'tv' && routeTvView === 'details' && model.currentTvDetails) {
                 url.searchParams.set('tvId', String(model.currentTvDetails.id));
                 url.searchParams.set('tvType', model.currentTvDetails.type);
                 if (model.currentTvDetails.season) {
@@ -7153,6 +7363,15 @@ function launchSportsTool() {
 
         function resolveGamesView(view) {
             return (validGamesViews.has(view) || specialGamesViews.has(view)) ? view : 'home';
+        }
+
+        function normalizeGamesStateView(view) {
+            return launchOnlyGamesViews.has(view) ? 'home' : resolveGamesView(view);
+        }
+
+        function normalizeTvStateView(view) {
+            if (launchOnlyTvViews.has(view)) return 'home';
+            return validTvViews.has(view) ? view : 'home';
         }
 
         function resolveTvNavigation(view, param) {
@@ -7309,11 +7528,12 @@ function launchSportsTool() {
 
         function navigateGames(view) {
             const safeView = resolveGamesView(view);
-            model.currentGamesView = safeView;
+            const normalizedStateView = normalizeGamesStateView(safeView);
+            model.currentGamesView = normalizedStateView;
 
             if (!frameState.gamesLoaded) {
                 frameState.pendingGamesView = safeView;
-                window.onGamesViewChange(safeView);
+                window.onGamesViewChange(normalizedStateView);
                 updateShellTitle();
                 return;
             }
@@ -7341,7 +7561,7 @@ function launchSportsTool() {
                 frameState.pendingGamesView = safeView;
             }
 
-            window.onGamesViewChange(safeView);
+            window.onGamesViewChange(normalizedStateView);
             updateShellTitle();
         }
 
@@ -7349,16 +7569,17 @@ function launchSportsTool() {
             const resolved = resolveTvNavigation(view, param);
             const safeView = resolved.view;
             const safeDetails = resolved.details;
+            const normalizedStateView = normalizeTvStateView(safeView);
 
-            model.currentTvView = safeView;
-            model.currentTvDetails = safeView === 'details' ? safeDetails : null;
+            model.currentTvView = normalizedStateView;
+            model.currentTvDetails = normalizedStateView === 'details' ? safeDetails : null;
 
             if (!frameState.tvLoaded) {
                 frameState.pendingTvNavigation = {
                     view: safeView,
                     details: safeDetails
                 };
-                window.onTvViewChange(safeView, safeDetails);
+                window.onTvViewChange(normalizedStateView, model.currentTvDetails);
                 updateShellTitle();
                 return;
             }
@@ -7393,25 +7614,26 @@ function launchSportsTool() {
                 };
             }
 
-            window.onTvViewChange(safeView, safeDetails);
+            window.onTvViewChange(normalizedStateView, model.currentTvDetails);
             updateShellTitle();
         }
 
         window.onGamesViewChange = function (view) {
-            if (!(validGamesViews.has(view) || specialGamesViews.has(view))) return;
+            const normalizedView = normalizeGamesStateView(view);
+            if (!(validGamesViews.has(normalizedView) || specialGamesViews.has(normalizedView))) return;
             if (!frameState.gamesLoaded && !isApplyingRoute) {
                 // Ignore child-app boot defaults that would overwrite an explicit route like gnmath.
-                if (view === 'home' && model.currentGamesView !== 'home') {
+                if (normalizedView === 'home' && model.currentGamesView !== 'home') {
                     return;
                 }
-                model.currentGamesView = view;
+                model.currentGamesView = normalizedView;
                 return;
             }
-            const changed = model.currentGamesView !== view;
-            model.currentGamesView = view;
+            const changed = model.currentGamesView !== normalizedView;
+            model.currentGamesView = normalizedView;
             if (!isApplyingRoute && model.mode === 'games') {
                 const route = parseRouteFromUrl();
-                const urlOutOfSync = route.mode !== 'games' || route.gamesView !== view;
+                const urlOutOfSync = route.mode !== 'games' || route.gamesView !== normalizedView;
                 if (changed || urlOutOfSync) {
                     syncUrlWithState(true);
                 }
@@ -7420,15 +7642,16 @@ function launchSportsTool() {
         };
 
         window.onTvViewChange = function (view, param) {
-            if (!validTvViews.has(view)) return;
+            const normalizedView = normalizeTvStateView(view);
+            if (!validTvViews.has(normalizedView)) return;
 
             if (!frameState.tvLoaded && !isApplyingRoute) {
                 // Ignore child-app boot defaults that would overwrite explicit routes like sports/youtube.
-                if (view === 'home' && model.currentTvView !== 'home') {
+                if (normalizedView === 'home' && model.currentTvView !== 'home') {
                     return;
                 }
-                model.currentTvView = view;
-                if (view === 'details') {
+                model.currentTvView = normalizedView;
+                if (normalizedView === 'details') {
                     model.currentTvDetails = normalizeTvDetails(param) || model.currentTvDetails;
                 } else {
                     model.currentTvDetails = null;
@@ -7439,9 +7662,9 @@ function launchSportsTool() {
             const previousView = model.currentTvView;
             const previousDetails = model.currentTvDetails;
 
-            model.currentTvView = view;
+            model.currentTvView = normalizedView;
 
-            if (view === 'details') {
+            if (normalizedView === 'details') {
                 model.currentTvDetails = normalizeTvDetails(param) || model.currentTvDetails;
             } else {
                 model.currentTvDetails = null;
