@@ -4354,8 +4354,6 @@ canvas {
 function launchSite(targetUrl, pageTitle, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
-    const opts = options || {};
-    const blockNewTabs = Boolean(opts.blockNewTabs);
     const safeTitle = String(pageTitle || 'Horion Game')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -4364,9 +4362,6 @@ function launchSite(targetUrl, pageTitle, options) {
     const safeUrl = normalizedUrl
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;');
-    const sandboxAttr = blockNewTabs
-        ? ' sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-downloads allow-presentation"'
-        : '';
 
     const win = window.open('about:blank', '_blank');
     if (!win) {
@@ -4381,7 +4376,7 @@ function launchSite(targetUrl, pageTitle, options) {
     }
 
     win.document.open();
-    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"' + sandboxAttr + '></iframe></body></html>');
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>');
     win.document.close();
     
     return true;
@@ -4437,12 +4432,9 @@ function openInlinePage(targetUrl, titleText, options) {
     document.body.appendChild(host);
     const hostFrame = document.getElementById('horion-inline-host-frame');
     if (hostFrame && hostFrame.contentWindow && hostFrame.contentWindow.document) {
-        const sandboxAttr = (allowSandbox || blockNewTabs)
-            ? ' sandbox="allow-same-origin allow-scripts allow-forms allow-pointer-lock allow-presentation"'
-            : '';
         const titleAttr = String(titleText || 'Extension');
 
-        const wrapperHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + titleAttr + '</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="' + normalizedUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock"' + sandboxAttr + '></iframe></body></html>';
+        const wrapperHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + titleAttr + '</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="' + normalizedUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock"></iframe></body></html>';
         hostFrame.contentWindow.document.open();
         hostFrame.contentWindow.document.write(wrapperHtml);
         hostFrame.contentWindow.document.close();
@@ -5742,6 +5734,190 @@ function openSpecial(gamelink, gameTitle) {
             top: 0; left: 0; width: 100%; height: 100%;
         }
 
+        .sports-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .sports-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--text-grey);
+            margin-bottom: 14px;
+            letter-spacing: 0.04em;
+        }
+
+        .sports-status.error {
+            color: #ff6b6b;
+        }
+
+        .sports-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 980px) {
+            .sports-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sports-matches-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .sports-beta-note {
+            margin: 10px 0 18px;
+            color: var(--text-grey);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .sports-beta-note a {
+            color: var(--neon-blue);
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(0, 229, 255, 0.5);
+        }
+
+        .sports-beta-note a:hover {
+            color: #7ef6ff;
+            border-bottom-color: #7ef6ff;
+        }
+
+        .sports-match-card {
+            border: 1px solid rgba(0, 112, 255, 0.2);
+            background: rgba(0, 5, 15, 0.56);
+            border-radius: 4px;
+            padding: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sports-match-card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.18);
+        }
+
+        .sports-match-card.active {
+            border-color: #3cb371;
+            box-shadow: 0 0 18px rgba(60, 179, 113, 0.2);
+        }
+
+        .sports-match-banner {
+            width: 100%;
+            aspect-ratio: 16 / 7;
+            border: 1px solid rgba(0, 112, 255, 0.22);
+            border-radius: 4px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(0, 112, 255, 0.14), rgba(0, 0, 0, 0.7));
+            margin-bottom: 10px;
+        }
+
+        .sports-match-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sports-match-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ecf7ff;
+        }
+
+        .sports-matchup {
+            font-size: 0.86rem;
+            color: #d6ecff;
+            margin-bottom: 8px;
+            letter-spacing: 0.01em;
+        }
+
+        .sports-match-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--text-grey);
+            margin-bottom: 10px;
+        }
+
+        .sports-teams-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .sports-team {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .sports-team img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #08121d;
+        }
+
+        .sports-team-name {
+            font-size: 0.84rem;
+            color: #d9eeff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 140px;
+        }
+
+        .sports-player-panel {
+            border: 1px solid rgba(0, 112, 255, 0.22);
+            background: rgba(0, 5, 15, 0.62);
+            border-radius: 4px;
+            padding: 12px;
+            max-width: 760px;
+            width: 100%;
+            justify-self: center;
+        }
+
+        .sports-player-frame {
+            width: 100%;
+            max-width: 720px;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            min-height: 260px;
+            max-height: 420px;
+            border: 1px solid rgba(0, 112, 255, 0.2);
+            background: #000;
+            border-radius: 4px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .sports-player-status {
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--text-grey);
+            min-height: 1.2em;
+        }
+
+        .sports-player-hint {
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: #9ab7cf;
+            line-height: 1.45;
+        }
+
         .server-bar {
             background: rgba(0, 112, 255, 0.05);
             border: 1px solid rgba(0, 112, 255, 0.1);
@@ -6021,6 +6197,54 @@ function openSpecial(gamelink, gameTitle) {
         </div>
     </div>
 
+    <div id="view-sports" class="view-section">
+        <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
+        <p class="sports-beta-note">You are viewing the Live Sports Horion beta. To see the OG live sports, click <a href="#" onclick="openOriginalSports(event)">'this'</a>.</p>
+
+        <div class="sports-toolbar">
+            <select id="sports-feed-select" class="season-select" onchange="onSportsFeedChanged(this.value)">
+                <option value="live">LIVE</option>
+                <option value="all-today">TODAY</option>
+                <option value="all">ALL</option>
+            </select>
+
+            <select id="sports-category-select" class="season-select" onchange="onSportsCategoryChanged(this.value)">
+                <option value="all">ALL SPORTS</option>
+            </select>
+
+            <button id="sports-popular-btn" type="button" class="btn-secondary" onclick="toggleSportsPopular()">POPULAR: OFF</button>
+            <button type="button" class="btn-secondary" onclick="refreshSportsMatches()">REFRESH</button>
+        </div>
+
+        <div id="sports-status" class="sports-status">Loading sports catalog...</div>
+
+        <div class="sports-layout">
+            <div id="sports-matches-grid" class="sports-matches-grid"></div>
+
+            <div class="sports-player-panel">
+                <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+                    <select id="sports-source-select" class="season-select" onchange="onSportsSourceChanged(this.value)" disabled>
+                        <option value="">SELECT SOURCE</option>
+                    </select>
+                    <select id="sports-stream-select" class="season-select" onchange="onSportsStreamChanged(this.value)" disabled>
+                        <option value="">SELECT STREAM</option>
+                    </select>
+                </div>
+
+                <iframe
+                    id="sports-stream-frame"
+                    class="sports-player-frame"
+                    src="about:blank"
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                    allowfullscreen
+                ></iframe>
+
+                <div id="sports-player-status" class="sports-player-status">Choose a match to load stream sources.</div>
+                <div class="sports-player-hint">If there is an error or the stream fails to load, consider switching to another stream source.</div>
+            </div>
+        </div>
+    </div>
+
     <!-- DETAILS/PLAYER VIEW -->
     <div id="view-details" class="view-section">
         <!-- Injected via JS -->
@@ -6130,6 +6354,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     const TMDB_BASE = 'https://api.themoviedb.org/3';
     const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
     const IMG_ORIGINAL = 'https://image.tmdb.org/t/p/original';
+    const STREAMED_API_BASE = 'https://streamed.pk/api';
 
     const state = {
         currentShow: null,
@@ -6140,6 +6365,19 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         browseDefault: [], // Used for top 50 TMDB items
         posterFallback: 'https://via.placeholder.com/300x450/000000/0070FF?text=No+Poster',
         heroFallback: 'https://via.placeholder.com/1200x600/000000/0070FF?text=No+Image'
+    };
+
+    const sportsState = {
+        initialized: false,
+        catalogLoaded: false,
+        feed: 'live',
+        sport: 'all',
+        popularOnly: false,
+        sports: [],
+        matches: [],
+        selectedMatchId: null,
+        selectedSourceValue: '',
+        sourceStreamsCache: {}
     };
 
     function normalizeTMDB(item) {
@@ -6355,6 +6593,8 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             
         } else if(viewName === 'continue') {
             renderContinueWatching();
+        } else if(viewName === 'sports') {
+            initSportsView();
         } else if(viewName === 'details' && param) {
             loadMedia(param);
         }
@@ -6363,6 +6603,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             home: 'Horion TV',
             browse: 'Horion TV - Browse',
             continue: 'Horion TV - Continue Watching',
+            sports: 'Live Sports - Horion TV',
             details: 'Horion TV'
         };
         if (viewName !== 'details') {
@@ -6382,6 +6623,380 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         const targetBtn = document.getElementById(buttonId);
         if (targetBtn) targetBtn.classList.add('active');
+    }
+
+    function setSportsStatus(message, isError) {
+        const statusEl = document.getElementById('sports-status');
+        if (!statusEl) return;
+        statusEl.textContent = message || '';
+        statusEl.classList.toggle('error', Boolean(isError));
+    }
+
+    function setSportsPlayerStatus(message) {
+        const statusEl = document.getElementById('sports-player-status');
+        if (!statusEl) return;
+        statusEl.textContent = message || '';
+    }
+
+    async function fetchSportsJson(url) {
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+        }
+        return response.json();
+    }
+
+    function getSportsMatchesEndpoint() {
+        const scope = sportsState.sport !== 'all' ? sportsState.sport : sportsState.feed;
+        let endpoint = `${STREAMED_API_BASE}/matches/${encodeURIComponent(scope)}`;
+        if (sportsState.popularOnly) endpoint += '/popular';
+        return endpoint;
+    }
+
+    function getBadgeUrl(badgeId) {
+        if (!badgeId) return '';
+        return `${STREAMED_API_BASE}/images/badge/${encodeURIComponent(badgeId)}.webp`;
+    }
+
+    function getSportsPosterUrl(match) {
+        const posterValue = String(match && match.poster ? match.poster : '').trim();
+        if (posterValue) {
+            if (/^https?:\/\//i.test(posterValue)) return posterValue;
+
+            if (posterValue.startsWith('/api/')) {
+                return `https://streamed.pk${posterValue}${posterValue.endsWith('.webp') ? '' : '.webp'}`;
+            }
+
+            if (posterValue.startsWith('/')) {
+                return `https://streamed.pk${posterValue}${posterValue.endsWith('.webp') ? '' : '.webp'}`;
+            }
+
+            return `${STREAMED_API_BASE}/images/proxy/${encodeURIComponent(posterValue)}.webp`;
+        }
+
+        const homeBadge = match && match.teams && match.teams.home ? match.teams.home.badge : '';
+        const awayBadge = match && match.teams && match.teams.away ? match.teams.away.badge : '';
+        if (homeBadge && awayBadge) {
+            return `${STREAMED_API_BASE}/images/poster/${encodeURIComponent(homeBadge)}/${encodeURIComponent(awayBadge)}.webp`;
+        }
+
+        return '';
+    }
+
+    function formatMatchTime(timestamp) {
+        const value = Number(timestamp);
+        if (!Number.isFinite(value)) return 'Time unavailable';
+        return new Date(value).toLocaleString();
+    }
+
+    function renderSportsCatalog() {
+        const select = document.getElementById('sports-category-select');
+        if (!select) return;
+
+        select.innerHTML = '<option value="all">ALL SPORTS</option>';
+        sportsState.sports.forEach((sport) => {
+            const option = document.createElement('option');
+            option.value = sport.id;
+            option.textContent = sport.name || sport.id;
+            if (sport.id === sportsState.sport) option.selected = true;
+            select.appendChild(option);
+        });
+    }
+
+    function renderSportsMatches() {
+        const container = document.getElementById('sports-matches-grid');
+        if (!container) return;
+
+        container.innerHTML = '';
+        if (!sportsState.matches.length) {
+            const empty = document.createElement('div');
+            empty.className = 'sports-status';
+            empty.textContent = 'No matches found for this filter.';
+            container.appendChild(empty);
+            return;
+        }
+
+        sportsState.matches.forEach((match) => {
+            const card = document.createElement('div');
+            card.className = 'sports-match-card' + (sportsState.selectedMatchId === match.id ? ' active' : '');
+            card.onclick = () => selectSportsMatch(match.id);
+
+            const bannerWrap = document.createElement('div');
+            bannerWrap.className = 'sports-match-banner';
+            const bannerImage = document.createElement('img');
+            bannerImage.src = getSportsPosterUrl(match);
+            bannerImage.alt = match.title || 'Match banner';
+            bannerImage.loading = 'lazy';
+            bannerImage.referrerPolicy = 'no-referrer';
+            bannerImage.onerror = () => {
+                bannerWrap.style.display = 'none';
+            };
+            bannerWrap.appendChild(bannerImage);
+            card.appendChild(bannerWrap);
+
+            const title = document.createElement('div');
+            title.className = 'sports-match-title';
+            title.textContent = match.title || 'Untitled Match';
+            card.appendChild(title);
+
+            const matchup = document.createElement('div');
+            matchup.className = 'sports-matchup';
+            const homeNameText = match?.teams?.home?.name || 'Home';
+            const awayNameText = match?.teams?.away?.name || 'Away';
+            matchup.textContent = `${homeNameText} vs ${awayNameText}`;
+            card.appendChild(matchup);
+
+            const meta = document.createElement('div');
+            meta.className = 'sports-match-meta';
+            meta.textContent = `${String(match.category || '').toUpperCase()} | ${formatMatchTime(match.date)}`;
+            card.appendChild(meta);
+
+            const teamsRow = document.createElement('div');
+            teamsRow.className = 'sports-teams-row';
+
+            const homeTeam = document.createElement('div');
+            homeTeam.className = 'sports-team';
+            const homeBadge = document.createElement('img');
+            homeBadge.src = getBadgeUrl(match?.teams?.home?.badge) || '';
+            homeBadge.alt = match?.teams?.home?.name || 'Home';
+            homeBadge.loading = 'lazy';
+            homeBadge.referrerPolicy = 'no-referrer';
+            homeBadge.onerror = () => { homeBadge.style.visibility = 'hidden'; };
+            const homeName = document.createElement('span');
+            homeName.className = 'sports-team-name';
+            homeName.textContent = match?.teams?.home?.name || 'Home';
+            homeTeam.appendChild(homeBadge);
+            homeTeam.appendChild(homeName);
+
+            const awayTeam = document.createElement('div');
+            awayTeam.className = 'sports-team';
+            const awayBadge = document.createElement('img');
+            awayBadge.src = getBadgeUrl(match?.teams?.away?.badge) || '';
+            awayBadge.alt = match?.teams?.away?.name || 'Away';
+            awayBadge.loading = 'lazy';
+            awayBadge.referrerPolicy = 'no-referrer';
+            awayBadge.onerror = () => { awayBadge.style.visibility = 'hidden'; };
+            const awayName = document.createElement('span');
+            awayName.className = 'sports-team-name';
+            awayName.textContent = match?.teams?.away?.name || 'Away';
+            awayTeam.appendChild(awayBadge);
+            awayTeam.appendChild(awayName);
+
+            const vs = document.createElement('span');
+            vs.className = 'sports-match-meta';
+            vs.style.margin = '0 4px';
+            vs.textContent = 'VS';
+
+            teamsRow.appendChild(homeTeam);
+            teamsRow.appendChild(vs);
+            teamsRow.appendChild(awayTeam);
+            card.appendChild(teamsRow);
+
+            container.appendChild(card);
+        });
+    }
+
+    function resetSportsPlayer() {
+        sportsState.selectedSourceValue = '';
+        const sourceSelect = document.getElementById('sports-source-select');
+        const streamSelect = document.getElementById('sports-stream-select');
+        const frame = document.getElementById('sports-stream-frame');
+
+        if (sourceSelect) {
+            sourceSelect.innerHTML = '<option value="">SELECT SOURCE</option>';
+            sourceSelect.disabled = true;
+        }
+
+        if (streamSelect) {
+            streamSelect.innerHTML = '<option value="">SELECT STREAM</option>';
+            streamSelect.disabled = true;
+        }
+
+        if (frame) {
+            frame.src = 'about:blank';
+        }
+
+        setSportsPlayerStatus('Choose a match to load stream sources.');
+    }
+
+    async function refreshSportsMatches() {
+        setSportsStatus('Loading matches...', false);
+        resetSportsPlayer();
+
+        try {
+            const endpoint = getSportsMatchesEndpoint();
+            const matches = await fetchSportsJson(endpoint);
+            sportsState.matches = Array.isArray(matches) ? matches : [];
+            sportsState.selectedMatchId = null;
+            renderSportsMatches();
+            setSportsStatus(`Loaded ${sportsState.matches.length} matches.`, false);
+        } catch (error) {
+            sportsState.matches = [];
+            renderSportsMatches();
+            setSportsStatus('Failed to load sports matches. Try again.', true);
+            console.error('Sports match load failed:', error);
+        }
+    }
+
+    async function selectSportsMatch(matchId) {
+        sportsState.selectedMatchId = String(matchId || '');
+        renderSportsMatches();
+
+        const selectedMatch = sportsState.matches.find((m) => String(m.id) === sportsState.selectedMatchId);
+        if (!selectedMatch || !Array.isArray(selectedMatch.sources) || !selectedMatch.sources.length) {
+            resetSportsPlayer();
+            setSportsPlayerStatus('No stream sources available for this match.');
+            return;
+        }
+
+        const sourceSelect = document.getElementById('sports-source-select');
+        if (!sourceSelect) return;
+
+        sourceSelect.innerHTML = '';
+        selectedMatch.sources.forEach((entry) => {
+            const option = document.createElement('option');
+            const value = `${entry.source}::${entry.id}`;
+            option.value = value;
+            option.textContent = `${String(entry.source || '').toUpperCase()} | ${entry.id}`;
+            sourceSelect.appendChild(option);
+        });
+
+        sourceSelect.disabled = false;
+        const firstSource = selectedMatch.sources[0];
+        const sourceValue = `${firstSource.source}::${firstSource.id}`;
+        sourceSelect.value = sourceValue;
+        await onSportsSourceChanged(sourceValue);
+    }
+
+    async function onSportsSourceChanged(value) {
+        const streamSelect = document.getElementById('sports-stream-select');
+        if (!streamSelect) return;
+
+        const safeValue = String(value || '');
+        if (!safeValue.includes('::')) {
+            streamSelect.innerHTML = '<option value="">SELECT STREAM</option>';
+            streamSelect.disabled = true;
+            return;
+        }
+
+        sportsState.selectedSourceValue = safeValue;
+        const parts = safeValue.split('::');
+        const sourceName = parts[0];
+        const sourceId = parts.slice(1).join('::');
+        const cacheKey = `${sourceName}::${sourceId}`;
+        let streams = sportsState.sourceStreamsCache[cacheKey];
+
+        setSportsPlayerStatus('Loading stream list...');
+        if (!Array.isArray(streams)) {
+            try {
+                streams = await fetchSportsJson(`${STREAMED_API_BASE}/stream/${encodeURIComponent(sourceName)}/${encodeURIComponent(sourceId)}`);
+                sportsState.sourceStreamsCache[cacheKey] = Array.isArray(streams) ? streams : [];
+            } catch (error) {
+                sportsState.sourceStreamsCache[cacheKey] = [];
+                streams = [];
+                console.error('Sports stream load failed:', error);
+            }
+        }
+
+        streamSelect.innerHTML = '';
+        if (!streams.length) {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'NO STREAMS FOUND';
+            streamSelect.appendChild(option);
+            streamSelect.disabled = true;
+            setSportsPlayerStatus('No streams found for this source. Try another source.');
+            return;
+        }
+
+        streams.forEach((stream, idx) => {
+            const option = document.createElement('option');
+            option.value = String(idx);
+            const lang = stream.language || 'Unknown';
+            const quality = stream.hd ? 'HD' : 'SD';
+            const number = Number.isFinite(Number(stream.streamNo)) ? stream.streamNo : (idx + 1);
+            option.textContent = `#${number} | ${lang} | ${quality}`;
+            streamSelect.appendChild(option);
+        });
+
+        streamSelect.disabled = false;
+        streamSelect.value = '0';
+        onSportsStreamChanged('0');
+    }
+
+    function onSportsStreamChanged(indexValue) {
+        const safeSource = String(sportsState.selectedSourceValue || '');
+        if (!safeSource.includes('::')) return;
+
+        const parts = safeSource.split('::');
+        const sourceName = parts[0];
+        const sourceId = parts.slice(1).join('::');
+        const cacheKey = `${sourceName}::${sourceId}`;
+        const streams = sportsState.sourceStreamsCache[cacheKey] || [];
+        const selectedIndex = Number(indexValue);
+        const selectedStream = streams[selectedIndex];
+
+        if (!selectedStream || !selectedStream.embedUrl) {
+            setSportsPlayerStatus('Selected stream is unavailable.');
+            return;
+        }
+
+        const frame = document.getElementById('sports-stream-frame');
+        if (frame) {
+            frame.src = selectedStream.embedUrl;
+        }
+
+        setSportsPlayerStatus(`Now playing: ${selectedStream.language || 'Unknown'} ${selectedStream.hd ? 'HD' : 'SD'} (${sourceName.toUpperCase()})`);
+    }
+
+    function onSportsFeedChanged(value) {
+        sportsState.feed = String(value || 'live');
+        refreshSportsMatches();
+    }
+
+    function onSportsCategoryChanged(value) {
+        sportsState.sport = String(value || 'all');
+        refreshSportsMatches();
+    }
+
+    function toggleSportsPopular() {
+        sportsState.popularOnly = !sportsState.popularOnly;
+        const btn = document.getElementById('sports-popular-btn');
+        if (btn) {
+            btn.textContent = `POPULAR: ${sportsState.popularOnly ? 'ON' : 'OFF'}`;
+            btn.classList.toggle('active', sportsState.popularOnly);
+        }
+        refreshSportsMatches();
+    }
+
+    async function initSportsView() {
+        if (!sportsState.initialized) {
+            const feedSelect = document.getElementById('sports-feed-select');
+            const categorySelect = document.getElementById('sports-category-select');
+            if (feedSelect) feedSelect.value = sportsState.feed;
+            if (categorySelect) categorySelect.value = sportsState.sport;
+            sportsState.initialized = true;
+        }
+
+        if (!sportsState.catalogLoaded) {
+            try {
+                const sports = await fetchSportsJson(`${STREAMED_API_BASE}/sports`);
+                sportsState.sports = Array.isArray(sports) ? sports : [];
+                sportsState.catalogLoaded = true;
+            } catch (error) {
+                sportsState.sports = [];
+                setSportsStatus('Sports catalog unavailable. Showing fallback feed.', true);
+                console.error('Sports catalog load failed:', error);
+            }
+            renderSportsCatalog();
+        }
+
+        if (!sportsState.matches.length) {
+            await refreshSportsMatches();
+        } else {
+            renderSportsMatches();
+            setSportsStatus(`Loaded ${sportsState.matches.length} matches.`, false);
+        }
     }
 
     async function initHome() {
@@ -6701,14 +7316,9 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 function launchSite(targetUrl, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
-    const opts = options || {};
-    const blockNewTabs = Boolean(opts.blockNewTabs);
     const safeUrl = normalizedUrl
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;');
-    const sandboxAttr = blockNewTabs
-        ? ' sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-downloads allow-presentation"'
-        : '';
 
     const win = window.open('about:blank', '_blank');
     if (!win) {
@@ -6723,7 +7333,7 @@ function launchSite(targetUrl, options) {
     }
 
     win.document.open();
-    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Horion TV</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"' + sandboxAttr + '></iframe></body></html>');
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Horion TV</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>');
     win.document.close();
     
     return true;
@@ -6957,17 +7567,15 @@ function launchYoutubeTool() {
 }
 
 function launchSportsTool() {
-        setTvTaskbarHighlight('nav-sports');
-        document.title = 'Live Sports - Horion TV';
-        try {
-            if (window.parent && window.parent !== window && typeof window.parent.onTvViewChange === 'function') {
-                window.parent.onTvViewChange('sports');
-            }
-        } catch (err) {
-            // Ignore parent messaging errors.
-        }
-        launchSite('https://streami.su/', { blockNewTabs: true });
+        router('sports');
     }
+
+function openOriginalSports(event) {
+    if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+    }
+    launchSite('https://streami.su/');
+}
 
     // ==========================================
     // 8. BROWSE / SEARCH LOGIC
@@ -7022,7 +7630,7 @@ function launchSportsTool() {
         const specialGamesViews = new Set(['gnmath']);
         const validTvViews = new Set(['home', 'browse', 'continue', 'details', 'youtube', 'sports']);
         const launchOnlyGamesViews = new Set(['gnmath']);
-        const launchOnlyTvViews = new Set(['youtube', 'sports']);
+        const launchOnlyTvViews = new Set(['youtube']);
         let isApplyingRoute = false;
         let switchTrackTimer = null;
         let switchTrackTransitionHandler = null;
@@ -7215,7 +7823,7 @@ function launchSportsTool() {
         }
 
         function getRefreshSafeTvView(view) {
-            if (view === 'youtube' || view === 'sports') return 'home';
+            if (view === 'youtube') return 'home';
             return validTvViews.has(view) ? view : 'home';
         }
 
