@@ -356,12 +356,82 @@
             margin-bottom: 14px;
         }
 
+        .sports-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border: 1px solid rgba(110, 170, 215, 0.25);
+            background: rgba(10, 20, 34, 0.62);
+            border-radius: 12px;
+        }
+
+        .sports-control-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.67rem;
+            letter-spacing: 0.1em;
+            color: #8cb2cf;
+            text-transform: uppercase;
+        }
+
+        .sports-toolbar .season-select,
+        .sports-player-panel .season-select {
+            min-height: 36px;
+            border-radius: 10px;
+            border-color: rgba(110, 170, 215, 0.5);
+            background: rgba(6, 14, 24, 0.9);
+            color: #eaf6ff;
+            padding: 8px 10px;
+        }
+
+        .sports-toolbar .btn-secondary {
+            min-height: 36px;
+            border-radius: 10px;
+        }
+
+        .sports-quick-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 4px 0 16px;
+        }
+
+        .sports-chip {
+            border: 1px solid rgba(0, 112, 255, 0.35);
+            background: rgba(0, 12, 28, 0.75);
+            color: #cde8ff;
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.03em;
+            padding: 7px 12px;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .sports-chip:hover {
+            border-color: var(--neon-blue);
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+        }
+
+        .sports-chip.active {
+            border-color: #3cb371;
+            background: rgba(60, 179, 113, 0.18);
+            color: #dcffe8;
+            box-shadow: 0 0 12px rgba(60, 179, 113, 0.28);
+        }
+
         .sports-status {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.82rem;
             color: var(--text-grey);
             margin-bottom: 14px;
             letter-spacing: 0.04em;
+            background: rgba(138, 194, 230, 0.07);
+            border: 1px solid rgba(138, 194, 230, 0.2);
+            border-radius: 10px;
+            padding: 9px 12px;
         }
 
         .sports-status.error {
@@ -387,9 +457,13 @@
 
         .sports-beta-note {
             margin: 10px 0 18px;
-            color: var(--text-grey);
+            color: #b7cad8;
             font-size: 0.9rem;
             line-height: 1.5;
+            background: rgba(10, 20, 34, 0.6);
+            border: 1px solid rgba(110, 170, 215, 0.24);
+            border-radius: 12px;
+            padding: 10px 12px;
         }
 
         .sports-beta-note a {
@@ -404,10 +478,10 @@
         }
 
         .sports-match-card {
-            border: 1px solid rgba(0, 112, 255, 0.2);
-            background: rgba(0, 5, 15, 0.56);
-            border-radius: 4px;
-            padding: 12px;
+            border: 1px solid rgba(115, 176, 220, 0.25);
+            background: linear-gradient(160deg, rgba(10, 21, 36, 0.72), rgba(8, 14, 24, 0.66));
+            border-radius: 14px;
+            padding: 14px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
         }
@@ -425,8 +499,8 @@
         .sports-match-banner {
             width: 100%;
             aspect-ratio: 16 / 7;
-            border: 1px solid rgba(0, 112, 255, 0.22);
-            border-radius: 4px;
+            border: 1px solid rgba(115, 176, 220, 0.22);
+            border-radius: 10px;
             overflow: hidden;
             background: linear-gradient(135deg, rgba(0, 112, 255, 0.14), rgba(0, 0, 0, 0.7));
             margin-bottom: 10px;
@@ -493,10 +567,10 @@
         }
 
         .sports-player-panel {
-            border: 1px solid rgba(0, 112, 255, 0.22);
-            background: rgba(0, 5, 15, 0.62);
-            border-radius: 4px;
-            padding: 12px;
+            border: 1px solid rgba(115, 176, 220, 0.28);
+            background: linear-gradient(170deg, rgba(8, 18, 32, 0.75), rgba(5, 11, 20, 0.72));
+            border-radius: 14px;
+            padding: 16px;
             max-width: 760px;
             width: 100%;
             justify-self: center;
@@ -509,9 +583,9 @@
             height: auto;
             min-height: 260px;
             max-height: 420px;
-            border: 1px solid rgba(0, 112, 255, 0.2);
+            border: 1px solid rgba(115, 176, 220, 0.25);
             background: #000;
-            border-radius: 4px;
+            border-radius: 12px;
             display: block;
             margin: 0 auto;
         }
@@ -767,22 +841,30 @@
 
     <div id="view-sports" class="view-section">
         <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
-        <p class="sports-beta-note">You are viewing the Live Sports Horion beta. To see the OG live sports, click <a href="#" onclick="openOriginalSports(event)">this</a>.</p>
+        <p class="sports-beta-note">You are viewing the live sports beta. Need the old page? Open <a href="#" onclick="openOriginalSports(event)">original sports</a>.</p>
 
         <div class="sports-toolbar">
-            <select id="sports-feed-select" class="season-select" onchange="onSportsFeedChanged(this.value)">
-                <option value="live">LIVE</option>
-                <option value="all-today">TODAY</option>
-                <option value="all">ALL</option>
-            </select>
+            <label class="sports-control" aria-label="Feed selector">
+                <span class="sports-control-label">Feed</span>
+                <select id="sports-feed-select" class="season-select" onchange="onSportsFeedChanged(this.value)">
+                    <option value="live">LIVE</option>
+                    <option value="all-today">TODAY</option>
+                    <option value="all">ALL</option>
+                </select>
+            </label>
 
-            <select id="sports-category-select" class="season-select" onchange="onSportsCategoryChanged(this.value)">
-                <option value="all">ALL SPORTS</option>
-            </select>
+            <label class="sports-control" aria-label="Sport selector">
+                <span class="sports-control-label">Sport</span>
+                <select id="sports-category-select" class="season-select" onchange="onSportsCategoryChanged(this.value)">
+                    <option value="all">ALL SPORTS</option>
+                </select>
+            </label>
 
             <button id="sports-popular-btn" type="button" class="btn-secondary" onclick="toggleSportsPopular()">POPULAR: OFF</button>
             <button type="button" class="btn-secondary" onclick="refreshSportsMatches()">REFRESH</button>
         </div>
+
+        <div id="sports-quick-chips" class="sports-quick-chips"></div>
 
         <div id="sports-status" class="sports-status">Loading sports catalog...</div>
 
@@ -949,6 +1031,139 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         selectedSourceValue: '',
         sourceStreamsCache: {}
     };
+
+    const SPORTS_FALLBACK_CATALOG = [
+        { id: 'american-football', name: 'American Football' },
+        { id: 'football', name: 'Soccer' },
+        { id: 'basketball', name: 'Basketball' },
+        { id: '3x3-basketball', name: '3x3 Basketball' },
+        { id: 'streetball', name: 'Streetball' },
+        { id: 'baseball', name: 'Baseball' },
+        { id: 'softball', name: 'Softball' },
+        { id: 'lacrosse', name: 'Lacrosse' },
+        { id: 'ice-hockey', name: 'Ice Hockey' },
+        { id: 'hockey', name: 'Hockey' },
+        { id: 'field-hockey', name: 'Field Hockey' },
+        { id: 'roller-hockey', name: 'Roller Hockey' },
+        { id: 'floorball', name: 'Floorball' },
+        { id: 'bandy', name: 'Bandy' },
+        { id: 'mma', name: 'MMA' },
+        { id: 'boxing', name: 'Boxing' },
+        { id: 'kickboxing', name: 'Kickboxing' },
+        { id: 'muay-thai', name: 'Muay Thai' },
+        { id: 'wrestling', name: 'Wrestling' },
+        { id: 'judo', name: 'Judo' },
+        { id: 'taekwondo', name: 'Taekwondo' },
+        { id: 'karate', name: 'Karate' },
+        { id: 'fencing', name: 'Fencing' },
+        { id: 'sumo', name: 'Sumo' },
+        { id: 'tennis', name: 'Tennis' },
+        { id: 'golf', name: 'Golf' },
+        { id: 'cricket', name: 'Cricket' },
+        { id: 'rugby', name: 'Rugby' },
+        { id: 'rugby-union', name: 'Rugby Union' },
+        { id: 'rugby-league', name: 'Rugby League' },
+        { id: 'motorsport', name: 'Motorsports' },
+        { id: 'f1', name: 'Formula 1' },
+        { id: 'nascar', name: 'NASCAR' },
+        { id: 'indycar', name: 'IndyCar' },
+        { id: 'motogp', name: 'MotoGP' },
+        { id: 'wrc', name: 'World Rally' },
+        { id: 'endurance-racing', name: 'Endurance Racing' },
+        { id: 'formula-e', name: 'Formula E' },
+        { id: 'supercars', name: 'Supercars' },
+        { id: 'drag-racing', name: 'Drag Racing' },
+        { id: 'speedway', name: 'Speedway' },
+        { id: 'karting', name: 'Karting' },
+        { id: 'darts', name: 'Darts' },
+        { id: 'snooker', name: 'Snooker' },
+        { id: 'pool', name: 'Pool' },
+        { id: 'billiards', name: 'Billiards' },
+        { id: 'table-tennis', name: 'Table Tennis' },
+        { id: 'badminton', name: 'Badminton' },
+        { id: 'squash', name: 'Squash' },
+        { id: 'racquetball', name: 'Racquetball' },
+        { id: 'pickleball', name: 'Pickleball' },
+        { id: 'padel', name: 'Padel' },
+        { id: 'handball', name: 'Handball' },
+        { id: 'volleyball', name: 'Volleyball' },
+        { id: 'beach-volleyball', name: 'Beach Volleyball' },
+        { id: 'netball', name: 'Netball' },
+        { id: 'cycling', name: 'Cycling' },
+        { id: 'bmx', name: 'BMX' },
+        { id: 'mountain-bike', name: 'Mountain Bike' },
+        { id: 'track-cycling', name: 'Track Cycling' },
+        { id: 'athletics', name: 'Athletics' },
+        { id: 'marathon', name: 'Marathon' },
+        { id: 'triathlon', name: 'Triathlon' },
+        { id: 'duathlon', name: 'Duathlon' },
+        { id: 'cross-country', name: 'Cross Country' },
+        { id: 'biathlon', name: 'Biathlon' },
+        { id: 'winter-sports', name: 'Winter Sports' },
+        { id: 'alpine-skiing', name: 'Alpine Skiing' },
+        { id: 'cross-country-skiing', name: 'Cross Country Skiing' },
+        { id: 'ski-jumping', name: 'Ski Jumping' },
+        { id: 'snowboarding', name: 'Snowboarding' },
+        { id: 'figure-skating', name: 'Figure Skating' },
+        { id: 'speed-skating', name: 'Speed Skating' },
+        { id: 'curling', name: 'Curling' },
+        { id: 'skeleton', name: 'Skeleton' },
+        { id: 'luge', name: 'Luge' },
+        { id: 'bobsleigh', name: 'Bobsleigh' },
+        { id: 'water-polo', name: 'Water Polo' },
+        { id: 'swimming', name: 'Swimming' },
+        { id: 'diving', name: 'Diving' },
+        { id: 'artistic-swimming', name: 'Artistic Swimming' },
+        { id: 'sailing', name: 'Sailing' },
+        { id: 'rowing', name: 'Rowing' },
+        { id: 'canoe-sprint', name: 'Canoe Sprint' },
+        { id: 'canoe-slalom', name: 'Canoe Slalom' },
+        { id: 'surfing', name: 'Surfing' },
+        { id: 'windsurfing', name: 'Windsurfing' },
+        { id: 'kitesurfing', name: 'Kitesurfing' },
+        { id: 'climbing', name: 'Sport Climbing' },
+        { id: 'gymnastics', name: 'Gymnastics' },
+        { id: 'rhythmic-gymnastics', name: 'Rhythmic Gymnastics' },
+        { id: 'trampoline', name: 'Trampoline' },
+        { id: 'weightlifting', name: 'Weightlifting' },
+        { id: 'powerlifting', name: 'Powerlifting' },
+        { id: 'strongman', name: 'Strongman' },
+        { id: 'archery', name: 'Archery' },
+        { id: 'shooting', name: 'Shooting' },
+        { id: 'equestrian', name: 'Equestrian' },
+        { id: 'horse-racing', name: 'Horse Racing' },
+        { id: 'greyhound-racing', name: 'Greyhound Racing' },
+        { id: 'polo', name: 'Polo' },
+        { id: 'gaelic-football', name: 'Gaelic Football' },
+        { id: 'hurling', name: 'Hurling' },
+        { id: 'aussie-rules', name: 'Australian Rules' },
+        { id: 'futsal', name: 'Futsal' },
+        { id: 'beach-soccer', name: 'Beach Soccer' },
+        { id: 'kabaddi', name: 'Kabaddi' },
+        { id: 'baseket', name: 'Baseket' },
+        { id: 'sepak-takraw', name: 'Sepak Takraw' },
+        { id: 'chess', name: 'Chess' },
+        { id: 'esports-fps', name: 'Esports FPS' },
+        { id: 'esports-moba', name: 'Esports MOBA' },
+        { id: 'esports-fighting', name: 'Esports Fighting' },
+        { id: 'esports-racing', name: 'Esports Racing' },
+        { id: 'esports-sports-sims', name: 'Esports Sports Sims' },
+        { id: 'esports', name: 'Esports' }
+    ];
+
+    const SPORTS_QUICK_CHIP_IDS = [
+        'football',
+        'american-football',
+        'basketball',
+        'baseball',
+        'mma',
+        'wrestling',
+        'tennis',
+        'golf',
+        'cricket',
+        'darts',
+        'motorsport'
+    ];
 
     function normalizeTMDB(item) {
         if (item.media_type !== 'movie' && item.media_type !== 'tv') return null;
@@ -1327,11 +1542,45 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         return response.json();
     }
 
-    function getSportsMatchesEndpoint() {
-        const scope = sportsState.sport !== 'all' ? sportsState.sport : sportsState.feed;
+    function getSportsMatchesEndpoint(scopeOverride) {
+        const scope = String(scopeOverride || (sportsState.sport !== 'all' ? sportsState.sport : sportsState.feed));
         let endpoint = `${STREAMED_API_BASE}/matches/${encodeURIComponent(scope)}`;
         if (sportsState.popularOnly) endpoint += '/popular';
         return endpoint;
+    }
+
+    function sanitizeSportsCatalogEntry(entry) {
+        if (!entry || typeof entry !== 'object') return null;
+        const rawId = String(entry.id || '').trim();
+        if (!rawId) return null;
+        const fallbackName = rawId === 'football' ? 'Soccer' : rawId;
+        const rawName = String(entry.name || fallbackName).trim() || fallbackName;
+        const normalizedName = rawId === 'football' ? 'Soccer' : rawName;
+        return {
+            id: rawId,
+            name: normalizedName
+        };
+    }
+
+    function getMergedSportsCatalog(remoteSports) {
+        const mergedById = new Map();
+        const pushEntry = function (entry) {
+            const normalized = sanitizeSportsCatalogEntry(entry);
+            if (!normalized) return;
+            if (!mergedById.has(normalized.id)) {
+                mergedById.set(normalized.id, normalized);
+            }
+        };
+
+        (Array.isArray(remoteSports) ? remoteSports : []).forEach(pushEntry);
+        SPORTS_FALLBACK_CATALOG.forEach(pushEntry);
+        return Array.from(mergedById.values()).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function getSportLabelById(sportId) {
+        if (!sportId || sportId === 'all') return 'All Sports';
+        const found = sportsState.sports.find((entry) => entry.id === sportId);
+        return found ? found.name : sportId;
     }
 
     function getBadgeUrl(badgeId) {
@@ -1381,6 +1630,49 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             option.textContent = sport.name || sport.id;
             if (sport.id === sportsState.sport) option.selected = true;
             select.appendChild(option);
+        });
+
+        renderSportsQuickChips();
+    }
+
+    function renderSportsQuickChips() {
+        const host = document.getElementById('sports-quick-chips');
+        if (!host) return;
+
+        host.innerHTML = '';
+        const byId = new Map(sportsState.sports.map((sport) => [sport.id, sport]));
+        const selectedSport = String(sportsState.sport || 'all');
+
+        const quickSports = SPORTS_QUICK_CHIP_IDS
+            .map((id) => byId.get(id))
+            .filter(Boolean);
+
+        if (selectedSport !== 'all' && byId.has(selectedSport) && !quickSports.some((sport) => sport.id === selectedSport)) {
+            quickSports.unshift(byId.get(selectedSport));
+        }
+
+        const allChip = document.createElement('button');
+        allChip.type = 'button';
+        allChip.className = 'sports-chip' + (selectedSport === 'all' ? ' active' : '');
+        allChip.textContent = 'ALL SPORTS';
+        allChip.onclick = function () {
+            onSportsCategoryChanged('all');
+            const select = document.getElementById('sports-category-select');
+            if (select) select.value = 'all';
+        };
+        host.appendChild(allChip);
+
+        quickSports.forEach((sport) => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'sports-chip' + (selectedSport === sport.id ? ' active' : '');
+            chip.textContent = String(sport.name || sport.id).toUpperCase();
+            chip.onclick = function () {
+                onSportsCategoryChanged(sport.id);
+                const select = document.getElementById('sports-category-select');
+                if (select) select.value = sport.id;
+            };
+            host.appendChild(chip);
         });
     }
 
@@ -1512,6 +1804,20 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             renderSportsMatches();
             setSportsStatus(`Loaded ${sportsState.matches.length} matches.`, false);
         } catch (error) {
+            if (sportsState.sport !== 'all') {
+                try {
+                    const fallbackEndpoint = getSportsMatchesEndpoint(sportsState.feed);
+                    const fallbackMatches = await fetchSportsJson(fallbackEndpoint);
+                    sportsState.matches = Array.isArray(fallbackMatches) ? fallbackMatches : [];
+                    sportsState.selectedMatchId = null;
+                    renderSportsMatches();
+                    setSportsStatus(`${getSportLabelById(sportsState.sport)} currently unavailable. Showing ${String(sportsState.feed).toUpperCase()} feed with ${sportsState.matches.length} matches.`, false);
+                    return;
+                } catch (fallbackError) {
+                    console.error('Sports fallback load failed:', fallbackError);
+                }
+            }
+
             sportsState.matches = [];
             renderSportsMatches();
             setSportsStatus('Failed to load sports matches. Try again.', true);
@@ -1637,6 +1943,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     function onSportsCategoryChanged(value) {
         sportsState.sport = String(value || 'all');
+        renderSportsQuickChips();
         refreshSportsMatches();
     }
 
@@ -1662,11 +1969,12 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         if (!sportsState.catalogLoaded) {
             try {
                 const sports = await fetchSportsJson(`${STREAMED_API_BASE}/sports`);
-                sportsState.sports = Array.isArray(sports) ? sports : [];
+                sportsState.sports = getMergedSportsCatalog(sports);
                 sportsState.catalogLoaded = true;
             } catch (error) {
-                sportsState.sports = [];
-                setSportsStatus('Sports catalog unavailable. Showing fallback feed.', true);
+                sportsState.sports = getMergedSportsCatalog([]);
+                sportsState.catalogLoaded = true;
+                setSportsStatus('Sports catalog unavailable. Loaded local expanded catalog instead.', true);
                 console.error('Sports catalog load failed:', error);
             }
             renderSportsCatalog();
