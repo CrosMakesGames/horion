@@ -4333,13 +4333,12 @@ canvas {
 function launchSite(targetUrl, pageTitle, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
+    const opts = options || {};
+    const blockNewTabs = Boolean(opts.blockNewTabs);
     const safeTitle = String(pageTitle || 'Horion Game')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    const safeUrl = normalizedUrl
-        .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;');
 
     const win = window.open('about:blank', '_blank');
@@ -4354,9 +4353,44 @@ function launchSite(targetUrl, pageTitle, options) {
         // Some browsers may not allow updating opener.
     }
 
-    win.document.open();
-    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>');
-    win.document.close();
+    const renderIframeWrapper = function (urlValue) {
+        const safeUrl = String(urlValue || '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;');
+        const sandboxAttr = blockNewTabs
+            ? ' sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-presentation"'
+            : '';
+        win.document.open();
+        win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>');
+        win.document.close();
+    };
+
+    if (blockNewTabs) {
+        const renderProxiedPage = function (urlValue) {
+            const nextUrl = String(urlValue || '').trim();
+            if (!nextUrl) return;
+
+            fetch(nextUrl)
+                .then((response) => {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    const proxiedHtml = buildProxiedAboutBlankHtml(htmlText, nextUrl);
+                    win.__horionNavigate = renderProxiedPage;
+                    win.document.open();
+                    win.document.write(proxiedHtml);
+                    win.document.close();
+                })
+                .catch(() => {
+                    renderIframeWrapper(nextUrl);
+                });
+        };
+
+        renderProxiedPage(normalizedUrl);
+    } else {
+        renderIframeWrapper(normalizedUrl);
+    }
     
     return true;
 }
@@ -6516,18 +6550,39 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         }
     }
 
+    function isCurrentDetailsSelection(param) {
+        if (!state.currentShow || !param) return false;
+
+        const sameId = Number(state.currentShow.id) === Number(param.id);
+        const sameType = String(state.currentShow.type || '') === String(param.type || '');
+        if (!sameId || !sameType) return false;
+
+        if (sameType !== 'tv') return true;
+
+        const requestedSeason = Number(param.season);
+        const requestedEpisode = Number(param.epNumber);
+        const safeSeason = Number.isFinite(requestedSeason) && requestedSeason > 0 ? requestedSeason : 1;
+        const safeEpisode = Number.isFinite(requestedEpisode) && requestedEpisode > 0 ? requestedEpisode : null;
+        const currentEpisodeNumber = state.currentEpisode ? Number(state.currentEpisode.number) : null;
+
+        if (state.currentSeason !== safeSeason) return false;
+        if (safeEpisode && currentEpisodeNumber !== safeEpisode) return false;
+        return true;
+    }
+
     // ==========================================
     // 4. CONTROLLER & ROUTER
     // ==========================================
     
     function router(viewName, param) {
+        const activeView = document.querySelector('.view-section.active');
+        const activeViewName = activeView ? activeView.id.replace('view-', '') : '';
+
         const inlinePage = document.getElementById('horion-tv-inline-page');
         if (inlinePage) inlinePage.remove();
 
-        if (viewName !== 'details' && state.currentShow) {
+        if (activeViewName === 'details' && viewName !== 'details' && state.currentShow) {
             saveProgress();
-            state.currentShow = null; 
-            state.currentEpisode = null;
         }
 
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -6565,7 +6620,9 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         } else if(viewName === 'sports') {
             initSportsView();
         } else if(viewName === 'details' && param) {
-            loadMedia(param);
+            if (!isCurrentDetailsSelection(param)) {
+                loadMedia(param);
+            }
         }
 
         const viewTitleMap = {
@@ -7282,10 +7339,45 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     // 7. YOUTUBE NAV LAUNCHER LOGIC
     // ==========================================
 
+const UBEAST_MATCH_TEXT = 'ubeast';
+const UBEAST_RELOAD_PARAM = '__horion_ubeast_reload';
+
+function urlContainsUbeast(urlValue) {
+    return String(urlValue || '').toLowerCase().includes(UBEAST_MATCH_TEXT);
+}
+
+function appendUbeastReloadParam(urlValue) {
+    const raw = String(urlValue || '').trim();
+    if (!raw) return raw;
+    try {
+        const parsed = new URL(raw, window.location.href);
+        parsed.searchParams.set(UBEAST_RELOAD_PARAM, String(Date.now()));
+        return parsed.href;
+    } catch (error) {
+        const separator = raw.includes('?') ? '&' : '?';
+        return raw + separator + UBEAST_RELOAD_PARAM + '=' + Date.now();
+    }
+}
+
+function getUbeastReloadKey(urlValue) {
+    const raw = String(urlValue || '').trim();
+    if (!raw) return '';
+    try {
+        const parsed = new URL(raw, window.location.href);
+        parsed.searchParams.delete(UBEAST_RELOAD_PARAM);
+        return parsed.href;
+    } catch (error) {
+        return raw
+            .replace(new RegExp('([?&])' + UBEAST_RELOAD_PARAM + '=[^&]*', 'ig'), '$1')
+            .replace(/[?&]$/, '');
+    }
+}
+
 function launchSite(targetUrl, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
-    const safeUrl = normalizedUrl
+    const safeUrl = normalizedUrl;
+    const safeUrlAttr = safeUrl
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;');
 
@@ -7301,8 +7393,112 @@ function launchSite(targetUrl, options) {
         // Some browsers may not allow updating opener.
     }
 
+    const wrapperHtml = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horion TV</title>
+    <style>
+        html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}
+        iframe{border:0;width:100%;height:100%;display:block;background:#000}
+    </style>
+</head>
+<body>
+    <iframe id="horion-tv-popup-frame" src="${safeUrlAttr}" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe>
+    <script>
+    (function () {
+        const frame = document.getElementById('horion-tv-popup-frame');
+        if (!frame) return;
+
+        const matchText = ${JSON.stringify(UBEAST_MATCH_TEXT)};
+        const reloadParam = ${JSON.stringify(UBEAST_RELOAD_PARAM)};
+        const cooldownMs = 3500;
+        const seenAt = new Map();
+
+        const appendReloadParam = function (urlValue) {
+            const raw = String(urlValue || '').trim();
+            if (!raw) return raw;
+            try {
+                const parsed = new URL(raw, window.location.href);
+                parsed.searchParams.set(reloadParam, String(Date.now()));
+                return parsed.href;
+            } catch (error) {
+                const separator = raw.includes('?') ? '&' : '?';
+                return raw + separator + reloadParam + '=' + Date.now();
+            }
+        };
+
+        const getReloadKey = function (urlValue) {
+            const raw = String(urlValue || '').trim();
+            if (!raw) return '';
+            try {
+                const parsed = new URL(raw, window.location.href);
+                parsed.searchParams.delete(reloadParam);
+                return parsed.href;
+            } catch (error) {
+                return raw
+                    .replace(new RegExp('([?&])' + reloadParam + '=[^&]*', 'ig'), '$1')
+                    .replace(/[?&]$/, '');
+            }
+        };
+
+        const shouldReloadNow = function (candidateUrl) {
+            if (!candidateUrl || String(candidateUrl).toLowerCase().indexOf(matchText) === -1) return false;
+            const key = getReloadKey(candidateUrl);
+            const now = Date.now();
+            const last = seenAt.get(key) || 0;
+            if (now - last < cooldownMs) return false;
+            seenAt.set(key, now);
+            return true;
+        };
+
+        const reloadSameMethod = function (candidateUrl) {
+            const target = appendReloadParam(candidateUrl || frame.getAttribute('src') || frame.src);
+            if (!target) return;
+            try {
+                frame.src = target;
+            } catch (error) {
+                window.location.reload();
+            }
+        };
+
+        const inspectUrl = function (candidateUrl) {
+            if (!shouldReloadNow(candidateUrl)) return;
+            reloadSameMethod(candidateUrl);
+        };
+
+        frame.addEventListener('load', function () {
+            inspectUrl(frame.getAttribute('src') || frame.src);
+            try {
+                inspectUrl(frame.contentWindow && frame.contentWindow.location ? frame.contentWindow.location.href : '');
+            } catch (error) {
+                // Cross-origin frame location is expected to be blocked.
+            }
+        });
+
+        const observer = new MutationObserver(function () {
+            inspectUrl(frame.getAttribute('src') || frame.src);
+        });
+        observer.observe(frame, { attributes: true, attributeFilter: ['src'] });
+
+        setInterval(function () {
+            inspectUrl(frame.getAttribute('src') || frame.src);
+            try {
+                inspectUrl(frame.contentWindow && frame.contentWindow.location ? frame.contentWindow.location.href : '');
+            } catch (error) {
+                // Cross-origin frame location is expected to be blocked.
+            }
+        }, 1000);
+
+        inspectUrl(frame.getAttribute('src') || frame.src);
+    })();
+    <\/script>
+</body>
+</html>`;
+
     win.document.open();
-    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Horion TV</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>');
+    win.document.write(wrapperHtml);
     win.document.close();
     
     return true;
@@ -7459,11 +7655,29 @@ function openInlineTvPage(targetUrl, titleText, options) {
     const hostFrame = document.getElementById('horion-tv-inline-host-frame');
     const inlineNavToken = 'horion-tv-inline-nav-' + Date.now() + '-' + Math.random().toString(16).slice(2);
     let isClosing = false;
+    const inlineUbeastReloadSeenAt = new Map();
 
-    const renderDirectWrapper = function () {
+    const shouldReloadInlineForUbeast = function (candidateUrl, scope) {
+        if (!urlContainsUbeast(candidateUrl)) return false;
+        const key = scope + '|' + getUbeastReloadKey(candidateUrl);
+        const now = Date.now();
+        const last = inlineUbeastReloadSeenAt.get(key) || 0;
+        if (now - last < 3500) return false;
+        inlineUbeastReloadSeenAt.set(key, now);
+        return true;
+    };
+
+    const renderDirectWrapper = function (urlOverride) {
         if (!hostFrame || !hostFrame.contentWindow || !hostFrame.contentWindow.document) return;
         const titleAttr = String(titleText || 'TV Tool');
-        const wrapperHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + titleAttr + '</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe src="' + normalizedUrl + '" allow="autoplay; encrypted-media; fullscreen; clipboard-read; clipboard-write; picture-in-picture; screen-wake-lock"></iframe></body></html>';
+        const launchUrl = String(urlOverride || normalizedUrl || '').trim();
+        const wrapperHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + titleAttr + '</title><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000;overflow:hidden}iframe{border:none;width:100%;height:100%;background:#000}</style></head><body><iframe id="horion-tv-inline-inner-frame" src="' + launchUrl + '" allow="autoplay; encrypted-media; fullscreen; clipboard-read; clipboard-write; picture-in-picture; screen-wake-lock"></iframe><script>(function(){const frame=document.getElementById("horion-tv-inline-inner-frame");if(!frame)return;const inspect=function(url){if(!url||typeof window.__horionReloadSelf!=="function")return;if(String(url).toLowerCase().indexOf("' + UBEAST_MATCH_TEXT + '")!==-1){window.__horionReloadSelf(url);}};frame.addEventListener("load",function(){inspect(frame.getAttribute("src")||frame.src);try{inspect(frame.contentWindow&&frame.contentWindow.location?frame.contentWindow.location.href:"");}catch(err){}});const observer=new MutationObserver(function(){inspect(frame.getAttribute("src")||frame.src);});observer.observe(frame,{attributes:true,attributeFilter:["src"]});setInterval(function(){inspect(frame.getAttribute("src")||frame.src);try{inspect(frame.contentWindow&&frame.contentWindow.location?frame.contentWindow.location.href:"");}catch(err){}},1000);inspect(frame.getAttribute("src")||frame.src);})();<\/script></body></html>';
+        hostFrame.contentWindow.__horionReloadSelf = function (nextUrl) {
+            if (isClosing) return;
+            const detectedUrl = String(nextUrl || launchUrl || normalizedUrl || '').trim();
+            if (!shouldReloadInlineForUbeast(detectedUrl, 'direct')) return;
+            renderDirectWrapper(appendUbeastReloadParam(detectedUrl));
+        };
         hostFrame.contentWindow.document.open();
         hostFrame.contentWindow.document.write(wrapperHtml);
         hostFrame.contentWindow.document.close();
@@ -7472,6 +7686,11 @@ function openInlineTvPage(targetUrl, titleText, options) {
     const renderProxiedPage = function (urlValue) {
         const safeUrl = String(urlValue || '').trim();
         if (!safeUrl || isClosing || !hostFrame || !hostFrame.contentWindow || !hostFrame.contentWindow.document) return;
+
+        if (shouldReloadInlineForUbeast(safeUrl, 'proxy')) {
+            renderProxiedPage(appendUbeastReloadParam(safeUrl));
+            return;
+        }
 
         fetch(safeUrl)
             .then((response) => {
@@ -7483,6 +7702,11 @@ function openInlineTvPage(targetUrl, titleText, options) {
                 const proxiedHtml = buildTvProxiedInlineHtml(htmlText, safeUrl);
                 hostFrame.contentWindow.__horionNavigate = function (nextUrl) {
                     window.postMessage({ type: 'HORION_TV_INLINE_NAV', token: inlineNavToken, url: nextUrl }, '*');
+                };
+                hostFrame.contentWindow.__horionReloadSelf = function (nextUrl) {
+                    const detectedUrl = String(nextUrl || safeUrl || '').trim();
+                    if (!shouldReloadInlineForUbeast(detectedUrl, 'proxy')) return;
+                    renderProxiedPage(appendUbeastReloadParam(detectedUrl));
                 };
                 hostFrame.contentWindow.document.open();
                 hostFrame.contentWindow.document.write(proxiedHtml);
@@ -7497,6 +7721,10 @@ function openInlineTvPage(targetUrl, titleText, options) {
     const onInlineMessage = function (event) {
         const data = event && event.data ? event.data : null;
         if (!data || data.type !== 'HORION_TV_INLINE_NAV' || data.token !== inlineNavToken) return;
+        if (shouldReloadInlineForUbeast(data.url, 'proxy')) {
+            renderProxiedPage(appendUbeastReloadParam(data.url));
+            return;
+        }
         renderProxiedPage(data.url);
     };
 
