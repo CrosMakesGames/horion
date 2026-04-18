@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -1156,12 +1156,209 @@ body {
     box-shadow: 0 0 14px rgba(0, 112, 255, 0.12);
 }
 
+.featured-game-view {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    min-height: calc(100vh - 78px);
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    padding: 18px 20px 24px;
+    align-items: stretch;
+    text-align: left;
+}
+
+.featured-game-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.9fr) minmax(260px, 0.9fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.featured-game-main {
+    min-width: 0;
+}
+
+.featured-game-side {
+    min-width: 0;
+}
+
+.featured-game-back {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: var(--neon-blue);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.featured-game-back:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+.featured-game-title {
+    margin: 0 0 8px;
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    letter-spacing: 0.03em;
+    color: #e8fbff;
+}
+
+.featured-game-desc {
+    margin: 0 0 14px;
+    color: #9ec0d9;
+    max-width: 88ch;
+    line-height: 1.6;
+    font-size: 0.96rem;
+}
+
+.featured-game-frame-wrap {
+    width: 100%;
+    border: 1px solid rgba(0, 112, 255, 0.32);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 22px rgba(0, 112, 255, 0.18);
+}
+
+.featured-game-frame {
+    width: 100%;
+    height: min(70vh, 780px);
+    min-height: 360px;
+    border: 0;
+    background: #000;
+    display: block;
+    overflow: hidden;
+}
+
+.featured-game-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 16px 0 26px;
+}
+
+.featured-game-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(0, 112, 255, 0.55);
+    background: rgba(0, 112, 255, 0.14);
+    color: #dff4ff;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.featured-game-btn.fullscreen-btn::before {
+    content: '';
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid currentColor;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+    opacity: 0.9;
+}
+
+.featured-game-btn:hover {
+    border-color: var(--neon-blue);
+    background: rgba(0, 229, 255, 0.18);
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.22);
+}
+
+.featured-recommended-title {
+    margin: 0 0 14px;
+    color: var(--neon-blue);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.featured-recommended-grid {
+    --recommended-cell: clamp(98px, 10vw, 138px);
+    display: grid;
+    grid-template-columns: repeat(2, var(--recommended-cell));
+    grid-auto-rows: var(--recommended-cell);
+    gap: 10px;
+    align-content: start;
+    justify-content: start;
+}
+
+.featured-recommended-grid .game-card {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    aspect-ratio: auto;
+}
+
+.featured-recommended-grid .game-card:first-child {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 2;
+}
+
+@media (max-width: 760px) {
+    .featured-game-view {
+        padding: 14px 12px 18px;
+    }
+
+    .featured-game-layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .featured-recommended-grid {
+        --recommended-cell: minmax(0, 1fr);
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+        justify-content: stretch;
+    }
+
+    .featured-recommended-grid .game-card:first-child {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .featured-game-actions {
+        flex-direction: column;
+    }
+
+    .featured-game-btn {
+        width: 100%;
+    }
+
+    .featured-game-frame {
+        height: min(62vh, 560px);
+        min-height: 300px;
+    }
+}
+
 
 #featured-grid, #favorites-featured-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    --featured-row-gap: 20px;
+    --featured-row-columns: 7;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
     width: 100%;
+}
+
+.featured-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--featured-row-gap);
+}
+
+.featured-row .game-card {
+    flex: 0 0 calc((100% - (var(--featured-row-gap) * (var(--featured-row-columns) - 1))) / var(--featured-row-columns));
+    max-width: 180px;
 }
 
 #sections-container, #favorites-database-list {
@@ -1286,6 +1483,32 @@ canvas {
 
         <div id="featured-grid">
             <!-- Populated via JS -->
+        </div>
+    </div>
+</div>
+
+<div id="view-featured-game" class="view-section">
+    <div class="content-container featured-game-view">
+        <span class="featured-game-back" onclick="switchView('featured')">Back to Featured</span>
+        <div class="featured-game-layout">
+            <div class="featured-game-main">
+                <div class="featured-game-frame-wrap">
+                    <iframe id="featured-game-frame" class="featured-game-frame" src="about:blank" title="Featured Game Player" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"></iframe>
+                </div>
+
+                <div class="featured-game-actions">
+                    <button id="featured-game-fullscreen" class="featured-game-btn fullscreen-btn" type="button">Fullscreen</button>
+                    <button id="featured-game-aboutblank" class="featured-game-btn" type="button">Open in about:blank</button>
+                </div>
+
+                <h2 id="featured-game-title" class="featured-game-title">Featured Game</h2>
+                <p id="featured-game-desc" class="featured-game-desc"></p>
+            </div>
+
+            <aside class="featured-game-side">
+                <h3 class="featured-recommended-title">Recommended Games</h3>
+                <div id="featured-recommended-grid" class="featured-recommended-grid"></div>
+            </aside>
         </div>
     </div>
 </div>
@@ -1449,85 +1672,162 @@ canvas {
     });
 
         const featuredGames = [
-            { filename: 'westernroulette.html', displayname: 'Western Roulette', image: 'https://static.vecteezy.com/system/resources/previews/050/005/195/non_2x/pixelated-cowboy-roulette-pistol-vector.jpg', type: 'special' },
-       { filename: 'clfnafucn', displayname: 'FNAF: UCN', image: 'https://play-lh.googleusercontent.com/pB7dsLLcRgADtFpEPeKc5mSyAn1E1JzrdQ1V7-Y5hizgub3G8e9UJIc5opC9mYXKSBw=w240-h480-rw' },
-       { filename: 'clrun3', displayname: 'Run 3', image: 'https://e.snmc.io/lk/lv/x/a38e8c4d9fc64a3d862e5f6858ecfec4/10934781' },
-       { filename: 'clslopeplus', displayname: 'Slope +', image: 'https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs=w240-h480-rw' },
-       { filename: 'clkartbros', displayname: 'Kart Bros', image: 'https://basketball-stars.io/upload/imgs/kart-bros.png' },
-       { filename: 'clbasketbros', displayname: 'Basket Bros', image: 'https://basketball-stars.io/upload/imgs/basket-bros.png' },
-       { filename: 'clsoccerbros', displayname: 'Soccer Bros', image: 'https://basketball-stars.io/upload/imgs/soccer-bros.png' },
-       { filename: 'clbaseballbros', displayname: 'Baseball Bros', image: 'https://penaltyshooters2.com/upload/imgs/baseball-bros-io-online.jpg' },
-       { filename: 'clretrobowl', displayname: 'Retro Bowl', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/d98547374c4129bf441b754d495e41aa/retro-bowl-college.png' },
-       { filename: 'cl3dash', displayname: '3 Dash', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQh2swIlMAAbS2HdRv6tMtkcQQLxyEAqPpwwA&s' },
-       { filename: 'clcookie-clicker', displayname: 'Cookie Clicker', image: 'https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok=w240-h480-rw' },
-       { filename: 'cltunnelrushbetter', displayname: 'Tunnel Rush', image: 'https://play-lh.googleusercontent.com/JcRXdUzO7n1laKITVK4Nphe-8ZV9PwX3MVre_QvLac3HDSOt7zWmhAIB7tBBt525=w526-h296-rw' },
-       { filename: 'clchickenwar', displayname: 'Chicken War', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH--GY3wEACsRlvhlBN1ILZrt9hqxa1JfKmA&s' },
-       { filename: 'cljetpackjoyride', displayname: 'Jetpack Joyride', image: 'https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png' },
-       { filename: 'clcrossyroad', displayname: 'Crossy Road', image: 'https://upload.wikimedia.org/wikipedia/en/7/71/Crossy_Road_icon.jpeg' },
-       { filename: 'clragdollarchers', displayname: 'Ragdoll Archer', image: 'https://imgs.crazygames.com/ragdoll-archers_1x1/20250926080758/ragdoll-archers_1x1-cover?format=auto&quality=70&metadata=none' },
-       { filename: 'clbitlife', displayname: 'Bitlife', image: 'https://assets.newsweek.com/wp-content/uploads/2025/08/1317374-bitlife-ribbons-how-get-all-complete-list-android-ios-cheats-guide-tips-become.jpg?w=1200crop=1' },
-       { filename: 'cldieinthedungeon', displayname: 'Die In The Dungeon', image: 'https://pbs.twimg.com/profile_images/1792497375266701312/IRkf7YpC_400x400.jpg' },
-       { filename: 'cldungeondeck', displayname: 'Dungeon Deck', image: 'https://img.itch.zone/aW1nLzE1NDg0MzI5LnBuZw==/original/30Fwot.png' },
-       { filename: 'clgunblood', displayname: 'Gun Blood', image: 'https://pizzaedition.win/images/games/gunblood-min.jpeg' },
-       { filename: 'clpolytrackbutnotflagged', displayname: 'Polytrack', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/3fa3556b61d02fba189999605b1f304b/polytrack.png' },
-       { filename: 'cldrivemady', displayname: 'Drive Mad', image: 'https://cdn-1.webcatalog.io/catalog/poki-drive-mad/poki-drive-mad-icon-filled-256.png?v=1714778298617' },
-       { filename: 'clclusterrush', displayname: 'Cluster Rush', image: 'https://static.gameloop.com/img/2d7993dd07da134d0c85e6012105b363.png?imageMogr2/thumbnail/172.8x172.8/format/webp' },
-       { filename: 'clsnowrider', displayname: 'Snow Rider', image: 'https://geometrydashfullversion.io/cache/data/image/game/snow-rider-3d/snow-rider-3d-m200x200.webp' },
-       { filename: 'cldriftboss', displayname: 'Drift Boss', image: 'https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g=w240-h480-rw' },
-       { filename: 'clstacktris', displayname: 'Stacktris', image: 'https://pizzaedition.win/images/games/stacktris-min.png' },
-       { filename: 'clFNAF', displayname: 'FNAF', image: 'https://pizzaedition.win/images/games/fnaf-min.jpg' },
-       { filename: 'clFNAF2', displayname: 'Fnaf 2', image: 'https://pizzaedition.win/images/games/fnaf2-min.png' },
-       { filename: 'clFNAF3', displayname: 'Fnaf 3', image: 'https://pizzaedition.win/images/games/fnaf3-min.jpg' },
-       { filename: 'clFNAF4', displayname: 'Fnaf 4', image: 'https://pizzaedition.win/images/games/fnaf4-min.png' },
-       { filename: 'https://svaaps.github.io/eaglercrafthtml/', displayname: 'Minecraft 1.9', image: 'https://media.sketchfab.com/models/84938a8f3f8d4a0aa64aaa9c4e4d27d3/thumbnails/f5d49a3c2cdb4424b7f062d340d2a4a7/aafef2fcd26b40f5bea48725065c6542.jpeg', type: 'special' },
-       { filename: 'clsubwaysurfersbarcelona', displayname: 'Subway Surfers: Barcelona', image: 'https://vodogame.com/games/subway-surf-barcelona/thumb_1.jpg' },
-    { filename: 'https://nzp.gay', displayname: 'Nazi Zombies', image: 'https://avatars.githubusercontent.com/u/91418801?s=280&v=4', type: 'special' },
-       { filename: 'clducklife3', displayname: 'Duck Life 3', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/f5671816-e95b-4d41-adb7-411708f431ba/ducklife-3.png' },
-       { filename: 'clinkgame', displayname: 'Ink Game', image: 'https://i1.sndcdn.com/artworks-JyBMur02gm43IDuc-eZfeLA-t500x500.png' },
-       { filename: 'clsupermariobros3real', displayname: 'Super Mario Bros 3', image: 'https://assets-prd.ignimgs.com/2021/12/08/smb3-1638922753441.jpg?crop=1%3A1%2Csmart&format=jpg&auto=webp&quality=80' },
-       { filename: 'clhighwayracer2', displayname: 'Highway Racer', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIHgQwU4A22XR4rjnRxhEh-c0Nq9EyODw0qQ&s' },
-       { filename: 'clhobo7', displayname: 'Hobo 7', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsnGUydR2WLlCH2MDLOudQT9mdKkklk_HGaQ&s' },
-       { filename: 'clovo', displayname: 'OVO', image: 'https://hotgame.io/wp-content/uploads/2025/11/OvO-Game.webp' },
-       { filename: 'clbloonsTD4', displayname: 'Bloons TD4', image: 'https://gameforge.com/de-DE/littlegames/includes/images/games/13426_5ec634fec15e3.jpg' },
-       { filename: 'cldeltarune', displayname: 'DELTARUNE', image: 'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/deltarune.jpeg' },
-       { filename: 'clleveldevil', displayname: 'Level Devil', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2M1LFyfRu6edlOBPC9mHDzpUEfKQq9KfdZQ&s' },
-       { filename: 'clBrawlstars', displayname: 'Brawl Stars', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToDlytiE178sfY8uXNj7aIesE2rM7gGOwjFCmb9VVEWJ7JAoUDaNYQZxuRG5iFNXAxvJRJAA&s=10' },
-       { filename: 'clclearvision5', displayname: 'Clear Vison 5', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy2Iu956dpwbGBtg7de73Ooxh6eEv-QemA_Q&s' },
-       { filename: 'clrocketleague', displayname: 'RL Sideswipe', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6PanXiNaRnXnhc58bDbZfhufnj8T3OhdTMw&s' },
-       { filename: 'clfridaynightfunkin', displayname: 'Friday Night Funkin', image: 'https://i.pinimg.com/736x/96/ae/27/96ae27dbe3a47d8c107f310576e1bc99.jpg' },
-       { filename: 'clpapascheeseria', displayname: "Papa's Cheeseria", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvvqFqyx9sixH-PLe6aGscm4lAM55d7_1yuw&s' },
-       { filename: 'clgladdihoppers', displayname: "Gladihoppers", image: 'https://play-lh.googleusercontent.com/HUuFbIPERNbpW2Q72WIqiJ8bKDzIgT_C4PnYvMBuH0wC3B_KvpKmumm1FXhZj3jmRHw' },
-       { filename: 'clplantsvszombies', displayname: "Plants VS Zombies", image: 'https://media.contentapi.ea.com/content/dam/gin/images/2017/01/plants-vs-zombies-2-keyart.jpg.adapt.crop1x1.767p.jpg' },
-       { filename: 'cldud', displayname: "Dud", image: 'https://img.itch.zone/aW1nLzEzNzE4MzQzLnBuZw==/original/KLbZPd.png' },
-       { filename: 'https://8-ball-pool-html-5.vercel.app', displayname: "8 Ball: Classic", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6rcox2LJIE1FGsChgBipA0Dv_CFxbKu-yw&s', type: 'special'},
-       { filename: 'clburritobisonlaunchalibre', displayname: "Burrito Bison: Launcha Libre", image: 'https://play-lh.googleusercontent.com/vpTgm9u7-GzZP_MceTWpDi0HbinXd_4phCoTwf4ZspFL-115FtNRdo_SU1p-khLDnLA' },
-       { filename: 'clgun-spin', displayname: "Gun Spin", image: 'https://images.dwncdn.net/images/t_app-icon-l/p/39d0a468-21ab-466d-a65b-5585c02dd7ad/15864794/gunspin-logo' },
-       { filename: 'https://nerd.com', displayname: "Nerd.com Videos", image: 'https://www.nerd.com/img/nerd/pwa-512x512.png', type: 'special' },
-       { filename: 'clbowmaster', displayname: "Bow Masters", image: 'https://play-lh.googleusercontent.com/rsQyCuie6S8Munc2Hv6IMpePP1g3c0okLkyKRXd1IimOryIBMZqymGKaOg7bZ6NMkhj3' },
-       { filename: 'cl10morebullets', displayname: "10 Bullets", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS2tFiDxHiykGIEajSXpaYIRXpOHCT6vZv6g&s' },
-       { filename: 'https://mehmetmhy.github.io/tetris/', displayname: "Tetris", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSJVXUjr9K0zjk9F96LagL6iTk_hu4_yNLkQ&s', type: 'special' },
-       { filename: 'https://krunker.io/', displayname: "krunker.io", image: 'https://krunker.co.uk/wp-content/uploads/2025/11/krunker.webp', type: 'special' },
-       { filename: 'https://zombs.io/', displayname: "zombs.io", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwUQ4WU6HILmP3J4rOLcMJeGRXL8O5_pxPeA&s', type: 'special' },
-       { filename: 'https://zombsroyale.io/', displayname: "Zombs Royale", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfkghNZ9V1YI_hJToW3cmb2ZEWDB80-wOxeA&s', type: 'special' },
-       { filename: 'https://lordz.io/', displayname: "lordz.io", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShpDoqsStil5bb-SoSFIfY2tr9TlCgb7pPPQ&s', type: 'special' },
-    { filename: 'https://secret-hitler.online/', displayname: "Secret Hitler", image: 'https://th.bing.com/th/id/OIP.0JcC1kGH2AJkAIT7p1zw0gAAAA?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3', type: 'special' },
-       { filename: 'https://smashkarts.io/', displayname: "Smash Karts", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAdrpTBNT0iI8zuPF0NX0z6t9fJtigQpEhsQ&s', type: 'special' },
-       { filename: 'https://imisaacwu.github.io/webatro/', displayname: "Balatro", image: 'https://play-lh.googleusercontent.com/RSPv_SMlA3Lun8VHaJD7xCBQg29eCJR9sNJtZNJGlybVs8byYVLz4WnohrbLScC9srg', type: 'special' },
-       { filename: 'https://shapez.io', displayname: "shapez.io", image: 'https://f4.bcbits.com/img/a2183267624_16.jpg', type: 'special' },
-       { filename: 'https://slowroads.io', displayname: "Slowroads", image: 'https://img.itch.zone/aW1nLzI1NzAwNDUwLmpwZw==/original/Rztzj2.jpg', type: 'special' },
-       { filename: 'https://ngsc.freddecgames.com/', displayname: "Space Company", image: 'https://play-lh.googleusercontent.com/VjwQdDvXxeWZSDy2GNAkttsojRQ487s8TCmz-bnuJC4iS9Rqntd4xICrvmTkaCEYsN1H=w240-h480', type: 'special' },
-       { filename: 'https://diep.io/', displayname: "diep.io", image: 'https://upload.wikimedia.org/wikipedia/en/e/e2/Diepio_mobile_logo.webp', type: 'special' },
-       { filename: 'https://skribbl.io/', displayname: "skribbl.io", image: 'https://brain-lines.io/data/image/game/skribbl-io-b1.jpg', type: 'special' },
-    { filename: 'https://garticphone.com/', displayname: "Gartic Phone", image: 'https://assets-prd.ignimgs.com/2022/11/12/gartic-phone-button-1668215807194.jpg?crop=1%3A1%2Csmart&format=jpg&auto=webp&quality=80', type: 'special' },
-   { filename: 'sandboxels.html', displayname: 'Sandboxels', image: 'https://substackcdn.com/image/fetch/$s_!3uou!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb143b429-a854-43e5-9599-fcba40f40d48_960x918.jpeg', type: 'special' },
-     { filename: 'https://slither.io/', displayname: "slither.io", image: 'https://www.google.com/s2/favicons?domain=slither.io&sz=256', type: 'special' },
-     { filename: 'https://ev.io', displayname: "ev.io", image: 'https://static.keygames.com/0/114810/100607/1024x1024/evio.webp', type: 'special' },
-  { filename: 'https://www.openguessr.com/', displayname: "OpenGuessr", image: 'https://somerandomstuff1.wordpress.com/wp-content/uploads/2019/02/geoguessr1.png', type: 'special' },
-     { filename: 'https://moomoo.io/', displayname: "MooMoo.io", image: 'https://kevin.games/assets/cache_image/games/moomoo-io_200x200_98b.jpg', type: 'special' },
-       { filename: 'cldungeonsanddegenerategamblers', displayname: "Dungeons and Degenerate Gamblers", image: 'https://assets-prd.ignimgs.com/2024/05/27/dungeons-and-degenerate-gamblers-button-1716811260241.jpg' },
-    { filename: 'https://uberspot.github.io/2048/', displayname: "2048", image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg', type: 'special' },
+  { filename: 'westernroulette.html', displayname: 'Western Roulette', desc: 'Western Roulette is a cowboy dueling game built around fast reactions and high-stakes timing.', image: 'https://static.vecteezy.com/system/resources/previews/050/005/195/non_2x/pixelated-cowboy-roulette-pistol-vector.jpg', type: 'special', recommended: ['Gun Blood', 'Bow Masters', 'Gun Spin'] },
 
-    ];
+  { filename: 'clfnafucn', displayname: 'FNAF: UCN', desc: 'Ultimate Custom Night is a Five Nights at Freddy’s survival challenge where you manage dozens of animatronics at once.', image: 'https://play-lh.googleusercontent.com/pB7dsLLcRgADtFpEPeKc5mSyAn1E1JzrdQ1V7-Y5hizgub3G8e9UJIc5opC9mYXKSBw=w240-h480-rw', recommended: ['Fnaf 2', 'Fnaf 3', 'Fnaf 4'] },
+
+  { filename: 'clrun3', displayname: 'Run 3', desc: 'Run 3 is an endless space tunnel runner where you dodge gaps and master gravity-defying movement.', image: 'https://e.snmc.io/lk/lv/x/a38e8c4d9fc64a3d862e5f6858ecfec4/10934781', recommended: ['Tunnel Rush', 'Slope +', 'Cluster Rush'] },
+
+  { filename: 'clslopeplus', displayname: 'Slope +', desc: 'Slope+ is a high-speed 3D ball runner where precision and reflexes are everything.', image: 'https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs=w240-h480-rw', recommended: ['Tunnel Rush', 'Drive Mad', 'Snow Rider'] },
+
+  { filename: 'clkartbros', displayname: 'Kart Bros', desc: 'Kart Bros is an arcade kart racing game focused on chaotic multiplayer-style racing.', image: 'https://basketball-stars.io/upload/imgs/kart-bros.png', recommended: ['Smash Karts', 'Drift Boss', 'RL Sideswipe'] },
+
+  { filename: 'clbasketbros', displayname: 'Basket Bros', desc: 'Basket Bros is a 1v1 arcade basketball game built around quick matches and clutch plays.', image: 'https://basketball-stars.io/upload/imgs/basket-bros.png', recommended: ['Soccer Bros', 'Baseball Bros', 'Brawl Stars'] },
+
+  { filename: 'clsoccerbros', displayname: 'Soccer Bros', desc: 'Soccer Bros is a fast-paced 1v1 soccer game with simple controls and competitive matches.', image: 'https://basketball-stars.io/upload/imgs/soccer-bros.png', recommended: ['Basket Bros', 'Baseball Bros', 'Brawl Stars'] },
+
+  { filename: 'clbaseballbros', displayname: 'Baseball Bros', desc: 'Baseball Bros is an arcade-style baseball duel game focused on timing hits and pitching.', image: 'https://penaltyshooters2.com/upload/imgs/baseball-bros-io-online.jpg', recommended: ['Soccer Bros', 'Basket Bros', 'Brawl Stars'] },
+
+  { filename: 'clretrobowl', displayname: 'Retro Bowl', desc: 'Retro Bowl is a football management game mixed with arcade-style gameplay and team building.', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/d98547374c4129bf441b754d495e41aa/retro-bowl-college.png', recommended: ['Bitlife', 'Duck Life 3', 'Cookie Clicker'] },
+
+  { filename: 'cl3dash', displayname: '3 Dash', desc: '3 Dash is a rhythm-based platformer inspired by Geometry Dash with timing-heavy levels.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQh2swIlMAAbS2HdRv6tMtkcQQLxyEAqPpwwA&s', recommended: ['Friday Night Funkin', 'OVO', 'Level Devil'] },
+
+  { filename: 'clcookie-clicker', displayname: 'Cookie Clicker', desc: 'Cookie Clicker is an incremental idle game centered around exponential upgrade progression.', image: 'https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok=w240-h480-rw', recommended: ['2048', 'Shapez.io', 'Space Company'] },
+
+  { filename: 'cltunnelrushbetter', displayname: 'Tunnel Rush', desc: 'Tunnel Rush is a first-person reflex runner where you dodge fast-moving obstacles in tunnels.', image: 'https://m.media-amazon.com/images/I/41h70UiNByL._SL500_.jpg', recommended: ['Slope +', 'Run 3', 'Cluster Rush'] },
+
+  { filename: 'clchickenwar', displayname: 'Chicken War', desc: 'Chicken War is an arcade combat game featuring chaotic battles and fast action gameplay.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH--GY3wEACsRlvhlBN1ILZrt9hqxa1JfKmA&s', recommended: ['Gladihoppers', 'Gun Blood', 'Bow Masters'] },
+
+  { filename: 'cljetpackjoyride', displayname: 'Jetpack Joyride', desc: 'Jetpack Joyride is an endless runner where you fly through obstacles with a gadget-powered jetpack.', image: 'https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png', recommended: ['Subway Surfers', 'Crossy Road', 'Snow Rider'] },
+
+  { filename: 'clcrossyroad', displayname: 'Crossy Road', desc: 'Crossy Road is a timing-based arcade game where you cross roads, rivers, and trains without dying.', image: 'https://upload.wikimedia.org/wikipedia/en/7/71/Crossy_Road_icon.jpeg', recommended: ['Subway Surfers', 'Jetpack Joyride', 'Run 3'] },
+
+  { filename: 'clragdollarchers', displayname: 'Ragdoll Archer', desc: 'Ragdoll Archer is a physics-based bow duel game where you fight using angled shots and timing.', image: 'https://imgs.crazygames.com/ragdoll-archers_1x1/20250926080758/ragdoll-archers_1x1-cover?format=auto&quality=70&metadata=none', recommended: ['Bow Masters', 'Gun Blood', 'Gun Spin'] },
+
+  { filename: 'clbitlife', displayname: 'Bitlife', desc: 'BitLife is a life simulation game where you make choices that shape your entire virtual life.', image: 'https://assets.newsweek.com/wp-content/uploads/2025/08/1317374-bitlife-ribbons-how-get-all-complete-list-android-ios-cheats-guide-tips-become.jpg?w=1200crop=1', recommended: ['Duck Life 3', 'Space Company', 'Cookie Clicker'] },
+
+  { filename: 'cldieinthedungeon', displayname: 'Die In The Dungeon', desc: 'Die In The Dungeon is a roguelike dungeon crawler focused on survival and turn-based combat.', image: 'https://pbs.twimg.com/profile_images/1792497375266701312/IRkf7YpC_400x400.jpg', recommended: ['Dungeon Deck', 'Balatro', 'Dungeons and Degenerate Gamblers'] },
+
+  { filename: 'cldungeondeck', displayname: 'Dungeon Deck', desc: 'Dungeon Deck is a deckbuilding roguelike where cards determine combat and progression.', image: 'https://img.itch.zone/aW1nLzE1NDg0MzI5LnBuZw==/original/30Fwot.png', recommended: ['Balatro', 'Die In The Dungeon', 'Dungeons and Degenerate Gamblers'] },
+
+  { filename: 'clgunknight', displayname: 'Gun Knight', desc: 'Gun Knight is a roguelite shooter combining platforming combat with gun-based enemies.', image: 'https://img.itch.zone/aW1nLzI4ODgzOTMuanBn/original/nBtxWN.jpg', recommended: ['Krunker', 'ev.io', 'Zombs Royale'] },
+
+  { filename: 'clgunblood', displayname: 'Gun Blood', desc: 'Gun Blood is a Western quick-draw dueling game focused on reaction speed.', image: 'https://pizzaedition.win/images/games/gunblood-min.jpeg', recommended: ['Western Roulette', 'Bow Masters', 'Gun Spin'] },
+
+  { filename: 'clpolytrackbutnotflagged', displayname: 'Polytrack', desc: 'Polytrack is a low-poly racing game focused on time trials and track building.', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/3fa3556b61d02fba189999605b1f304b/polytrack.png', recommended: ['Drive Mad', 'Drift Boss', 'Highway Racer'] },
+
+  { filename: 'cldrivemady', displayname: 'Drive Mad', desc: 'Drive Mad is a physics driving puzzle game where balancing control is the main challenge.', image: 'https://cdn-1.webcatalog.io/catalog/poki-drive-mad/poki-drive-mad-icon-filled-256.png?v=1714778298617', recommended: ['Polytrack', 'Cluster Rush', 'Snow Rider'] },
+
+  { filename: 'clclusterrush', displayname: 'Cluster Rush', desc: 'Cluster Rush is a parkour platformer where you jump across moving trucks at high speed.', image: 'https://static.gameloop.com/img/2d7993dd07da134d0c85e6012105b363.png?imageMogr2/thumbnail/172.8x172.8/format/webp', recommended: ['Run 3', 'Slope +', 'Tunnel Rush'] },
+
+  { filename: 'clsnowrider', displayname: 'Snow Rider', desc: 'Snow Rider is a downhill sledding game where you dodge obstacles and go for distance.', image: 'https://geometrydashfullversion.io/cache/data/image/game/snow-rider-3d/snow-rider-3d-m200x200.webp', recommended: ['Crossy Road', 'Subway Surfers', 'Drive Mad'] },
+
+  { filename: 'cldriftboss', displayname: 'Drift Boss', desc: 'Drift Boss is a one-button drifting game focused on timing turns on narrow tracks.', image: 'https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g=w240-h480-rw', recommended: ['Drive Mad', 'Polytrack', 'Highway Racer'] },
+
+  { filename: 'clstacktris', displayname: 'Stacktris', desc: 'Stacktris is a physics-based stacking puzzle inspired by Tetris with unstable block placement.', image: 'https://pizzaedition.win/images/games/stacktris-min.png', recommended: ['Tetris', '2048', 'Shapez.io'] },
+
+  { filename: 'clFNAF', displayname: 'FNAF', desc: 'Five Nights at Freddy’s is a survival horror game where you monitor animatronics through cameras.', image: 'https://pizzaedition.win/images/games/fnaf-min.jpg', recommended: ['Fnaf 2', 'Fnaf 3', 'Fnaf 4'] },
+
+  { filename: 'clFNAF2', displayname: 'Fnaf 2', desc: 'FNAF 2 is a survival horror game with more animatronics and limited defensive tools.', image: 'https://pizzaedition.win/images/games/fnaf2-min.png', recommended: ['FNAF', 'Fnaf 3', 'Fnaf 4'] },
+
+  { filename: 'clFNAF3', displayname: 'Fnaf 3', desc: 'FNAF 3 is a horror survival game focused on managing systems while avoiding Springtrap.', image: 'https://pizzaedition.win/images/games/fnaf3-min.jpg', recommended: ['FNAF', 'Fnaf 2', 'Fnaf 4'] },
+
+  { filename: 'clFNAF4', displayname: 'Fnaf 4', desc: 'FNAF 4 is a horror game focused on listening and reacting to threats in a bedroom setting.', image: 'https://pizzaedition.win/images/games/fnaf4-min.png', recommended: ['FNAF', 'Fnaf 2', 'Fnaf 3'] },
+
+  { filename: 'https://svaaps.github.io/eaglercrafthtml/', displayname: 'Minecraft 1.9', desc: 'Minecraft 1.9 is a sandbox survival game focused on building, exploration, and combat updates.', image: 'https://media.sketchfab.com/models/84938a8f3f8d4a0aa64aaa9c4e4d27d3/thumbnails/f5d49a3c2cdb4424b7f062d340d2a4a7/aafef2fcd26b40f5bea48725065c6542.jpeg', type: 'special', recommended: ['Sandboxels', 'Shapez.io', 'Space Company'] },
+
+  { filename: 'clsubwaysurfersbarcelona', displayname: 'Subway Surfers: Barcelona', desc: 'Subway Surfers is an endless runner where you dodge trains and collect coins while escaping.', image: 'https://vodogame.com/games/subway-surf-barcelona/thumb_1.jpg', recommended: ['Crossy Road', 'Jetpack Joyride', 'Snow Rider'] },
+
+  { filename: 'https://nzp.gay', displayname: 'Nazi Zombies', desc: 'Nazi Zombies is a wave-based survival shooter focused on defending against zombie rounds.', image: 'https://avatars.githubusercontent.com/u/91418801?s=280&v=4', type: 'special', recommended: ['Krunker', 'ev.io', 'Gun Knight'] },
+
+  { filename: 'clducklife3', displayname: 'Duck Life 3', desc: 'Duck Life 3 is a training-based adventure game where you raise a duck to compete in races.', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/f5671816-e95b-4d41-adb7-411708f431ba/ducklife-3.png', recommended: ['Bitlife', 'Cookie Clicker', 'Space Company'] },
+
+  { filename: 'clinkgame', displayname: 'Ink Game', desc: 'Ink Game is a casual arcade-style game focused on fast interactive rounds.', image: 'https://i1.sndcdn.com/artworks-JyBMur02gm43IDuc-eZfeLA-t500x500.png', recommended: ['Skribbl.io', 'Gartic Phone', 'Secret Hitler'] },
+
+  { filename: 'clsupermariobros3real', displayname: 'Super Mario Bros 3', desc: 'Super Mario Bros 3 is a classic platformer focused on level-based platforming and power-ups.', image: 'https://assets-prd.ignimgs.com/2021/12/08/smb3-1638922753441.jpg?crop=1%3A1%2Csmart&format=jpg&auto=webp&quality=80', recommended: ['Run 3', 'OVO', 'Level Devil'] },
+
+  { filename: 'clhighwayracer2', displayname: 'Highway Racer', desc: 'Highway Racer is a driving game focused on lane weaving and avoiding traffic at high speed.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIHgQwU4A22XR4rjnRxhEh-c0Nq9EyODw0qQ&s', recommended: ['Drift Boss', 'Polytrack', 'Drive Mad'] },
+
+  { filename: 'clhobo7', displayname: 'Hobo 7', desc: 'Hobo 7 is a beat ’em up action game with chaotic combat and combo attacks.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsnGUydR2WLlCH2MDLOudQT9mdKkklk_HGaQ&s', recommended: ['Gun Blood', 'Gladihoppers', 'Bow Masters'] },
+
+  { filename: 'clovo', displayname: 'OVO', desc: 'OVO is a precision platformer focused on parkour movement and speedrunning mechanics.', image: 'https://hotgame.io/wp-content/uploads/2025/11/OvO-Game.webp', recommended: ['Run 3', 'Level Devil', 'Tunnel Rush'] },
+
+  { filename: 'clbloonsTD4', displayname: 'Bloons TD4', desc: 'Bloons TD4 is a tower defense game where you place defenses to stop waves of balloons.', image: 'https://gameforge.com/de-DE/littlegames/includes/images/games/13426_5ec634fec15e3.jpg', recommended: ['Plants VS Zombies', 'Zombs.io', 'Shapez.io'] },
+
+  { filename: 'cldeltarune', displayname: 'DELTARUNE', desc: 'DELTARUNE is a story-driven RPG with turn-based combat and bullet-dodging mechanics.', image: 'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/deltarune.jpeg', recommended: ['Die In The Dungeon', 'Dungeon Deck', 'Balatro'] },
+
+  { filename: 'clleveldevil', displayname: 'Level Devil', desc: 'Level Devil is a troll platformer where the level constantly tricks and changes on you.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2M1LFyfRu6edlOBPC9mHDzpUEfKQq9KfdZQ&s', recommended: ['OVO', 'Run 3', 'Tunnel Rush'] },
+
+  { filename: 'clBrawlstars', displayname: 'Brawl Stars', desc: 'Brawl Stars is a multiplayer arena shooter with team-based combat and fast matches.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToDlytiE178sfY8uXNj7aIesE2rM7gGOwjFCmb9VVEWJ7JAoUDaNYQZxuRG5iFNXAxvJRJAA&s=10', recommended: ['Smash Karts', 'Zombs Royale', 'ev.io'] },
+
+  { filename: 'clclearvision5', displayname: 'Clear Vison 5', desc: 'Clear Vision 5 is a sniper puzzle shooter focused on precision assassination missions.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy2Iu956dpwbGBtg7de73Ooxh6eEv-QemA_Q&s', recommended: ['Gun Blood', 'Western Roulette', 'Bow Masters'] },
+
+  { filename: 'clrocketleague', displayname: 'RL Sideswipe', desc: 'RL Sideswipe is a 2D Rocket League game focused on aerial car soccer mechanics.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6PanXiNaRnXnhc58bDbZfhufnj8T3OhdTMw&s', recommended: ['Smash Karts', 'Kart Bros', 'Drift Boss'] },
+
+  { filename: 'clfridaynightfunkin', displayname: 'Friday Night Funkin', desc: 'Friday Night Funkin is a rhythm game where you hit notes in time with music battles.', image: 'https://i.pinimg.com/736x/96/ae/27/96ae27dbe3a47d8c107f310576e1bc99.jpg', recommended: ['3 Dash', 'OVO', 'Level Devil'] },
+
+  { filename: 'clpapascheeseria', displayname: "Papa's Cheeseria", desc: "Papa's Cheeseria is a restaurant time-management game where you build sandwiches for customers.", image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvvqFqyx9sixH-PLe6aGscm4lAM55d7_1yuw&s', recommended: ['Cookie Clicker', 'Duck Life 3', 'Stacktris'] },
+
+  { filename: 'clgladdihoppers', displayname: "Gladihoppers", desc: 'Gladihoppers is a physics-based gladiator combat game with chaotic ragdoll fighting.', image: 'https://play-lh.googleusercontent.com/HUuFbIPERNbpW2Q72WIqiJ8bKDzIgT_C4PnYvMBuH0wC3B_KvpKmumm1FXhZj3jmRHw', recommended: ['Gun Blood', 'Bow Masters', 'Hobo 7'] },
+
+  { filename: 'clplantsvszombies', displayname: "Plants VS Zombies", desc: 'Plants vs Zombies is a tower defense game where you defend your house using plant units.', image: 'https://media.contentapi.ea.com/content/dam/gin/images/2017/01/plants-vs-zombies-2-keyart.jpg.adapt.crop1x1.767p.jpg', recommended: ['Bloons TD4', 'Zombs.io', 'Shapez.io'] },
+
+  { filename: 'cldud', displayname: "Dud", desc: 'Dud is a simple indie arcade-style game focused on short experimental gameplay.', image: 'https://img.itch.zone/aW1nLzEzNzE4MzQzLnBuZw==/original/KLbZPd.png', recommended: ['Stacktris', 'Sandboxels', 'Ink Game'] },
+
+  { filename: 'https://8-ball-pool-html-5.vercel.app', displayname: "8 Ball: Classic", desc: '8 Ball Pool is a billiards game focused on aiming, angles, and competitive matches.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6rcox2LJIE1FGsChgBipA0Dv_CFxbKu-yw&s', type: 'special', recommended: ['Drift Boss', 'Highway Racer', 'Polytrack'] },
+
+  { filename: 'clburritobisonlaunchalibre', displayname: "Burrito Bison: Launcha Libre", desc: 'Burrito Bison is a launch-based arcade game where you fling a wrestler to cause destruction.', image: 'https://play-lh.googleusercontent.com/vpTgm9u7-GzZP_MceTWpDi0HbinXd_4phCoTwf4ZspFL-115FtNRdo_SU1p-khLDnLA', recommended: ['Gun Spin', '10 Bullets', 'Bow Masters'] },
+
+  { filename: 'clgun-spin', displayname: "Gun Spin", desc: 'Gun Spin is a physics shooter where recoil is used to propel movement and progress.', image: 'https://images.dwncdn.net/images/t_app-icon-l/p/39d0a468-21ab-466d-a65b-5585c02dd7ad/15864794/gunspin-logo', recommended: ['Bow Masters', 'Gun Blood', 'Western Roulette'] },
+
+  { filename: 'https://nerd.com', displayname: "Nerd.com Videos", desc: 'Nerd.com Videos is a web-based entertainment hub with quick-access video content.', image: 'https://www.nerd.com/img/nerd/pwa-512x512.png', type: 'special', recommended: ['Skribbl.io', 'Gartic Phone', 'Ink Game'] },
+
+  { filename: 'clbowmaster', displayname: "Bow Masters", desc: 'Bow Masters is a physics-based archery duel game with exaggerated projectile combat.', image: 'https://play-lh.googleusercontent.com/rsQyCuie6S8Munc2Hv6IMpePP1g3c0okLkyKRXd1IimOryIBMZqymGKaOg7bZ6NMkhj3', recommended: ['Gun Blood', 'Gun Spin', 'Western Roulette'] },
+
+  { filename: 'cl10morebullets', displayname: "10 Bullets", desc: '10 Bullets is an arcade shooter where chain reactions and timing create massive explosions.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS2tFiDxHiykGIEajSXpaYIRXpOHCT6vZv6g&s', recommended: ['Gun Spin', 'Bow Masters', 'Gun Blood'] },
+
+  { filename: 'https://mehmetmhy.github.io/tetris/', displayname: "Tetris", desc: 'Tetris is a classic puzzle game where you arrange falling blocks to clear lines.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSJVXUjr9K0zjk9F96LagL6iTk_hu4_yNLkQ&s', type: 'special', recommended: ['2048', 'Stacktris', 'Shapez.io'] },
+
+  { filename: 'https://krunker.io/', displayname: "krunker.io", desc: 'Krunker.io is a fast-paced browser FPS focused on movement and multiplayer shooting.', image: 'https://krunker.co.uk/wp-content/uploads/2025/11/krunker.webp', type: 'special', recommended: ['ev.io', 'Zombs Royale', 'Gun Knight'] },
+
+  { filename: 'https://zombs.io/', displayname: "zombs.io", desc: 'Zombs.io is a base defense survival game where you build and defend against waves.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwUQ4WU6HILmP3J4rOLcMJeGRXL8O5_pxPeA&s', type: 'special', recommended: ['Shapez.io', 'Space Company', 'Bloons TD4'] },
+
+  { filename: 'https://zombsroyale.io/', displayname: "Zombs Royale", desc: 'Zombs Royale is a 2D battle royale shooter with fast matches and loot-based combat.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfkghNZ9V1YI_hJToW3cmb2ZEWDB80-wOxeA&s', type: 'special', recommended: ['Krunker', 'ev.io', 'Brawl Stars'] },
+
+  { filename: 'https://lordz.io/', displayname: "lordz.io", desc: 'lordz.io is a multiplayer strategy game where you build armies and fight for territory.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShpDoqsStil5bb-SoSFIfY2tr9TlCgb7pPPQ&s', type: 'special', recommended: ['Zombs.io', 'Shapez.io', 'Space Company'] },
+
+  { filename: 'https://secret-hitler.online/', displayname: "Secret Hitler", desc: 'Secret Hitler is a social deduction game where players bluff and vote to uncover hidden roles.', image: 'https://th.bing.com/th/id/OIP.0JcC1kGH2AJkAIT7p1zw0gAAAA?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3', type: 'special', recommended: ['Gartic Phone', 'Skribbl.io', 'Ink Game'] },
+
+  { filename: 'https://smashkarts.io/', displayname: "Smash Karts", desc: 'Smash Karts is a multiplayer kart combat game with weapons and arena-style battles.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAdrpTBNT0iI8zuPF0NX0z6t9fJtigQpEhsQ&s', type: 'special', recommended: ['Kart Bros', 'RL Sideswipe', 'Brawl Stars'] },
+
+  { filename: 'https://imisaacwu.github.io/webatro/', displayname: "Balatro", desc: 'Balatro is a roguelike poker deckbuilder focused on combos and score multipliers.', image: 'https://play-lh.googleusercontent.com/RSPv_SMlA3Lun8VHaJD7xCBQg29eCJR9sNJtZNJGlybVs8byYVLz4WnohrbLScC9srg', type: 'special', recommended: ['Dungeon Deck', 'Die In The Dungeon', 'Dungeons and Degenerate Gamblers'] },
+
+  { filename: 'https://shapez.io', displayname: "shapez.io", desc: 'shapez.io is a factory automation game where you design systems to process shapes.', image: 'https://f4.bcbits.com/img/a2183267624_16.jpg', type: 'special', recommended: ['Space Company', 'Zombs.io', 'Bloons TD4'] },
+
+  { filename: 'https://slowroads.io', displayname: "Slowroads", desc: 'Slowroads is a relaxing driving simulator focused on endless procedural roads.', image: 'https://img.itch.zone/aW1nLzI1NzAwNDUwLmpwZw==/original/Rztzj2.jpg', type: 'special', recommended: ['Drift Boss', 'Highway Racer', 'Polytrack'] },
+
+  { filename: 'https://ngsc.freddecgames.com/', displayname: "Space Company", desc: 'Space Company is an incremental strategy game focused on space resource expansion.', image: 'https://play-lh.googleusercontent.com/VjwQdDvXxeWZSDy2GNAkttsojRQ487s8TCmz-bnuJC4iS9Rqntd4xICrvmTkaCEYsN1H=w240-h480', type: 'special', recommended: ['Shapez.io', 'Cookie Clicker', 'Zombs.io'] },
+
+  { filename: 'https://diep.io/', displayname: "diep.io", desc: 'diep.io is a multiplayer tank shooter focused on upgrading and surviving arena battles.', image: 'https://upload.wikimedia.org/wikipedia/en/e/e2/Diepio_mobile_logo.webp', type: 'special', recommended: ['Krunker', 'ev.io', 'Zombs Royale'] },
+
+  { filename: 'https://skribbl.io/', displayname: "skribbl.io", desc: 'skribbl.io is an online drawing and guessing party game.', image: 'https://brain-lines.io/data/image/game/skribbl-io-b1.jpg', type: 'special', recommended: ['Gartic Phone', 'Secret Hitler', 'Ink Game'] },
+
+  { filename: 'https://garticphone.com/', displayname: "Gartic Phone", desc: 'Gartic Phone is a party game combining drawing and telephone-style message chains.', image: 'https://assets-prd.ignimgs.com/2022/11/12/gartic-phone-button-1668215807194.jpg?crop=1%3A1%2Csmart&format=jpg&auto=webp&quality=80', type: 'special', recommended: ['Skribbl.io', 'Secret Hitler', 'Ink Game'] },
+
+  { filename: 'sandboxels.html', displayname: 'Sandboxels', desc: 'Sandboxels is a falling-sand simulation game where elements interact in complex physics systems.', image: 'https://substackcdn.com/image/fetch/$s_!3uou!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb143b429-a854-43e5-9599-fcba40f40d48_960x918.jpeg', type: 'special', recommended: ['Shapez.io', 'Space Company', 'Stacktris'] },
+
+  { filename: 'https://slither.io/', displayname: "slither.io", desc: 'slither.io is a multiplayer snake game where you grow by consuming pellets and other players.', image: 'https://www.google.com/s2/favicons?domain=slither.io&sz=256', type: 'special', recommended: ['MooMoo.io', 'Zombs Royale', 'ev.io'] },
+
+  { filename: 'https://ev.io', displayname: "ev.io", desc: 'ev.io is a futuristic browser FPS focused on fast movement and arena shooting.', image: 'https://static.keygames.com/0/114810/100607/1024x1024/evio.webp', type: 'special', recommended: ['Krunker', 'Zombs Royale', 'Gun Knight'] },
+
+  { filename: 'https://www.openguessr.com/', displayname: "OpenGuessr", desc: 'OpenGuessr is a geography guessing game where you identify real-world locations.', image: 'https://somerandomstuff1.wordpress.com/wp-content/uploads/2019/02/geoguessr1.png', type: 'special', recommended: ['Skribbl.io', 'Gartic Phone', 'Ink Game'] },
+
+  { filename: 'https://moomoo.io/', displayname: "MooMoo.io", desc: 'MooMoo.io is a survival base-building game with resource gathering and PvP combat.', image: 'https://kevin.games/assets/cache_image/games/moomoo-io_200x200_98b.jpg', type: 'special', recommended: ['slither.io', 'Zombs.io', 'ev.io'] },
+
+  { filename: 'cldungeonsanddegenerategamblers', displayname: "Dungeons and Degenerate Gamblers", desc: 'Dungeons and Degenerate Gamblers is a card-based roguelike focused on risky gambling mechanics.', image: 'https://assets-prd.ignimgs.com/2024/05/27/dungeons-and-degenerate-gamblers-button-1716811260241.jpg', recommended: ['Balatro', 'Dungeon Deck', 'Die In The Dungeon'] },
+
+  { filename: 'https://uberspot.github.io/2048/', displayname: "2048", desc: '2048 is a number puzzle game where you merge tiles to reach 2048.', image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg', type: 'special', recommended: ['Stacktris', 'Tetris', 'Cookie Clicker'] },
+];
 
     const databaseFiles = [
        'cl1',
@@ -3936,13 +4236,15 @@ canvas {
 
     function switchView(viewName, options = {}) {
         const shouldNotifyParent = options.notifyParent !== false;
+        const shouldUpdateUrl = options.updateUrl === true;
+        const shouldReplaceUrl = options.replaceUrl === true;
         const inlinePage = document.getElementById('horion-inline-page');
         if (inlinePage) inlinePage.remove();
 
         isGnMathViewActive = viewName === 'gnmath';
         updateGNMathFallbackNotice();
 
-        const views = ['home', 'favorites', 'featured', 'database', 'extensions', 'more'];
+        const views = ['home', 'favorites', 'featured', 'featured-game', 'database', 'extensions', 'more'];
         views.forEach(v => {
             document.getElementById(`view-${v}`).classList.remove('active');
         });
@@ -3957,6 +4259,7 @@ canvas {
         const viewTitleMap = {
             home: 'Horion',
             featured: 'Horion - Featured',
+            'featured-game': currentFeaturedGame ? `Horion - ${currentFeaturedGame.displayname}` : 'Horion - Featured Game',
             database: 'Horion - Database',
             favorites: 'Horion - Favorites',
             extensions: 'Horion - Extensions',
@@ -3966,11 +4269,27 @@ canvas {
 
         if (shouldNotifyParent) {
             try {
+                const featuredPageId = viewName === 'featured-game' && currentFeaturedGame
+                    ? getFeaturedRouteId(currentFeaturedGame.displayname)
+                    : null;
+
                 if (window.parent && window.parent !== window && typeof window.parent.onGamesViewChange === 'function') {
-                    window.parent.onGamesViewChange(viewName);
+                    window.parent.onGamesViewChange(viewName === 'featured-game' ? 'featured' : viewName, featuredPageId);
+                }
+
+                if (window.parent && window.parent !== window && typeof window.parent.onGamesFeaturedPageChange === 'function') {
+                    window.parent.onGamesFeaturedPageChange(featuredPageId);
                 }
             } catch (err) {
                 // Ignore parent messaging errors.
+            }
+        }
+
+        if (shouldUpdateUrl) {
+            try {
+                pushViewUrl(viewName, shouldReplaceUrl);
+            } catch (err) {
+                // Ignore local URL sync failures in iframe contexts.
             }
         }
     }
@@ -3980,10 +4299,312 @@ canvas {
     // ==========================================
     // Global state to track sort order
     let isAscending = true; 
+    let currentFeaturedGame = null;
+
+    function getFeaturedRouteId(displayName) {
+        return String(displayName || '').trim().replace(/\s+/g, '_').toLowerCase();
+    }
+
+    function findFeaturedGameByRouteId(routeId) {
+        const safeId = String(routeId || '').trim().toLowerCase();
+        if (!safeId) return null;
+        return featuredGames.find(game => getFeaturedRouteId(game.displayname).toLowerCase() === safeId) || null;
+    }
+
+    function resolveFeaturedIframeUrl(game) {
+        if (!game || !game.filename) return 'about:blank';
+
+        const rawFilename = String(game.filename).trim();
+        if (!rawFilename) return 'about:blank';
+
+        if (game.type === 'special') {
+            if (/^https?:\/\//i.test(rawFilename)) {
+                return rawFilename;
+            }
+
+            const baseCandidates = [];
+            try {
+                if (window.parent && window.parent !== window && window.parent.location && window.parent.location.href) {
+                    baseCandidates.push(window.parent.location.href);
+                }
+            } catch (err) {
+                // Ignore cross-frame location issues.
+            }
+            baseCandidates.push(document.referrer || '');
+            baseCandidates.push(window.location.href || '');
+
+            for (const base of baseCandidates) {
+                if (!base || /^about:/i.test(base)) continue;
+                try {
+                    return new URL(rawFilename, base).href;
+                } catch (err) {
+                    // Try the next candidate.
+                }
+            }
+
+            return rawFilename;
+        }
+
+        return `https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${encodeURIComponent(rawFilename)}.html`;
+    }
+
+    function loadFeaturedGameIntoFrame(game) {
+        const frameEl = document.getElementById('featured-game-frame');
+        if (!frameEl || !game) return;
+
+        frameEl.removeAttribute('srcdoc');
+        frameEl.src = resolveFeaturedIframeUrl(game);
+        updateFeaturedFrameScrollMode();
+    }
+
+    function isFeaturedFrameFullscreen(frameEl) {
+        return document.fullscreenElement === frameEl || document.webkitFullscreenElement === frameEl || document.msFullscreenElement === frameEl;
+    }
+
+    function updateFeaturedFrameScrollMode() {
+        const frameEl = document.getElementById('featured-game-frame');
+        if (!frameEl) return;
+
+        const allowScroll = isFeaturedFrameFullscreen(frameEl);
+        frameEl.setAttribute('scrolling', allowScroll ? 'yes' : 'no');
+        frameEl.style.overflow = allowScroll ? 'auto' : 'hidden';
+
+        try {
+            const doc = frameEl.contentDocument;
+            if (!doc || !doc.documentElement || !doc.body) return;
+
+            const overflowValue = allowScroll ? 'auto' : 'hidden';
+            const overscrollValue = allowScroll ? 'auto' : 'none';
+            doc.documentElement.style.setProperty('overflow', overflowValue, 'important');
+            doc.body.style.setProperty('overflow', overflowValue, 'important');
+            doc.documentElement.style.setProperty('overscroll-behavior', overscrollValue, 'important');
+            doc.body.style.setProperty('overscroll-behavior', overscrollValue, 'important');
+        } catch (err) {
+            // Cross-origin iframes cannot be styled directly.
+        }
+    }
+
+    function pushFeaturedGameUrl(game, shouldReplace) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('type', 'games');
+        url.searchParams.set('page', getFeaturedRouteId(game.displayname));
+        url.searchParams.delete('view');
+        url.searchParams.delete('id');
+
+        const statePayload = {
+            type: 'games',
+            page: getFeaturedRouteId(game.displayname)
+        };
+
+        if (shouldReplace) {
+            history.replaceState(statePayload, '', url);
+        } else {
+            history.pushState(statePayload, '', url);
+        }
+    }
+
+    function pushViewUrl(viewName, shouldReplace) {
+        const url = new URL(window.location.href);
+        const pageValue = viewName === 'featured-game' && currentFeaturedGame
+            ? getFeaturedRouteId(currentFeaturedGame.displayname)
+            : viewName;
+
+        url.searchParams.set('type', 'games');
+        url.searchParams.set('page', pageValue);
+        url.searchParams.delete('view');
+        url.searchParams.delete('id');
+
+        const statePayload = { type: 'games', page: pageValue };
+        if (shouldReplace) {
+            history.replaceState(statePayload, '', url);
+        } else {
+            history.pushState(statePayload, '', url);
+        }
+    }
+
+    function getRecommendedFeaturedGames(currentGame, count) {
+        const targetCount = Number.isFinite(count) ? Math.max(0, count) : 0;
+        if (!currentGame || targetCount === 0) return [];
+
+        const recommendedRaw = currentGame.recommended
+            || currentGame.recomended
+            || currentGame.reccomended
+            || currentGame.reccomendedd;
+
+        const recommendedList = Array.isArray(recommendedRaw)
+            ? recommendedRaw
+            : (typeof recommendedRaw === 'string' && recommendedRaw.trim()
+                ? recommendedRaw.split(',').map(item => item.trim()).filter(Boolean)
+                : []);
+
+        const normalize = (value) => String(value || '').trim().toLowerCase();
+
+        const byDisplayName = new Map();
+        const byRouteId = new Map();
+        const byFilename = new Map();
+
+        featuredGames.forEach((game) => {
+            if (!game) return;
+            byDisplayName.set(normalize(game.displayname), game);
+            byRouteId.set(normalize(getFeaturedRouteId(game.displayname)), game);
+            byFilename.set(normalize(game.filename), game);
+        });
+
+        const selected = [];
+        const seen = new Set();
+        const addIfValid = (game) => {
+            if (!game) return;
+            if (game.filename === currentGame.filename) return;
+            const key = normalize(game.filename) || normalize(game.displayname);
+            if (!key || seen.has(key)) return;
+            seen.add(key);
+            selected.push(game);
+        };
+
+        recommendedList.forEach((entry) => {
+            const key = normalize(entry);
+            if (!key) return;
+
+            const match = byDisplayName.get(key)
+                || byRouteId.get(key)
+                || byFilename.get(key)
+                || byFilename.get(`${key}.html`)
+                || byFilename.get(key.replace(/\.html$/i, ''));
+
+            addIfValid(match);
+        });
+
+        if (selected.length < targetCount) {
+            featuredGames.forEach((game) => addIfValid(game));
+        }
+
+        return selected.slice(0, targetCount);
+    }
+
+    function renderRecommendedFeaturedGames(currentGame) {
+        const container = document.getElementById('featured-recommended-grid');
+        if (!container) return;
+
+        container.innerHTML = '';
+        getRecommendedFeaturedGames(currentGame, 3).forEach(game => {
+            const card = createGameCard(game);
+            container.appendChild(card);
+        });
+    }
+
+    function openFeaturedGamePage(game, options = {}) {
+        if (!game) return;
+
+        currentFeaturedGame = game;
+        const featuredPageId = getFeaturedRouteId(game.displayname);
+
+        const shouldUpdateUrl = options.updateUrl !== false;
+        const shouldReplaceUrl = options.replaceUrl === true;
+
+        const titleEl = document.getElementById('featured-game-title');
+        const descEl = document.getElementById('featured-game-desc');
+
+        if (titleEl) titleEl.innerText = game.displayname;
+        if (descEl) descEl.innerText = game.desc || game.description || '';
+        loadFeaturedGameIntoFrame(game);
+
+        renderRecommendedFeaturedGames(game);
+        switchView('featured-game', { updateUrl: false });
+        document.title = `Horion - ${game.displayname}`;
+
+        if (shouldUpdateUrl) {
+            pushFeaturedGameUrl(game, shouldReplaceUrl);
+        }
+    }
+
+    function openFeaturedGameByRouteId(routeId, options = {}) {
+        const game = findFeaturedGameByRouteId(routeId);
+        if (!game) return false;
+        openFeaturedGamePage(game, options);
+        return true;
+    }
+
+    window.openFeaturedGameByRouteId = openFeaturedGameByRouteId;
+
+    function routeFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const type = String(params.get('type') || '').trim().toLowerCase();
+        const pageParam = String(params.get('page') || '').trim();
+
+        // Backward compatibility with old query format.
+        const legacyView = String(params.get('view') || '').trim();
+        const legacyId = String(params.get('id') || '').trim();
+
+        if (type === 'games' && pageParam) {
+            const page = pageParam.toLowerCase();
+            const validViews = new Set(['home', 'favorites', 'featured', 'database', 'extensions', 'more']);
+
+            if (validViews.has(page)) {
+                switchView(page, { notifyParent: false, updateUrl: false });
+                return;
+            }
+
+            const game = findFeaturedGameByRouteId(pageParam);
+            if (game) {
+                openFeaturedGamePage(game, { updateUrl: false });
+                return;
+            }
+
+            switchView('featured', { notifyParent: false, updateUrl: false });
+            return;
+        }
+
+        if (legacyView.toLowerCase() === 'featured-game') {
+            const routeId = legacyId;
+            const game = findFeaturedGameByRouteId(routeId);
+            if (game) {
+                openFeaturedGamePage(game, { updateUrl: false });
+                return;
+            }
+            switchView('featured', { notifyParent: false, updateUrl: false });
+            return;
+        }
+
+        const validViews = new Set(['home', 'favorites', 'featured', 'database', 'extensions', 'more']);
+        const fallbackView = legacyView.toLowerCase();
+        if (validViews.has(fallbackView)) {
+            switchView(fallbackView, { notifyParent: false, updateUrl: false });
+        } else {
+            switchView('home', { notifyParent: false, updateUrl: false });
+        }
+    }
 
     function toggleSort() {
         isAscending = !isAscending; // Flip the state
         generateFeaturedGrid();     // Re-run the generation
+    }
+
+    function getFeaturedRowColumns() {
+        if (window.innerWidth <= 620) return 2;
+        if (window.innerWidth <= 920) return 4;
+        if (window.innerWidth <= 1240) return 5;
+        return 7;
+    }
+
+    function renderFeaturedRows(container, cards) {
+        const columns = getFeaturedRowColumns();
+        container.innerHTML = '';
+        container.style.setProperty('--featured-row-columns', columns);
+
+        for (let i = 0; i < cards.length; i += columns) {
+            const row = document.createElement('div');
+            row.className = 'featured-row';
+
+            cards.slice(i, i + columns).forEach(card => row.appendChild(card));
+            container.appendChild(row);
+        }
+    }
+
+    function refreshFeaturedRowVisibility(container) {
+        container.querySelectorAll('.featured-row').forEach(row => {
+            const hasVisibleCards = Array.from(row.querySelectorAll('.game-card')).some(card => card.style.display !== 'none');
+            row.style.display = hasVisibleCards ? 'flex' : 'none';
+        });
     }
 
     function generateFeaturedGrid() {
@@ -4002,37 +4623,12 @@ canvas {
                 : b.displayname.localeCompare(a.displayname);
         });
 
-        sortedGames.forEach(game => {
-            const card = createGameCard(game);
-            container.appendChild(card);
-        });
+        const cards = sortedGames.map(game => createGameCard(game));
+        renderFeaturedRows(container, cards);
     }
 
-    // Add this new routing function right here
     function handleGameClick(game) {
-        if (game.type === 'special') {
-            const specialUrl = String(game.filename || '').toLowerCase();
-            const isSkribbl = specialUrl.includes('skribbl.io');
-            const isGarticPhone = specialUrl.includes('garticphone.com');
-            const isBloob = specialUrl.includes('bloob.io');
-            const isZombsRoyale = specialUrl.includes('zombsroyale.io');
-            const isEvIO = specialUrl.includes('ev.io');
-            if (isSkribbl) {
-                openSkribblLobbyPopup(game.filename, game.displayname);
-            } else if (isGarticPhone) {
-                openGarticPhoneLobbyPopup(game.filename, game.displayname);
-            } else if (isBloob) {
-                openBloobLobbyPopup(game.filename, game.displayname);
-            } else if (isZombsRoyale) {
-                openZombsRoyaleLobbyPopup(game.filename, game.displayname);
-            } else if (isEvIO) {
-                openEvIOLobbyPopup(game.filename, game.displayname);
-            } else {
-                openSpecial(game.filename, game.displayname);
-            }
-        } else {
-            openGame(game.filename); 
-        }
+        openFeaturedGamePage(game);
     }
     // Update your existing createGameCard function
     function createGameCard(game) {
@@ -4142,14 +4738,14 @@ canvas {
         // Render Featured Favorites
         const favFeatured = favorites.filter(f => f.type === 'featured');
         if(favFeatured.length > 0) {
+            const cards = [];
             favFeatured.forEach(fav => {
                 // Find game data
                 const gameData = featuredGames.find(g => g.filename === fav.id);
-                if(gameData) {
-                    const card = createGameCard(gameData);
-                    featContainer.appendChild(card);
-                }
+                if(gameData) cards.push(createGameCard(gameData));
             });
+
+            renderFeaturedRows(featContainer, cards);
         } else {
              featContainer.innerHTML = '<p style="color:#444; font-size:0.8rem;">No featured games favorited.</p>';
         }
@@ -4168,25 +4764,18 @@ canvas {
 
     function openGame(id) {
         const cleanId = id.trim();
-        fetch(`https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${cleanId}.html?t=${Date.now()}`)
-        .then(r => {
-            if(!r.ok) throw new Error("HTTP " + r.status);
-            return r.text();
-        })
-        .then(t => {
-            const w = window.open("about:blank", "_blank");
-            if (w) {
-                w.document.open();
-                w.document.write(t);
-                w.document.close();
-            } else {
-                alert("Pop-up blocked!");
-            }
-        })
-        .catch(err => {
-            alert("Failed to load game: " + cleanId);
-            console.error(err);
-        });
+        const targetUrl = `https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${encodeURIComponent(cleanId)}.html?t=${Date.now()}`;
+        const w = window.open(targetUrl, '_blank');
+        if (!w) {
+            alert('Pop-up blocked!');
+            return;
+        }
+
+        try {
+            w.opener = null;
+        } catch (err) {
+            // Ignore opener assignment issues in stricter browsers.
+        }
     }
     function buildProxiedAboutBlankHtml(html, baseUrl) {
     const safeBase = String(baseUrl).replace(/"/g, '&quot;');
@@ -4361,7 +4950,7 @@ function launchSite(targetUrl, pageTitle, options) {
             ? ' sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-pointer-lock allow-presentation"'
             : '';
         win.document.open();
-        win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>');
+        win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' + safeTitle + '</title><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></body></html>');
         win.document.close();
     };
 
@@ -5359,14 +5948,73 @@ function openSpecial(gamelink, gameTitle) {
         generateFeaturedGrid();
         generateDatabaseList();
         generateExtensionsView();
-        switchView('home', { notifyParent: false });
+        switchView('home', { notifyParent: false, updateUrl: false });
+
+        const fullscreenBtn = document.getElementById('featured-game-fullscreen');
+        const aboutBlankBtn = document.getElementById('featured-game-aboutblank');
+        const featuredFrame = document.getElementById('featured-game-frame');
+
+        if (fullscreenBtn && featuredFrame) {
+            fullscreenBtn.addEventListener('click', () => {
+                if (featuredFrame.requestFullscreen) {
+                    featuredFrame.requestFullscreen();
+                } else if (featuredFrame.webkitRequestFullscreen) {
+                    featuredFrame.webkitRequestFullscreen();
+                }
+            });
+        }
+
+        if (featuredFrame) {
+            featuredFrame.addEventListener('load', updateFeaturedFrameScrollMode);
+            document.addEventListener('fullscreenchange', updateFeaturedFrameScrollMode);
+            document.addEventListener('webkitfullscreenchange', updateFeaturedFrameScrollMode);
+            document.addEventListener('MSFullscreenChange', updateFeaturedFrameScrollMode);
+            updateFeaturedFrameScrollMode();
+        }
+
+        if (aboutBlankBtn) {
+            aboutBlankBtn.addEventListener('click', () => {
+                if (!currentFeaturedGame) return;
+
+                if (currentFeaturedGame.type === 'special') {
+                    openSpecial(currentFeaturedGame.filename, currentFeaturedGame.displayname);
+                } else {
+                    openGame(currentFeaturedGame.filename);
+                }
+            });
+        }
 
         document.getElementById('searchFeatured').addEventListener('input', e => {
             const search = e.target.value.toLowerCase();
             document.querySelectorAll('#featured-grid .game-card').forEach(card => {
                 card.style.display = card.dataset.name.includes(search) ? 'block' : 'none';
             });
+            refreshFeaturedRowVisibility(document.getElementById('featured-grid'));
         });
+
+        let featuredCols = getFeaturedRowColumns();
+        window.addEventListener('resize', () => {
+            const nextFeaturedCols = getFeaturedRowColumns();
+            if (nextFeaturedCols !== featuredCols) {
+                featuredCols = nextFeaturedCols;
+                generateFeaturedGrid();
+                updateFavoritesView();
+
+                const searchValue = document.getElementById('searchFeatured').value.trim().toLowerCase();
+                if (searchValue) {
+                    document.querySelectorAll('#featured-grid .game-card').forEach(card => {
+                        card.style.display = card.dataset.name.includes(searchValue) ? 'block' : 'none';
+                    });
+                    refreshFeaturedRowVisibility(document.getElementById('featured-grid'));
+                }
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            routeFromUrl();
+        });
+
+        routeFromUrl();
 
         document.getElementById('searchDatabase').addEventListener('input', e => {
             const search = e.target.value.toLowerCase();
@@ -8128,6 +8776,7 @@ function openOriginalSports(event) {
         const model = {
             mode: 'games',
             currentGamesView: 'home',
+            currentGamesPage: null,
             currentTvView: 'home',
             currentTvDetails: null
         };
@@ -8266,6 +8915,7 @@ function openOriginalSports(event) {
 
             let mode = validModes.has(typeParam) ? typeParam : null;
             let gamesView = 'home';
+            let gamesPage = null;
             let tvView = 'home';
 
             // Support shorthand links like ?page=sports or ?page=gnmath without an explicit type.
@@ -8282,13 +8932,23 @@ function openOriginalSports(event) {
 
             if (mode) {
                 if (mode === 'games') {
-                    gamesView = (validGamesViews.has(pageParam) || specialGamesViews.has(pageParam)) ? pageParam : 'home';
+                    if ((validGamesViews.has(pageParam) || specialGamesViews.has(pageParam))) {
+                        gamesView = pageParam;
+                        gamesPage = null;
+                    } else if (pageParam) {
+                        gamesView = 'featured';
+                        gamesPage = pageParam;
+                    } else {
+                        gamesView = 'home';
+                        gamesPage = null;
+                    }
                 } else {
                     tvView = validTvViews.has(pageParam) ? pageParam : 'home';
                 }
             } else {
                 mode = validModes.has(legacyModeParam) ? legacyModeParam : 'games';
                 gamesView = (validGamesViews.has(legacyGamesParam) || specialGamesViews.has(legacyGamesParam)) ? legacyGamesParam : 'home';
+                gamesPage = null;
                 tvView = validTvViews.has(legacyTvParam) ? legacyTvParam : 'home';
             }
 
@@ -8311,6 +8971,7 @@ function openOriginalSports(event) {
             return {
                 mode,
                 gamesView,
+                gamesPage,
                 tvView,
                 tvDetails
             };
@@ -8343,6 +9004,7 @@ function openOriginalSports(event) {
                 const payload = {
                     mode: model.mode,
                     gamesView: safeGamesView,
+                    gamesPage: safeGamesView === 'featured' ? (model.currentGamesPage || null) : null,
                     tvView: safeTvView,
                     tvDetails: safeTvView === 'details' ? (model.currentTvDetails || null) : null
                 };
@@ -8363,13 +9025,16 @@ function openOriginalSports(event) {
                 if (!mode) return null;
 
                 const gamesView = getRefreshSafeGamesView(parsed.gamesView);
+                const gamesPage = gamesView === 'featured' && typeof parsed.gamesPage === 'string'
+                    ? parsed.gamesPage.trim() || null
+                    : null;
                 const tvView = getRefreshSafeTvView(parsed.tvView);
                 let tvDetails = tvView === 'details' ? normalizeTvDetails(parsed.tvDetails) : null;
                 if (tvView === 'details' && !tvDetails) {
                     tvDetails = null;
                 }
 
-                return { mode, gamesView, tvView, tvDetails };
+                return { mode, gamesView, gamesPage, tvView, tvDetails };
             } catch (err) {
                 return null;
             }
@@ -8378,10 +9043,15 @@ function openOriginalSports(event) {
         function syncUrlWithState(push) {
             const url = new URL(window.location.href);
             const routeGamesView = getRefreshSafeGamesView(model.currentGamesView);
+            const routeGamesPage = routeGamesView === 'featured' ? (String(model.currentGamesPage || '').trim() || null) : null;
             const routeTvView = getRefreshSafeTvView(model.currentTvView);
 
             url.searchParams.set('type', model.mode);
-            url.searchParams.set('page', model.mode === 'games' ? routeGamesView : routeTvView);
+            if (model.mode === 'games') {
+                url.searchParams.set('page', routeGamesPage || routeGamesView);
+            } else {
+                url.searchParams.set('page', routeTvView);
+            }
 
             // Remove old dual-view params so URL only reflects the active side.
             url.searchParams.delete('mode');
@@ -8415,6 +9085,7 @@ function openOriginalSports(event) {
             const statePayload = {
                 mode: model.mode,
                 gamesView: model.currentGamesView,
+                gamesPage: model.currentGamesView === 'featured' ? model.currentGamesPage : null,
                 tvView: model.currentTvView,
                 tvDetails: model.currentTvDetails
             };
@@ -8445,6 +9116,7 @@ function openOriginalSports(event) {
             isApplyingRoute = true;
             model.mode = route.mode;
             model.currentGamesView = route.gamesView;
+            model.currentGamesPage = route.gamesPage || null;
             model.currentTvView = route.tvView;
             model.currentTvDetails = route.tvDetails || null;
 
@@ -8455,7 +9127,7 @@ function openOriginalSports(event) {
             setTrackSettled(true);
 
             if (model.mode === 'games') {
-                navigateGames(model.currentGamesView);
+                navigateGames(model.currentGamesView, model.currentGamesPage);
             } else {
                 navigateTv(model.currentTvView, model.currentTvDetails);
             }
@@ -8643,14 +9315,21 @@ function openOriginalSports(event) {
             document.getElementById('tv-frame').srcdoc = TV_APP_HTML;
         }
 
-        function navigateGames(view) {
+        function navigateGames(view, pageId = null) {
             const safeView = resolveGamesView(view);
             const normalizedStateView = normalizeGamesStateView(safeView);
+            const normalizedPageId = safeView === 'featured' && typeof pageId === 'string'
+                ? pageId.trim() || null
+                : null;
             model.currentGamesView = normalizedStateView;
+            model.currentGamesPage = safeView === 'featured' ? normalizedPageId : null;
 
             if (!frameState.gamesLoaded) {
-                frameState.pendingGamesView = safeView;
-                window.onGamesViewChange(normalizedStateView);
+                frameState.pendingGamesView = {
+                    view: safeView,
+                    pageId: model.currentGamesPage
+                };
+                window.onGamesViewChange(normalizedStateView, model.currentGamesPage);
                 updateShellTitle();
                 return;
             }
@@ -8661,6 +9340,10 @@ function openOriginalSports(event) {
                     return;
                 }
                 if (typeof win.switchView === 'function') {
+                    if (safeView === 'featured' && model.currentGamesPage && typeof win.openFeaturedGameByRouteId === 'function') {
+                        win.openFeaturedGameByRouteId(model.currentGamesPage, { updateUrl: false });
+                        return;
+                    }
                     win.switchView(safeView);
                     return;
                 }
@@ -8675,10 +9358,13 @@ function openOriginalSports(event) {
             });
 
             if (!didNavigate) {
-                frameState.pendingGamesView = safeView;
+                frameState.pendingGamesView = {
+                    view: safeView,
+                    pageId: model.currentGamesPage
+                };
             }
 
-            window.onGamesViewChange(normalizedStateView);
+            window.onGamesViewChange(normalizedStateView, model.currentGamesPage);
             updateShellTitle();
         }
 
@@ -8735,27 +9421,56 @@ function openOriginalSports(event) {
             updateShellTitle();
         }
 
-        window.onGamesViewChange = function (view) {
+        window.onGamesViewChange = function (view, pageId) {
             const normalizedView = normalizeGamesStateView(view);
             if (!(validGamesViews.has(normalizedView) || specialGamesViews.has(normalizedView))) return;
+            const normalizedPageId = normalizedView === 'featured' && typeof pageId === 'string'
+                ? pageId.trim() || null
+            : null;
             if (!frameState.gamesLoaded && !isApplyingRoute) {
                 // Ignore child-app boot defaults that would overwrite an explicit route like gnmath.
                 if (normalizedView === 'home' && model.currentGamesView !== 'home') {
                     return;
                 }
                 model.currentGamesView = normalizedView;
+                model.currentGamesPage = normalizedView === 'featured' ? normalizedPageId : null;
                 return;
             }
             const changed = model.currentGamesView !== normalizedView;
+            const pageChanged = (model.currentGamesPage || null) !== (normalizedView === 'featured' ? normalizedPageId : null);
             model.currentGamesView = normalizedView;
+            model.currentGamesPage = normalizedView === 'featured' ? normalizedPageId : null;
             if (!isApplyingRoute && model.mode === 'games') {
                 const route = parseRouteFromUrl();
-                const urlOutOfSync = route.mode !== 'games' || route.gamesView !== normalizedView;
-                if (changed || urlOutOfSync) {
+                const urlOutOfSync =
+                    route.mode !== 'games' ||
+                    route.gamesView !== normalizedView ||
+                    ((route.gamesPage || null) !== (normalizedView === 'featured' ? normalizedPageId : null));
+                if (changed || pageChanged || urlOutOfSync) {
                     syncUrlWithState(true);
                 }
             }
             updateShellTitle();
+        };
+
+        window.onGamesFeaturedPageChange = function (pageId) {
+            const normalizedPageId = typeof pageId === 'string' ? pageId.trim() : '';
+            const nextPageId = normalizedPageId || null;
+            const previousPageId = model.currentGamesPage || null;
+
+            // Keep currentGamesPage in lockstep with game-details routing.
+            model.currentGamesPage = nextPageId;
+
+            if (!isApplyingRoute && model.mode === 'games') {
+                const route = parseRouteFromUrl();
+                const routePage = route.mode === 'games' ? (route.gamesPage || null) : null;
+                const pageChanged = previousPageId !== nextPageId;
+                const urlOutOfSync = routePage !== nextPageId;
+
+                if (pageChanged || urlOutOfSync) {
+                    syncUrlWithState(true);
+                }
+            }
         };
 
         window.onTvViewChange = function (view, param) {
@@ -8824,7 +9539,7 @@ function openOriginalSports(event) {
             });
 
             if (targetMode === 'games') {
-                navigateGames(model.currentGamesView);
+                navigateGames(model.currentGamesView, model.currentGamesPage);
             } else {
                 navigateTv(model.currentTvView, model.currentTvDetails);
             }
@@ -8849,7 +9564,11 @@ function openOriginalSports(event) {
                 frameState.gamesLoaded = true;
                 const pendingGamesView = frameState.pendingGamesView;
                 frameState.pendingGamesView = null;
-                navigateGames(pendingGamesView || model.currentGamesView);
+                if (pendingGamesView && typeof pendingGamesView === 'object') {
+                    navigateGames(pendingGamesView.view || model.currentGamesView, pendingGamesView.pageId || null);
+                } else {
+                    navigateGames(model.currentGamesView, model.currentGamesPage);
+                }
             });
 
             document.getElementById('tv-frame').addEventListener('load', () => {
@@ -8871,6 +9590,7 @@ function openOriginalSports(event) {
             const resolvedInitialRoute = storedRoute || initialRoute;
             model.mode = resolvedInitialRoute.mode;
             model.currentGamesView = resolvedInitialRoute.gamesView;
+            model.currentGamesPage = resolvedInitialRoute.gamesPage || null;
             model.currentTvView = resolvedInitialRoute.tvView;
             model.currentTvDetails = resolvedInitialRoute.tvDetails;
 
@@ -8896,7 +9616,7 @@ function openOriginalSports(event) {
                 enforceShellLayoutIntegrity();
 
                 if (model.mode === 'games') {
-                    navigateGames(model.currentGamesView);
+                    navigateGames(model.currentGamesView, model.currentGamesPage);
                 } else {
                     navigateTv(model.currentTvView, model.currentTvDetails);
                 }
@@ -8909,3 +9629,5 @@ function openOriginalSports(event) {
     </script>
 </body>
 </html>
+
+
