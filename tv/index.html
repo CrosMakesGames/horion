@@ -120,9 +120,6 @@
         .nav-item:hover { color: var(--neon-blue); }
         .nav-item.active { color: var(--hacker-blue); border-bottom: 1px solid var(--hacker-blue); }
 
-        .nav-item.sports-btn { color: #ffffff; }
-        .nav-item.sports-btn:hover { color: var(--neon-blue); }
-
         /* --- CONTENT CONTAINER --- */
         .content-container {
             max-width: 1400px;
@@ -270,53 +267,68 @@
             .search-prompt { flex-direction: column; gap: 15px; text-align: center; }
         }
 
-        /* --- HOME FOOTER --- */
-        .home-footer {
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(0, 112, 255, 0.15);
+        .site-footer {
+            margin: 28px 0 0;
+            width: 100%;
+            border: 1px solid rgba(0, 112, 255, 0.2);
+            background: rgba(0, 12, 24, 0.75);
+            border-radius: 0;
+            backdrop-filter: blur(2px);
+        }
+
+        .site-footer-inner {
+            min-height: 82px;
+            padding: 14px 40px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .site-footer-brand {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            gap: 12px;
+            justify-self: start;
+        }
+
+        .site-footer-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .site-footer-links {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-self: center;
+        }
+
+        .site-footer-links a {
+            color: var(--hacker-blue);
+            text-decoration: none;
             font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
         }
-        
-        .footer-version {
+
+        .site-footer-links a:hover {
             color: var(--neon-blue);
-            font-size: 1.1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        .footer-changes {
-            color: var(--text-grey);
-            font-size: 0.85rem;
-            max-width: 500px;
-        }
-
-        .footer-changes span {
-            color: white;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .footer-changes ul {
-            margin: 0;
-            padding-left: 15px;
-            list-style-type: square;
-        }
-
-        .footer-changes li {
-            margin-bottom: 5px;
-            line-height: 1.4;
         }
 
         @media (max-width: 768px) {
-            .home-footer {
-                flex-direction: column;
-                gap: 20px;
+            .site-footer-inner {
+                grid-template-columns: 1fr;
+                padding: 14px 20px;
+                justify-items: center;
+                row-gap: 10px;
+            }
+
+            .site-footer-brand,
+            .site-footer-links {
+                justify-self: center;
             }
         }
 
@@ -438,6 +450,29 @@
             color: #ff6b6b;
         }
 
+        .sports-ad-warning {
+            margin: 14px 0 16px;
+            border: 1px solid rgba(255, 193, 7, 0.45);
+            background: rgba(255, 193, 7, 0.08);
+            color: #ffe7a3;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .sports-ad-warning a {
+            color: #ffd35e;
+            text-decoration: underline;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .sports-ad-warning a:hover {
+            color: #fff0b5;
+        }
+
         .sports-layout {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -453,28 +488,6 @@
         .sports-matches-grid {
             display: grid;
             gap: 12px;
-        }
-
-        .sports-beta-note {
-            margin: 10px 0 18px;
-            color: #b7cad8;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            background: rgba(10, 20, 34, 0.6);
-            border: 1px solid rgba(110, 170, 215, 0.24);
-            border-radius: 12px;
-            padding: 10px 12px;
-        }
-
-        .sports-beta-note a {
-            color: var(--neon-blue);
-            text-decoration: none;
-            border-bottom: 1px dotted rgba(0, 229, 255, 0.5);
-        }
-
-        .sports-beta-note a:hover {
-            color: #7ef6ff;
-            border-bottom-color: #7ef6ff;
         }
 
         .sports-match-card {
@@ -777,6 +790,7 @@
         ::-webkit-scrollbar-thumb { background: var(--hacker-blue); }
         ::-webkit-scrollbar-track { background: #000; }
     </style>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
 </head>
 <body>
 
@@ -841,7 +855,12 @@
 
     <div id="view-sports" class="view-section">
         <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
-        <p class="sports-beta-note">You are viewing the live sports beta. Need the old page? Open <a href="#" onclick="openOriginalSports(event)">original sports</a>.</p>
+
+        <div class="sports-ad-warning">
+            With live sports, use an ad blocker, as sport streams are embedded with ads outside Horion jurisdiction.
+            Most school devices have adblockers built in.
+            <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
+        </div>
 
         <div class="sports-toolbar">
             <label class="sports-control" aria-label="Feed selector">
@@ -901,6 +920,19 @@
     </div>
 
 </div>
+
+<footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img src="../cmg.png" alt="CMG" class="site-footer-logo">
+        </div>
+        <div class="site-footer-links">
+            <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
+            <a href="https://discord.gg/hDFhKTe2se" target="_blank" rel="noopener noreferrer">Discord</a>
+        </div>
+    </div>
+</footer>
 
 <script type="text/javascript">
     // ==========================================
@@ -1613,6 +1645,122 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         return '';
     }
 
+    function slugifySportsText(value) {
+        return String(value || '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/-{2,}/g, '-');
+    }
+
+    function buildEmbedSportsMatchUrl(match, streamNumber) {
+        const homeName = slugifySportsText(match?.teams?.home?.name || '');
+        const awayName = slugifySportsText(match?.teams?.away?.name || '');
+        const fallbackTitle = slugifySportsText(match?.title || 'live-match');
+        const matchupSlug = homeName && awayName ? `ppv-${homeName}-vs-${awayName}` : `ppv-${fallbackTitle}`;
+        const safeNumber = Number.isFinite(Number(streamNumber)) && Number(streamNumber) > 0 ? Number(streamNumber) : 1;
+        return `https://embedsports.top/embed/admin/${matchupSlug}/${safeNumber}`;
+    }
+
+    function escapeHtmlAttribute(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function buildLockedEmbedSrcDoc(targetUrl, options) {
+        const safeUrl = escapeHtmlAttribute(targetUrl);
+        const opts = options || {};
+        const sandboxAttr = opts.disableInnerSandbox
+            ? ''
+            : ' sandbox="allow-same-origin allow-scripts allow-forms allow-presentation allow-pointer-lock"';
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
+    }
+
+    function setLockedEmbedFrame(frame, targetUrl, options) {
+        if (!frame) return;
+        const opts = options || {};
+
+        if (opts.disableOuterSandbox) {
+            frame.removeAttribute('sandbox');
+        } else {
+            frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+        }
+
+        const normalizedUrl = String(targetUrl || '').trim();
+        if (!normalizedUrl) {
+            frame.removeAttribute('srcdoc');
+            frame.src = 'about:blank';
+            return;
+        }
+
+        frame.src = 'about:blank';
+        frame.srcdoc = buildLockedEmbedSrcDoc(normalizedUrl, opts);
+    }
+
+    async function fetchEmbedHtmlWithFallback(targetUrl) {
+        const safeTarget = String(targetUrl || '').trim();
+        if (!safeTarget) throw new Error('Missing embed URL');
+
+        const attempts = [
+            safeTarget,
+            'https://api.allorigins.win/raw?url=' + encodeURIComponent(safeTarget),
+            'https://api.allorigins.win/get?url=' + encodeURIComponent(safeTarget),
+            'https://corsproxy.io/?' + encodeURIComponent(safeTarget),
+            'https://r.jina.ai/http://' + safeTarget.replace(/^https?:\/\//i, '')
+        ];
+
+        let lastError = null;
+        for (const attemptUrl of attempts) {
+            try {
+                const response = await fetch(attemptUrl, { cache: 'no-store' });
+                if (!response.ok) {
+                    lastError = new Error('HTTP ' + response.status + ' for ' + attemptUrl);
+                    continue;
+                }
+
+                let text = await response.text();
+                if (attemptUrl.includes('api.allorigins.win/get?url=')) {
+                    try {
+                        const parsed = JSON.parse(text);
+                        text = typeof parsed.contents === 'string' ? parsed.contents : '';
+                    } catch (error) {
+                        text = '';
+                    }
+                }
+
+                if (typeof text === 'string' && /<html|<body|<script|<iframe/i.test(text)) {
+                    return text;
+                }
+
+                lastError = new Error('Unexpected response body for ' + attemptUrl);
+            } catch (error) {
+                lastError = error;
+            }
+        }
+
+        throw lastError || new Error('Unable to fetch embed HTML');
+    }
+
+    function setSportsNoSandboxNoNewTabsFrame(frame, targetUrl, fallbackUrl) {
+        if (!frame) return;
+        const normalizedUrl = String(targetUrl || '').trim();
+
+        frame.removeAttribute('sandbox');
+
+        if (!normalizedUrl) {
+            frame.removeAttribute('srcdoc');
+            frame.src = 'about:blank';
+            return;
+        }
+
+        frame.src = 'about:blank';
+    const primaryAttr = escapeHtmlAttribute(normalizedUrl);
+    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>';
+    }
+
     function formatMatchTime(timestamp) {
         const value = Number(timestamp);
         if (!Number.isFinite(value)) return 'Time unavailable';
@@ -1922,15 +2070,18 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const streams = sportsState.sourceStreamsCache[cacheKey] || [];
         const selectedIndex = Number(indexValue);
         const selectedStream = streams[selectedIndex];
+        const selectedMatch = sportsState.matches.find((m) => String(m.id) === String(sportsState.selectedMatchId));
 
         if (!selectedStream || !selectedStream.embedUrl) {
             setSportsPlayerStatus('Selected stream is unavailable.');
             return;
         }
 
+        const launchUrl = selectedStream.embedUrl;
+
         const frame = document.getElementById('sports-stream-frame');
         if (frame) {
-            frame.src = selectedStream.embedUrl;
+            setSportsNoSandboxNoNewTabsFrame(frame, launchUrl);
         }
 
         setSportsPlayerStatus(`Now playing: ${selectedStream.language || 'Unknown'} ${selectedStream.hd ? 'HD' : 'SD'} (${sourceName.toUpperCase()})`);
@@ -2158,7 +2309,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
                 <!-- LEFT/MAIN: PLAYER -->
                 <div>
                     <div class="video-container">
-                        <iframe id="video-player" src="${providerUrl}" frameborder="0" allowfullscreen></iframe>
+                        <iframe id="video-player" src="about:blank" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <div class="server-bar">
                         <div>
@@ -2199,6 +2350,8 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
                 `}
             </div>
         `;
+
+        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl);
         
         if (!isMovie) renderEpisodeList();
     }
@@ -2502,27 +2655,55 @@ function buildTvProxiedInlineHtml(html, baseUrl) {
         window.__horionNavigate(url);
     };
 
+    const normalizeNodeTarget = function (node) {
+        if (!node || !node.getAttribute || !node.setAttribute) return;
+        const tag = (node.tagName || '').toLowerCase();
+        if (tag !== 'a' && tag !== 'form') return;
+        node.setAttribute('target', '_self');
+        if (tag === 'a') {
+            node.setAttribute('rel', 'noopener noreferrer');
+        }
+    };
+
     const forceSameTabTargets = function () {
-        document.querySelectorAll('a[target], form[target]').forEach(function (node) {
-            node.setAttribute('target', '_self');
+        document.querySelectorAll('a, form').forEach(function (node) {
+            normalizeNodeTarget(node);
         });
     };
 
-    const originalOpen = window.open;
-    window.open = function (url) {
-        const resolved = toAbsoluteUrl(url || '');
+    const rerouteToSameTab = function (candidateUrl) {
+        const resolved = toAbsoluteUrl(candidateUrl || '');
         if (resolved) {
             navigateInline(resolved);
             return window;
         }
-        return originalOpen ? originalOpen.apply(window, arguments) : window;
+        navigateInline(window.location.href);
+        return window;
     };
 
-    forceSameTabTargets();
-    const observer = new MutationObserver(forceSameTabTargets);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+    const originalOpen = window.open;
+    const blockedOpen = function (url) {
+        return rerouteToSameTab(url);
+    };
 
-    document.addEventListener('click', function (event) {
+    try { window.open = blockedOpen; } catch (error) {}
+    try { globalThis.open = blockedOpen; } catch (error) {}
+    try { if (window.parent) window.parent.open = blockedOpen; } catch (error) {}
+    try { if (window.top) window.top.open = blockedOpen; } catch (error) {}
+
+    forceSameTabTargets();
+    const observer = new MutationObserver(function (mutations) {
+        forceSameTabTargets();
+        mutations.forEach(function (mutation) {
+            if (mutation.type === 'attributes' && mutation.target) {
+                normalizeNodeTarget(mutation.target);
+            }
+        });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['target', 'rel', 'href', 'action'] });
+    setInterval(forceSameTabTargets, 500);
+
+    const handleLinkLikeNavigation = function (event) {
         const target = event.target && event.target.closest ? event.target.closest('a[href], [data-href], button[data-href]') : null;
         if (!target) return;
 
@@ -2533,19 +2714,30 @@ function buildTvProxiedInlineHtml(html, baseUrl) {
         if (!resolved) return;
 
         event.preventDefault();
+        event.stopPropagation();
         navigateInline(resolved);
-    }, true);
+    };
+
+    document.addEventListener('click', handleLinkLikeNavigation, true);
+    document.addEventListener('auxclick', handleLinkLikeNavigation, true);
 
     document.addEventListener('submit', function (event) {
         const form = event.target;
         if (!form || !form.getAttribute) return;
 
+        form.setAttribute('target', '_self');
+
         const method = (form.getAttribute('method') || 'get').toLowerCase();
         const action = form.getAttribute('action') || window.location.href;
         const resolvedAction = toAbsoluteUrl(action);
-        if (!resolvedAction || method !== 'get') return;
+        if (!resolvedAction) return;
+
+        if (method !== 'get') {
+            return;
+        }
 
         event.preventDefault();
+        event.stopPropagation();
         const formData = new FormData(form);
         const params = new URLSearchParams(formData);
         const nextUrl = new URL(resolvedAction);
