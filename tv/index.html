@@ -462,6 +462,19 @@
             line-height: 1.5;
         }
 
+        .sports-primary-warning {
+            font-size: 0.95rem;
+            font-weight: 800;
+            line-height: 1.65;
+            border-width: 2px;
+            background: rgba(255, 193, 7, 0.16);
+            box-shadow: 0 0 16px rgba(255, 193, 7, 0.18);
+        }
+
+        .sports-hidden-warning {
+            display: none;
+        }
+
         .sports-ad-warning a {
             color: #ffd35e;
             text-decoration: underline;
@@ -856,7 +869,12 @@
     <div id="view-sports" class="view-section">
         <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
 
-        <div class="sports-ad-warning">
+        <div class="sports-ad-warning sports-primary-warning">
+            Horion Live Sports is VERY buggy at the moment. Please consider using this link instead for now.
+            <a href="#" onclick="launchSite('https://streamed.st/'); return false;">Open Streamed.st in about:blank</a>
+        </div>
+
+        <div class="sports-ad-warning sports-hidden-warning">
             With live sports, use an ad blocker, as sport streams are embedded with ads outside Horion jurisdiction.
             Most school devices have adblockers built in.
             <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
@@ -927,9 +945,7 @@
             <img src="../cmg.png" alt="CMG" class="site-footer-logo">
         </div>
         <div class="site-footer-links">
-            <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
             <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
-            <a href="https://discord.gg/hDFhKTe2se" target="_blank" rel="noopener noreferrer">Discord</a>
         </div>
     </div>
 </footer>
@@ -1676,7 +1692,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const sandboxAttr = opts.disableInnerSandbox
             ? ''
             : ' sandbox="allow-same-origin allow-scripts allow-forms allow-presentation allow-pointer-lock"';
-        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
     }
 
     function setLockedEmbedFrame(frame, targetUrl, options) {
@@ -1758,7 +1774,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
         frame.src = 'about:blank';
     const primaryAttr = escapeHtmlAttribute(normalizedUrl);
-    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe></body></html>';
+    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></body></html>';
     }
 
     function formatMatchTime(timestamp) {
@@ -2304,6 +2320,12 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             <button onclick="router('home')" style="background:none; border:none; color:var(--text-grey); cursor:pointer; margin-bottom:20px; font-family:'JetBrains Mono';">
                 < BACK
             </button>
+
+            <div class="sports-ad-warning" style="margin-top:0;">
+                With Horion TV, use an ad blocker, as TV streams are embedded with ads outside Horion jurisdiction.
+                Most school devices have adblockers built in.
+                <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
+            </div>
             
             <div class="details-layout" style="${isMovie ? 'grid-template-columns: 1fr;' : ''}">
                 <!-- LEFT/MAIN: PLAYER -->
@@ -2351,7 +2373,10 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             </div>
         `;
 
-        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl);
+        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl, {
+            disableOuterSandbox: true,
+            disableInnerSandbox: true
+        });
         
         if (!isMovie) renderEpisodeList();
     }
@@ -2441,10 +2466,11 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const idToUse = tmdbId || imdbId;
         
         if (state.currentServer === 'server1') {
+            const tmdbValue = encodeURIComponent(String(tmdbId || idToUse || ''));
             if (type === 'movie') {
-                return `https://vidsrc.cc/v2/embed/movie/${idToUse}`;
+                return `https://vidsrcme.ru/embed/movie?tmdb=${tmdbValue}`;
             } else {
-                return `https://vidsrc.cc/v2/embed/tv/${idToUse}/${season}/${episode}`;
+                return `https://vidsrcme.ru/embed/tv?tmdb=${tmdbValue}&season=${encodeURIComponent(String(season || 1))}&episode=${encodeURIComponent(String(episode || 1))}`;
             }
         } else {
             if (type === 'movie') {
