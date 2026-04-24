@@ -821,7 +821,7 @@ body {
     opacity: 1;
     transform: scale(1.1);
     /* The glow effect around the whole shape */
-    filter: drop-shadow(0 0 10px var(--heart-red)); 
+    filter: drop-shadow(0 0 10px var(--heart-red));
 }
 
 .fav-star-featured.active path {
@@ -1142,7 +1142,7 @@ body {
 
 .fav-star-db {
     position: absolute;
-    right: 15px; 
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     width: 24px;
@@ -1219,6 +1219,13 @@ body {
     text-align: left;
     border-radius: 4px;
     box-shadow: 0 0 14px rgba(0, 112, 255, 0.12);
+}
+
+.database-note {
+    border: 1px solid rgba(255, 193, 7, 0.45);
+    background: rgba(255, 193, 7, 0.12);
+    color: #ffe9a6;
+    box-shadow: 0 0 14px rgba(255, 193, 7, 0.14);
 }
 
 .featured-game-view {
@@ -1364,6 +1371,30 @@ body {
     box-shadow: 0 0 12px rgba(0, 229, 255, 0.22);
 }
 
+.featured-lobby-wrap {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.featured-lobby-input {
+    background: rgba(0, 112, 255, 0.08);
+    border: 1px solid rgba(0, 112, 255, 0.55);
+    color: #e8fbff;
+    padding: 9px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    border-radius: 4px;
+    outline: none;
+    width: 200px;
+}
+
+.featured-lobby-input:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
 .featured-recommended-title {
     margin: 0 0 14px;
     color: var(--neon-blue);
@@ -1425,6 +1456,16 @@ body {
         width: 100%;
     }
 
+    .featured-lobby-wrap {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .featured-lobby-input {
+        flex-grow: 1;
+        width: auto;
+    }
+
     .featured-game-frame {
         height: min(62vh, 560px);
         min-height: 300px;
@@ -1443,7 +1484,7 @@ body {
 
 .featured-row {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--featured-row-gap);
 }
 
@@ -1524,8 +1565,8 @@ canvas {
         </div>
 
         <div class="description-area">
-            Welcome to Horion, the best game website and database for any game you would ever want to play. 
-            
+            Welcome to Horion, the best game website and database for any game you would ever want to play.
+           
         </div>
 
         <div class="button-group">
@@ -1537,11 +1578,11 @@ canvas {
         </div>
 
         <div class="recent-changes-container">
-            <div class="recent-label">RECENT CHANGES: 2.2</div>
+            <div class="recent-label">RECENT CHANGES: 2.3</div>
             <div class="change-log">
-                > Completely redid link method<br>
-                > Added specific pages for each featured game<br>
-                > Bug fixes/basically finished horion
+                > Added back the portal after violent backlash<br>
+                > Tried to fix live sports, probaly broke it more<br>
+                > Actually fixed the database tho
             </div>
         </div>
     </div>
@@ -1550,7 +1591,7 @@ canvas {
 <div id="view-favorites" class="view-section">
     <div class="content-container">
         <h2 class="section-header">YOUR FAVORITES</h2>
-        
+       
         <h3 class="recent-label" style="width:100%; text-align:left; margin-top:20px;">FEATURED GAMES</h3>
         <div id="favorites-featured-grid" class="game-grid">
             <!-- Populated via JS -->
@@ -1583,17 +1624,21 @@ canvas {
         <div class="featured-game-layout">
             <div class="featured-game-main">
                 <div class="featured-game-frame-wrap">
-                    <iframe id="featured-game-frame" class="featured-game-frame" src="about:blank" title="Featured Game Player" sandbox="allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" referrerpolicy="strict-origin-when-cross-origin" scrolling="no"></iframe>
+                    <iframe id="featured-game-frame" class="featured-game-frame" src="about:blank" title="Featured Game Player" sandbox="allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-downloads" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" referrerpolicy="strict-origin-when-cross-origin" scrolling="no"></iframe>
                 </div>
 
                 <p class="featured-game-notice">If a game does not work, open it in about:blank.</p>
 
-                <div class="featured-game-actions">
-                    <button id="featured-game-fullscreen" class="featured-game-btn fullscreen-btn" type="button" aria-label="Fullscreen" title="Fullscreen"></button>
-                    <button id="featured-game-aboutblank" class="featured-game-btn" type="button">Open in about:blank</button>
+            <div class="featured-game-actions">
+                <button id="featured-game-fullscreen" class="featured-game-btn fullscreen-btn" type="button" aria-label="Fullscreen" title="Fullscreen"></button>
+                <button id="featured-game-aboutblank" class="featured-game-btn" type="button">Open in about:blank</button>
+                <div id="featured-lobby-wrap" class="featured-lobby-wrap">
+                    <input type="text" id="featured-lobby-input" class="featured-lobby-input" placeholder="Enter Lobby Code / Link" autocomplete="off" spellcheck="false">
+                    <button id="featured-lobby-join" class="featured-game-btn" type="button">Enter</button>
                 </div>
+            </div>
 
-                <h2 id="featured-game-title" class="featured-game-title">Featured Game</h2>
+            <h2 id="featured-game-title" class="featured-game-title">Featured Game</h2>
                 <p id="featured-game-desc" class="featured-game-desc"></p>
             </div>
 
@@ -1608,6 +1653,7 @@ canvas {
 <div id="view-database" class="view-section">
     <div class="content-container">
         <input type="text" id="searchDatabase" placeholder="Search Database..." autocomplete="off" spellcheck="false">
+        <h3 class="featured-note database-note">Notice: some database games may not work or be very buggy.</h3>
         <div id="sections-container">
              <!-- Populated via JS -->
         </div>
@@ -1630,11 +1676,11 @@ canvas {
     <div class="info-grid">
         <div class="info-card">
             <span class="card-label">CURRENT BUILD</span>
-            <span class="card-value">v2.1</span>
+            <span class="card-value">v2.3</span>
         </div>
         <div class="info-card">
-            <span class="card-label">SELECTED SERVER</span>
-            <span id="selected-server-value" class="card-value">GITHUB</span>
+            <span class="card-label">POWERED BY</span>
+            <span id="selected-server-value" class="card-value">FreeDNS</span>
         </div>
         <div class="info-card">
             <span class="card-label">DATABASE ENTRIES</span>
@@ -1642,13 +1688,13 @@ canvas {
         </div>
         <div class="info-card">
             <span class="card-label">LAST UPDATE</span>
-            <span class="card-value">2026.4.11</span>
+            <span class="card-value">2026.4.24</span>
         </div>
     </div>
 
     <div class="text-block">
         <p>
-            Horion is a comprehensive database designed to catalog and feature the best games available. Website is created by CMG to ensure fun and provide a streamlined user experience. 
+            Horion is a comprehensive database designed to catalog and feature the best games available. Website is created by CMG to ensure fun and provide a streamlined user experience.
         </p>
         <p>
             If you encounter bugs, broken links, or visual glitches, please refer to the Google Doc for links and status, or request a bug fix through the form.
@@ -1676,7 +1722,6 @@ canvas {
         <div class="site-footer-links">
             <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
             <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
-            <a href="https://discord.gg/hDFhKTe2se" target="_blank" rel="noopener noreferrer">Discord</a>
         </div>
     </div>
 </footer>
@@ -1686,6 +1731,7 @@ canvas {
     // 1. DATA CONFIGURATION
     // ==========================================
     const OFFICIAL_GITHUB_URL = 'https://crosmakesgames.github.io/horion/';
+    const DATABASE_GAME_BASE_URL = 'https://crosmakesgames.github.io/ugs-singlefile/UGS-Files/';
     const PORTAL_DOC_URL = 'https://docs.google.com/document/d/e/2PACX-1vS7zNM-V5HT60eoCjMcBXUL9oeXFQRWDeCW2wxKtCp5zlxjM2VhqhsipZLXXZ51q-HWi48ti90deumm/pub';
     const LAUNCHER_URL = 'https://example.com/launcher';
     let launchedFromAboutBlankBridge = false;
@@ -1736,25 +1782,6 @@ canvas {
     }
 
     function applyRuntimeLaunchNotice() {
-        const warningText = document.getElementById('runtime-warning-text');
-        const warningLink = document.getElementById('runtime-warning-link');
-        const serverValue = document.getElementById('selected-server-value');
-        if (!warningText || !warningLink || !serverValue) {
-            return;
-        }
-
-        const hostHref = getRuntimeHostHref();
-        const launchedFromAbout = isAboutLaunchHref(hostHref);
-
-        warningText.textContent = 'Visit the Google Doc to see a updated portal link to forever stay unblocked!';
-        warningLink.textContent = 'Google Doc';
-        warningLink.href = PORTAL_DOC_URL;
-
-        if (launchedFromAbout) {
-            serverValue.textContent = 'LAUNCHER';
-        } else {
-            serverValue.textContent = 'GITHUB';
-        }
     }
 
     // Allow an about:blank launcher wrapper to forward browser-back events
@@ -1776,7 +1803,9 @@ canvas {
     });
 
         const featuredGames = [
-    { filename: 'westernroulette.html', displayname: 'Western Roulette', desc: 'Western Roulette is a cowboy dueling game built around fast reactions and high-stakes timing.', image: 'https://static.vecteezy.com/system/resources/previews/050/005/195/non_2x/pixelated-cowboy-roulette-pistol-vector.jpg', type: 'special', recommended: ['Gun Blood', '10 Bullets', 'Gun Spin'] },
+    { filename: 'westernroulette.html', displayname: 'Western Roulette', desc: 'Western Roulette is a cowboy dueling game made by CMG built around fast reactions and high-stakes timing.', image: 'https://static.vecteezy.com/system/resources/previews/050/005/195/non_2x/pixelated-cowboy-roulette-pistol-vector.jpg', type: 'special', recommended: ['Gun Blood', '10 Bullets', 'Gun Spin'] },
+    { filename: 'https://cmakesg.neocities.org/intothedeep', displayname: 'Into The Deep', desc: 'Into The Deep was the first game made by CMG and is very fun extraction game.', image: 'https://i.pinimg.com/originals/39/af/84/39af8424bb91a3b0a6ec1977ed95e1bb.png', type: 'special', recommended: ['Dud', 'Gun Knight', 'Die In The Dungeon'] },
+{ filename: 'https://songl.io/', displayname: 'Songl.io', desc: 'Songl.io is a multiplayer rhythm game where you listen to clips of songs and guess.', image: 'https://ph-files.imgix.net/10ae9632-5e22-407a-a123-b917b4f20b5d.jpeg?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=64&h=64&fit=crop&frame=1&dpr=2', type: 'special', recommended: ['Gartic Phone', 'skribbl.io', 'Secret Hitler'] },
 
   { filename: 'clfnafucn', displayname: 'FNAF: UCN', desc: 'Ultimate Custom Night is a Five Nights at Freddy’s survival challenge where you manage dozens of animatronics at once.', image: 'https://play-lh.googleusercontent.com/pB7dsLLcRgADtFpEPeKc5mSyAn1E1JzrdQ1V7-Y5hizgub3G8e9UJIc5opC9mYXKSBw=w240-h480-rw', recommended: ['Fnaf 2', 'Fnaf 3', 'Fnaf 4'] },
 
@@ -1886,7 +1915,7 @@ canvas {
 
   { filename: 'https://nerd.com', displayname: "Nerd.com Videos", desc: 'Nerd.com Videos is a web-based entertainment hub with quick-access video content.', image: 'https://www.nerd.com/img/nerd/pwa-512x512.png', type: 'special', recommended: ['Skribbl.io', 'Gartic Phone', 'Ink Game'] },
 
-    { filename: 'cl10morebullets', displayname: "10 Bullets", desc: '10 Bullets is an arcade shooter where chain reactions and timing create massive explosions.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS2tFiDxHiykGIEajSXpaYIRXpOHCT6vZv6g&s', recommended: ['Gun Spin', 'Western Roulette', 'Gun Blood'] },
+    { filename: 'clbrotato', displayname: 'Brotato', desc: 'Brotato is a top-down arena roguelite where you survive enemy waves by stacking fast weapon builds.', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1942280/header.jpg', recommended: ['Balatro', 'Die In The Dungeon', 'Dungeon Deck'] },
 
   { filename: 'https://mehmetmhy.github.io/tetris/', displayname: "Tetris", desc: 'Tetris is a classic puzzle game where you arrange falling blocks to clear lines.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSJVXUjr9K0zjk9F96LagL6iTk_hu4_yNLkQ&s', type: 'special', recommended: ['2048', 'Stacktris', 'Shapez.io'] },
 
@@ -1918,7 +1947,9 @@ canvas {
 
   { filename: 'sandboxels.html', displayname: 'Sandboxels', desc: 'Sandboxels is a falling-sand simulation game where elements interact in complex physics systems.', image: 'https://substackcdn.com/image/fetch/$s_!3uou!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb143b429-a854-43e5-9599-fcba40f40d48_960x918.jpeg', type: 'special', recommended: ['Shapez.io', 'Space Company', 'Stacktris'] },
 
-  { filename: 'https://slither.io/', displayname: "slither.io", desc: 'slither.io is a multiplayer snake game where you grow by consuming pellets and other players.', image: 'https://www.google.com/s2/favicons?domain=slither.io&sz=256', type: 'special', recommended: ['MooMoo.io', 'Zombs Royale', 'ev.io'] },
+    { filename: 'clslitherio', displayname: 'slither.io', desc: 'slither.io is a multiplayer snake game where you grow by consuming pellets and other players.', image: 'https://www.google.com/s2/favicons?domain=slither.io&sz=256', recommended: ['MooMoo.io', 'Zombs Royale', 'ev.io'] },
+
+    { filename: 'clcrazycattle3d', displayname: 'Crazy Cattle 3D', desc: 'Crazy Cattle 3D is an arcade animal chaos game with fast movement and unpredictable matches.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK9z5DmZK-Oj5KC3XjwQQbY10_72m8BGqzsQ&s', recommended: ['Ragdoll Archers', 'Cluster Rush', 'Hobo 7'] },
 
   { filename: 'https://ev.io', displayname: "ev.io", desc: 'ev.io is a futuristic browser FPS focused on fast movement and arena shooting.', image: 'https://static.keygames.com/0/114810/100607/1024x1024/evio.webp', type: 'special', recommended: ['Krunker', 'Zombs Royale', 'Gun Knight'] },
 
@@ -4666,7 +4697,7 @@ canvas {
 
     function toggleFavorite(id, type, event) {
         if(event) event.stopPropagation(); // Stop opening game
-        
+       
         // Check if exists
         const index = favorites.findIndex(f => f.id === id);
         if(index > -1) {
@@ -4677,7 +4708,7 @@ canvas {
             favorites.push({ id: id, type: type });
         }
         saveFavorites();
-        
+       
         // Re-render current views to update star status
         // We only re-render the view we are likely interacting with to save performance
         // But for consistency we can just re-check stars in DOM
@@ -4707,7 +4738,7 @@ canvas {
             // If currently on favorites page and it becomes empty, switch to featured
             const favView = document.getElementById('view-favorites');
             if(favView.classList.contains('active')) {
-               // Optional: kick user out? Or just show empty state. 
+               // Optional: kick user out? Or just show empty state.
                // For now, let's leave them there so they can see it's empty.
             }
         }
@@ -4819,7 +4850,7 @@ canvas {
             button.innerText = taskbarTarget === id ? 'PINNED TO TASKBAR' : 'PIN TO TASKBAR';
         });
     }
-    
+   
     // ==========================================
     // 3. NAVIGATION & TAB LOGIC
     // ==========================================
@@ -4863,7 +4894,7 @@ canvas {
 
         unlockGamesScroll();
         window.scrollTo(0,0);
-        
+       
         if(viewName === 'favorites') updateFavoritesView();
 
         const viewTitleMap = {
@@ -4933,6 +4964,11 @@ canvas {
         const frameEl = document.getElementById('featured-game-frame');
         if (!frameEl) return;
 
+        if (featuredGameBlobUrl) {
+            try { URL.revokeObjectURL(featuredGameBlobUrl); } catch (err) {}
+            featuredGameBlobUrl = '';
+        }
+
         featuredFrameSessionKey = '';
         setFeaturedFrameSandbox(frameEl, null);
         frameEl.removeAttribute('srcdoc');
@@ -4941,16 +4977,24 @@ canvas {
     }
 
     // Global state to track sort order
-    let isAscending = true; 
+    let isAscending = true;
     let currentFeaturedGame = null;
+    let currentFeaturedGameUrlOverride = null;
     let featuredFrameLoadToken = 0;
     let featuredFrameSessionKey = '';
+    let featuredGameBlobUrl = '';
 
-    const FEATURED_FRAME_DEFAULT_SANDBOX = 'allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads';
+    const FEATURED_FRAME_DEFAULT_SANDBOX = 'allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-downloads';
     const FEATURED_FRAME_SPECIAL_SANDBOX = FEATURED_FRAME_DEFAULT_SANDBOX + ' allow-same-origin';
 
     function getFeaturedRouteId(displayName) {
         return String(displayName || '').trim().replace(/\s+/g, '_').toLowerCase();
+    }
+
+    function buildDatabaseGameUrl(gameId) {
+        const safeId = String(gameId || '').trim();
+        if (!safeId) return 'about:blank';
+        return DATABASE_GAME_BASE_URL + encodeURIComponent(safeId) + '.html';
     }
 
     function findFeaturedGameByRouteId(routeId) {
@@ -4994,7 +5038,7 @@ canvas {
             return rawFilename;
         }
 
-        return `https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${encodeURIComponent(rawFilename)}.html`;
+        return buildDatabaseGameUrl(rawFilename);
     }
 
     function getFeaturedFrameSessionKey(game) {
@@ -5026,7 +5070,8 @@ canvas {
         if (!frameEl || !game) return;
 
         const targetUrl = resolveFeaturedIframeUrl(game);
-        const activeLoadToken = ++featuredFrameLoadToken;
+        ++featuredFrameLoadToken;
+
         featuredFrameSessionKey = getFeaturedFrameSessionKey(game);
         setFeaturedFrameSandbox(frameEl, game);
         frameEl.removeAttribute('srcdoc');
@@ -5039,24 +5084,8 @@ canvas {
         }
 
         frameEl.src = 'about:blank';
-        frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;color:#9ab7cf;font-family:Inter,sans-serif;letter-spacing:.03em}</style></head><body>Loading game...</body></html>';
-
-        fetch(targetUrl, { cache: 'no-store' })
-            .then(function (response) {
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                return response.text();
-            })
-            .then(function (htmlText) {
-                if (activeLoadToken !== featuredFrameLoadToken) return;
-                frameEl.srcdoc = buildRunnableFetchedHtml(htmlText, targetUrl);
-                updateFeaturedFrameScrollMode();
-            })
-            .catch(function () {
-                if (activeLoadToken !== featuredFrameLoadToken) return;
-                frameEl.removeAttribute('srcdoc');
-                frameEl.src = targetUrl || 'about:blank';
-                updateFeaturedFrameScrollMode();
-            });
+        frameEl.srcdoc = buildSpecialFeaturedSrcDoc(targetUrl || 'about:blank');
+        updateFeaturedFrameScrollMode();
     }
 
     function isFeaturedFrameFullscreen(frameEl) {
@@ -5210,8 +5239,10 @@ canvas {
         const nextSessionKey = getFeaturedFrameSessionKey(game);
         const shouldReloadFrame = options.forceReload === true
             || !featuredFrameSessionKey
-            || featuredFrameSessionKey !== nextSessionKey;
+            || featuredFrameSessionKey !== nextSessionKey
+            || currentFeaturedGameUrlOverride !== null;
 
+        currentFeaturedGameUrlOverride = null;
         currentFeaturedGame = game;
         const featuredPageId = getFeaturedRouteId(game.displayname);
 
@@ -5227,6 +5258,20 @@ canvas {
             loadFeaturedGameIntoFrame(game);
         } else {
             updateFeaturedFrameScrollMode();
+        }
+
+        const lobbyWrap = document.getElementById('featured-lobby-wrap');
+        const lobbyInput = document.getElementById('featured-lobby-input');
+        if (lobbyWrap && lobbyInput) {
+            const fName = String(game.filename || '').toLowerCase();
+            const isLobbyGame = fName.includes('skribbl.io') || fName.includes('garticphone.com') || fName.includes('ev.io') || fName.includes('zombsroyale.io') || fName.includes('songl.io');
+            if (isLobbyGame) {
+                lobbyWrap.style.display = 'inline-flex';
+                lobbyInput.value = '';
+                lobbyInput.dataset.game = fName;
+            } else {
+                lobbyWrap.style.display = 'none';
+            }
         }
 
         renderRecommendedFeaturedGames(game);
@@ -5297,7 +5342,9 @@ canvas {
 
     function toggleSort() {
         isAscending = !isAscending; // Flip the state
-        generateFeaturedGrid();     // Re-run the generation
+        const searchFeaturedInput = document.getElementById('searchFeatured');
+        const searchValue = searchFeaturedInput ? searchFeaturedInput.value.trim().toLowerCase() : '';
+        generateFeaturedGrid(searchValue);
     }
 
     function getFeaturedRowColumns() {
@@ -5328,10 +5375,11 @@ canvas {
         });
     }
 
-    function generateFeaturedGrid() {
+    function generateFeaturedGrid(searchValue) {
         const container = document.getElementById('featured-grid');
         const sortBtn = document.getElementById('sort-btn');
-        
+        const safeSearch = String(searchValue || '').trim().toLowerCase();
+       
         container.innerHTML = '';
 
         if (sortBtn) {
@@ -5339,25 +5387,83 @@ canvas {
         }
 
         const sortedGames = [...featuredGames].sort((a, b) => {
-            return isAscending 
-                ? a.displayname.localeCompare(b.displayname) 
+            return isAscending
+                ? a.displayname.localeCompare(b.displayname)
                 : b.displayname.localeCompare(a.displayname);
         });
 
-        const cards = sortedGames.map(game => createGameCard(game));
+        const visibleGames = safeSearch
+            ? sortedGames.filter(game => String(game.displayname || '').toLowerCase().includes(safeSearch))
+            : sortedGames;
+
+        const cards = visibleGames.map(game => createGameCard(game));
         renderFeaturedRows(container, cards);
     }
 
     function handleGameClick(game) {
         openFeaturedGamePage(game);
     }
+
+    function handleFeaturedLobbyJoin() {
+        const input = document.getElementById('featured-lobby-input');
+        if (!input) return;
+        const val = input.value.trim();
+        if (!val) return;
+        const gameType = input.dataset.game || '';
+        let targetUrl = null;
+
+        if (gameType.includes('skribbl.io')) {
+            const code = extractLobbyCodeFromValue(val, { reservedWords: ['skribbl', 'io'], minLength: 3 });
+            if (code) targetUrl = `https://skribbl.io/?${encodeURIComponent(code)}`;
+        } else if (gameType.includes('garticphone.com')) {
+            const code = extractLobbyCodeFromValue(val, { reservedWords: ['garticphone', 'en'], minLength: 3 });
+            if (code) targetUrl = `https://garticphone.com/en/?c=${encodeURIComponent(code)}`;
+        } else if (gameType.includes('ev.io')) {
+            let code = extractLobbyCodeFromValue(val, { reservedWords: ['ev'], minLength: 3 });
+            code = String(code || '').replace(/^lobby-/i, '').trim();
+            if (code) targetUrl = `https://ev.io/?game=lobby-${encodeURIComponent(code)}`;
+        } else if (gameType.includes('zombsroyale.io')) {
+            const code = extractLobbyCodeFromValue(val, { reservedWords: ['zombsroyale'], minLength: 3 });
+            if (code) targetUrl = `https://zombsroyale.io/party/${encodeURIComponent(code)}`;
+        } else if (gameType.includes('songl.io')) {
+            if (/^https?:\/\//i.test(val)) {
+                try {
+                    const parsed = new URL(val);
+                    if (parsed.hostname === 'songl.io' || parsed.hostname.endsWith('.songl.io')) {
+                        targetUrl = parsed.href;
+                    }
+                } catch (err) {
+                    // Ignore invalid URL and try code extraction.
+                }
+            }
+
+            if (!targetUrl) {
+                const code = extractLobbyCodeFromValue(val, { reservedWords: ['songl', 'io'], minLength: 3 });
+                if (code) targetUrl = `https://songl.io/?${encodeURIComponent(code)}`;
+            }
+        }
+
+        if (targetUrl) {
+            const frameEl = document.getElementById('featured-game-frame');
+            if (frameEl) {
+                frameEl.removeAttribute('srcdoc');
+                frameEl.src = 'about:blank';
+                frameEl.srcdoc = buildSpecialFeaturedSrcDoc(targetUrl);
+                updateFeaturedFrameScrollMode();
+            }
+            currentFeaturedGameUrlOverride = targetUrl;
+        } else {
+            alert("Invalid lobby code or link.");
+        }
+    }
+
     // Update your existing createGameCard function
     function createGameCard(game) {
         // Create Card Wrapper
         const card = document.createElement('div');
         card.className = 'game-card';
         card.dataset.name = game.displayname.toLowerCase();
-        
+       
         // UPDATE: Point the click event to our new routing function
         card.onclick = () => handleGameClick(game);
 
@@ -5368,7 +5474,7 @@ canvas {
         star.innerHTML = `<svg viewBox="0 0 24 24" width="100%" height="100%" overflow="visible">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </svg>`;
-        
+       
         star.dataset.id = game.filename;
         if(isFavorite(game.filename)) star.classList.add('active');
         star.onclick = (e) => toggleFavorite(game.filename, 'featured', e);
@@ -5378,14 +5484,14 @@ canvas {
         const safeImage = String(game && game.image ? game.image : '').trim();
         img.src = safeImage || 'https://placehold.co/400x400/000000/0070FF?text=No+Image';
         img.alt = game.displayname;
-        img.onerror = function() { 
-            this.src = 'https://placehold.co/400x400/000000/0070FF?text=No+Image'; 
+        img.onerror = function() {
+            this.src = 'https://placehold.co/400x400/000000/0070FF?text=No+Image';
         };
 
         // Create Overlay
         const overlay = document.createElement('div');
         overlay.className = 'card-overlay';
-        
+       
         const title = document.createElement('div');
         title.className = 'game-title';
         title.innerText = game.displayname;
@@ -5402,7 +5508,7 @@ canvas {
         overlay.appendChild(title);
         card.appendChild(img);
         card.appendChild(overlay);
-        
+       
         return card;
     }
 
@@ -5410,7 +5516,7 @@ canvas {
         const container = document.getElementById('sections-container');
         const buttonsWrapper = document.createElement('div');
         buttonsWrapper.className = 'buttons-container';
-        
+       
         databaseFiles.forEach(f => {
             const el = createDatabaseElement(f);
             buttonsWrapper.appendChild(el);
@@ -5420,7 +5526,7 @@ canvas {
 
     function createDatabaseElement(filename) {
         const displayName = filename.startsWith('cl') ? filename.slice(2) : filename;
-        
+       
         const wrapper = document.createElement('div');
         wrapper.className = 'db-item-wrapper';
 
@@ -5430,7 +5536,7 @@ canvas {
         btn.value = displayName;
         btn.dataset.filename = filename; // for search
         btn.onclick = () => openGame(filename);
-        
+       
         const star = document.createElement('div');
         star.className = 'fav-star-db';
         star.innerHTML = `<svg viewBox="0 0 24 24" width="100%" height="100%" overflow="visible">
@@ -5448,10 +5554,10 @@ canvas {
     function updateFavoritesView() {
         const featContainer = document.getElementById('favorites-featured-grid');
         const dbContainer = document.getElementById('favorites-database-list');
-        
+       
         featContainer.innerHTML = '';
         dbContainer.innerHTML = '';
-        
+       
         if(favorites.length === 0) {
             featContainer.innerHTML = '<p style="color:#666; width:100%;">No favorites yet.</p>';
             return;
@@ -5620,45 +5726,11 @@ if(window.HTMLAnchorElement) patchUrlProperty(HTMLAnchorElement.prototype,'href'
 
         const targetUrl = /^https?:\/\//i.test(resolvedId)
             ? resolvedId
-            : `https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${encodeURIComponent(resolvedId)}.html?t=${Date.now()}`;
+            : buildDatabaseGameUrl(resolvedId);
 
-        const popup = window.open('about:blank', '_blank');
-        if (!popup) {
-            launchSite(targetUrl, resolvedId, { blockNewTabs: true });
-            return;
-        }
-
-        try {
-            popup.opener = null;
-        } catch (err) {
-            // Ignore opener assignment restrictions.
-        }
-
-        popup.document.open();
-        popup.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + resolvedId + '</title><style>html,body{margin:0;padding:0;background:#000;color:#9ab7cf;font-family:Inter,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;letter-spacing:.03em}</style></head><body>Loading game...</body></html>');
-        popup.document.close();
-
-        fetch(targetUrl, { cache: 'no-store' })
-            .then(function (response) {
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                return response.text();
-            })
-            .then(function (htmlText) {
-                const runnableHtml = buildRunnableFetchedHtml(htmlText, targetUrl);
-                if (!popup || popup.closed) return;
-                popup.document.open();
-                popup.document.write(runnableHtml);
-                popup.document.close();
-            })
-            .catch(function () {
-                if (!popup || popup.closed) {
-                    launchSite(targetUrl, resolvedId, { blockNewTabs: true });
-                    return;
-                }
-                popup.close();
-                launchSite(targetUrl, resolvedId, { blockNewTabs: true });
-            });
+        launchSite(targetUrl, resolvedId, { blockNewTabs: true });
     }
+
 function launchSite(targetUrl, pageTitle, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
@@ -5691,7 +5763,7 @@ function launchSite(targetUrl, pageTitle, options) {
     };
 
     renderIframeWrapper(normalizedUrl);
-    
+   
     return true;
 }
 
@@ -6417,130 +6489,6 @@ function openEvIOLobbyPopup(defaultUrl, titleText) {
         joinInput.focus();
 }
 
-function openBloobLobbyPopup(defaultUrl, titleText) {
-        const safeDefault = String(defaultUrl || 'https://bloob.io/').trim() || 'https://bloob.io/';
-    const safeTitle = String(titleText || 'bloob.io');
-        const existingOverlay = document.getElementById('bloob-lobby-overlay');
-        if (existingOverlay) existingOverlay.remove();
-
-        const overlay = document.createElement('div');
-        overlay.id = 'bloob-lobby-overlay';
-        overlay.style.position = 'fixed';
-        overlay.style.inset = '0';
-        overlay.style.background = 'rgba(0, 0, 0, 0.78)';
-        overlay.style.backdropFilter = 'blur(4px)';
-        overlay.style.zIndex = '99999';
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'center';
-        overlay.style.justifyContent = 'center';
-        overlay.style.padding = '16px';
-
-        overlay.innerHTML = `
-            <div id="bloob-lobby-panel" style="width:min(460px,100%);border:1px solid rgba(80,180,255,0.35);background:rgba(8,20,34,0.95);border-radius:12px;padding:16px;box-shadow:0 0 24px rgba(0,149,255,0.2);font-family:Inter,sans-serif;color:#eaf6ff;">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
-                    <h2 style="margin:0;font-size:1.05rem;letter-spacing:0.04em;">bloob.io Lobby Options</h2>
-                    <button id="bloob-close-btn" type="button" style="border:1px solid rgba(120,160,190,0.5);border-radius:8px;background:rgba(5,10,16,0.8);color:#d6ecff;width:34px;height:34px;cursor:pointer;font-size:1rem;line-height:1;">x</button>
-                </div>
-                <p style="margin:0 0 14px;font-size:0.85rem;color:#9dc3dc;line-height:1.5;">Start a new lobby, or enter a Match ID to join one.</p>
-                <button id="bloob-create-btn" type="button" style="width:100%;border:1px solid rgba(78,208,255,0.55);border-radius:10px;background:linear-gradient(135deg,rgba(0,123,255,0.28),rgba(0,218,255,0.16));color:#e8fbff;padding:11px 12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Start Lobby</button>
-                <div style="height:1px;background:rgba(160,208,235,0.22);margin:10px 0 12px;"></div>
-                <label for="bloob-join-code" style="display:block;margin-bottom:6px;font-size:0.78rem;color:#9fc4db;letter-spacing:0.04em;">Match ID or Invite Link</label>
-                <input id="bloob-join-code" type="text" placeholder="Enter Match ID or paste bloob.io URL" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid rgba(128,174,202,0.45);background:rgba(0,0,0,0.34);color:#eef8ff;outline:none;margin-bottom:10px;" />
-                <button id="bloob-continue-btn" type="button" disabled style="width:100%;border-radius:10px;padding:11px 12px;font-weight:700;margin-bottom:0;opacity:0.5;cursor:not-allowed;border:1px solid rgba(121,121,121,0.45);background:rgba(80,80,80,0.28);color:#e8fbff;">Join Lobby</button>
-                <div style="margin-top:8px;font-size:0.75rem;color:#7ea3bb;">Tip: If auto-join fails, paste the full invite URL from bloob.io.</div>
-            </div>
-        `;
-
-        const getSafeOrigin = function (urlValue) {
-            try {
-                const parsed = new URL(String(urlValue || '').trim());
-                const host = parsed.hostname.toLowerCase();
-                if (host === 'bloob.io' || host.endsWith('.bloob.io')) {
-                    return parsed.origin;
-                }
-            } catch (err) {
-                // Ignore invalid URL values.
-            }
-            return 'https://bloob.io';
-        };
-
-        const baseOrigin = getSafeOrigin(safeDefault);
-
-        const normalizeJoinTarget = function (value) {
-            const rawValue = String(value || '').trim();
-            if (!rawValue) return null;
-
-            const code = extractLobbyCodeFromValue(rawValue, {
-                reservedWords: ['bloob'],
-                minLength: 3
-            });
-            if (!code) return null;
-            return `${baseOrigin}/?matchId=${encodeURIComponent(code)}`;
-        };
-
-        document.body.appendChild(overlay);
-
-        const panel = document.getElementById('bloob-lobby-panel');
-        const closeBtn = document.getElementById('bloob-close-btn');
-        const createBtn = document.getElementById('bloob-create-btn');
-        const continueBtn = document.getElementById('bloob-continue-btn');
-        const codeInput = document.getElementById('bloob-join-code');
-
-        const closeModal = function () {
-            document.removeEventListener('keydown', keyHandler);
-            overlay.remove();
-        };
-
-        const keyHandler = function (event) {
-            if (event.key === 'Enter' && document.activeElement === codeInput && !continueBtn.disabled) {
-                event.preventDefault();
-                continueBtn.click();
-            }
-        };
-
-        const refreshContinueState = function () {
-            const targetUrl = normalizeJoinTarget(codeInput.value);
-            if (targetUrl) {
-                continueBtn.disabled = false;
-                continueBtn.dataset.targetUrl = targetUrl;
-                continueBtn.style.opacity = '1';
-                continueBtn.style.cursor = 'pointer';
-                continueBtn.style.borderColor = 'rgba(78,208,255,0.55)';
-                continueBtn.style.background = 'linear-gradient(135deg, rgba(0,123,255,0.28), rgba(0,218,255,0.16))';
-            } else {
-                continueBtn.disabled = true;
-                continueBtn.dataset.targetUrl = '';
-                continueBtn.style.opacity = '0.5';
-                continueBtn.style.cursor = 'not-allowed';
-                continueBtn.style.borderColor = 'rgba(121,121,121,0.45)';
-                continueBtn.style.background = 'rgba(80,80,80,0.28)';
-            }
-        };
-
-        closeBtn.addEventListener('click', closeModal);
-        createBtn.addEventListener('click', function () {
-            closeModal();
-            launchSite(safeDefault, safeTitle);
-        });
-        continueBtn.addEventListener('click', function () {
-            const target = continueBtn.dataset.targetUrl;
-            if (!target) return;
-            closeModal();
-            launchSite(target, safeTitle);
-        });
-        codeInput.addEventListener('input', refreshContinueState);
-        overlay.addEventListener('click', function () {
-            // Locked modal: close only via X button.
-        });
-        panel.addEventListener('click', function (event) {
-            event.stopPropagation();
-        });
-        document.addEventListener('keydown', keyHandler);
-
-        refreshContinueState();
-        codeInput.focus();
-}
-
 function openSpecial(gamelink, gameTitle) {
     const rawLink = String(gamelink || '').trim();
     if (!rawLink) return;
@@ -6573,7 +6521,7 @@ function openSpecial(gamelink, gameTitle) {
     }
 
     alert('Unable to resolve web game path: ' + rawLink);
-} 
+}
 
     // ==========================================
     // 5. PARTICLE SYSTEM
@@ -6682,20 +6630,34 @@ function openSpecial(gamelink, gameTitle) {
             aboutBlankBtn.addEventListener('click', () => {
                 if (!currentFeaturedGame) return;
 
-                const targetUrl = resolveFeaturedIframeUrl(currentFeaturedGame);
+                const targetUrl = currentFeaturedGameUrlOverride || resolveFeaturedIframeUrl(currentFeaturedGame);
                 if (!targetUrl) return;
-                launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
+
+                if (currentFeaturedGame.type === 'special' || currentFeaturedGameUrlOverride) {
+                    launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
+                } else {
+                    launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
+                }
+            });
+        }
+
+        const lobbyJoinBtn = document.getElementById('featured-lobby-join');
+        const lobbyInput = document.getElementById('featured-lobby-input');
+
+        if (lobbyJoinBtn) {
+            lobbyJoinBtn.addEventListener('click', handleFeaturedLobbyJoin);
+        }
+        if (lobbyInput) {
+            lobbyInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handleFeaturedLobbyJoin();
             });
         }
 
         const searchFeaturedInput = document.getElementById('searchFeatured');
         if (searchFeaturedInput) {
             searchFeaturedInput.addEventListener('input', e => {
-                const search = e.target.value.toLowerCase();
-                document.querySelectorAll('#featured-grid .game-card').forEach(card => {
-                    card.style.display = card.dataset.name.includes(search) ? 'block' : 'none';
-                });
-                refreshFeaturedRowVisibility(document.getElementById('featured-grid'));
+                const search = String(e.target.value || '').toLowerCase();
+                generateFeaturedGrid(search);
             });
         }
 
@@ -6704,16 +6666,9 @@ function openSpecial(gamelink, gameTitle) {
             const nextFeaturedCols = getFeaturedRowColumns();
             if (nextFeaturedCols !== featuredCols) {
                 featuredCols = nextFeaturedCols;
-                generateFeaturedGrid();
-                updateFavoritesView();
-
                 const searchValue = searchFeaturedInput ? searchFeaturedInput.value.trim().toLowerCase() : '';
-                if (searchValue) {
-                    document.querySelectorAll('#featured-grid .game-card').forEach(card => {
-                        card.style.display = card.dataset.name.includes(searchValue) ? 'block' : 'none';
-                    });
-                    refreshFeaturedRowVisibility(document.getElementById('featured-grid'));
-                }
+                generateFeaturedGrid(searchValue);
+                updateFavoritesView();
             }
         });
 
@@ -6745,7 +6700,7 @@ function openSpecial(gamelink, gameTitle) {
                 overlay.style.opacity = '0';
                 setTimeout(() => { overlay.style.visibility = 'hidden'; }, 500);
             } else {
-                width += Math.random() * 5; 
+                width += Math.random() * 5;
                 if(width > 100) width = 100;
                 bar.style.width = width + '%';
             }
@@ -7018,7 +6973,7 @@ function openSpecial(gamelink, gameTitle) {
             margin-bottom: 40px;
             backdrop-filter: blur(2px);
         }
-        
+       
         .search-prompt span {
             font-family: 'JetBrains Mono', monospace;
             font-size: 1.1rem;
@@ -7040,7 +6995,7 @@ function openSpecial(gamelink, gameTitle) {
             align-items: flex-start;
             font-family: 'JetBrains Mono', monospace;
         }
-        
+       
         .footer-version {
             color: var(--neon-blue);
             font-size: 1.1rem;
@@ -7276,6 +7231,19 @@ function openSpecial(gamelink, gameTitle) {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             line-height: 1.5;
+        }
+
+        .sports-primary-warning {
+            font-size: 0.95rem;
+            font-weight: 800;
+            line-height: 1.65;
+            border-width: 2px;
+            background: rgba(255, 193, 7, 0.16);
+            box-shadow: 0 0 16px rgba(255, 193, 7, 0.18);
+        }
+
+        .sports-hidden-warning {
+            display: none;
         }
 
         .sports-ad-warning a {
@@ -7523,7 +7491,7 @@ function openSpecial(gamelink, gameTitle) {
             color: black;
             box-shadow: 0 0 15px var(--neon-blue);
         }
-        
+       
         .btn-secondary {
             background: transparent;
             border: 1px solid var(--text-grey);
@@ -7559,7 +7527,7 @@ function openSpecial(gamelink, gameTitle) {
             margin: 0 auto;
             text-align: center;
         }
-        
+       
         .widget-container {
             background: rgba(0, 5, 15, 0.6);
             border: 1px solid rgba(0, 112, 255, 0.3);
@@ -7636,7 +7604,7 @@ function openSpecial(gamelink, gameTitle) {
             left: 0;
             z-index: -1;
         }
-        
+       
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--hacker-blue); }
         ::-webkit-scrollbar-track { background: #000; }
@@ -7668,7 +7636,7 @@ function openSpecial(gamelink, gameTitle) {
 
 <!-- MAIN APP CONTAINER -->
 <div class="content-container">
-    
+   
     <!-- HOME VIEW -->
     <div id="view-home" class="view-section">
         <div id="hero-container">
@@ -7685,7 +7653,7 @@ function openSpecial(gamelink, gameTitle) {
             <!-- Grid injected via JS -->
         </div>
 
-        
+       
     </div>
 
     <!-- BROWSE VIEW -->
@@ -7707,7 +7675,12 @@ function openSpecial(gamelink, gameTitle) {
     <div id="view-sports" class="view-section">
         <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
 
-        <div class="sports-ad-warning">
+        <div class="sports-ad-warning sports-primary-warning">
+            Horion Live Sports is VERY buggy at the moment. Please consider using this link instead for now.
+            <a href="#" onclick="launchSite('https://streamed.st/'); return false;">Open Streamed.st in about:blank</a>
+        </div>
+
+        <div class="sports-ad-warning sports-hidden-warning">
             With live sports, use an ad blocker, as sport streams are embedded with ads outside Horion jurisdiction.
             Most school devices have adblockers built in.
             <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
@@ -7779,7 +7752,6 @@ function openSpecial(gamelink, gameTitle) {
         <div class="tv-site-footer-links">
             <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
             <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
-            <a href="https://discord.gg/hDFhKTe2se" target="_blank" rel="noopener noreferrer">Discord</a>
         </div>
     </div>
 </footer>
@@ -7792,7 +7764,7 @@ function openSpecial(gamelink, gameTitle) {
     tvCanvas.id = 'bg-canvas';
     const tvCtx = tvCanvas.getContext('2d');
     document.body.appendChild(tvCanvas);
-    
+   
     let tvParticles = [];
     const tvMouse = { x: null, y: null, radius: 150 };
     window.addEventListener('mousemove', (e) => { tvMouse.x = e.x; tvMouse.y = e.y; });
@@ -7847,7 +7819,7 @@ function openSpecial(gamelink, gameTitle) {
         }
         requestAnimationFrame(animateParticles);
     }
-    
+   
     window.addEventListener('resize', initParticles);
     initParticles(); animateParticles();
 
@@ -7856,22 +7828,22 @@ function openSpecial(gamelink, gameTitle) {
         const bar = document.getElementById('bootBar');
         const overlay = document.getElementById('boot-overlay');
         let width = 0;
-        
+       
         // Start preloading data in background
-        initHome(); 
-        
+        initHome();
+       
         const interval = setInterval(() => {
             if (width >= 100) {
                 clearInterval(interval);
                 overlay.style.opacity = '0';
-                setTimeout(() => { 
-                    overlay.style.visibility = 'hidden'; 
+                setTimeout(() => {
+                    overlay.style.visibility = 'hidden';
                     if (!document.querySelector('.view-section.active')) {
                         router('home');
                     }
                 }, 500);
             } else {
-                width += Math.random() * 10; 
+                width += Math.random() * 10;
                 if(width > 100) width = 100;
                 bar.style.width = width + '%';
             }
@@ -7887,12 +7859,14 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
     const IMG_ORIGINAL = 'https://image.tmdb.org/t/p/original';
     const STREAMED_API_BASE = 'https://streamed.pk/api';
+    const SPORTS_DB_API_BASE = 'https://www.thesportsdb.com/api/v1/json/3';
+    const SPORTS_DB_ALL_SPORTS = ['Soccer', 'Basketball', 'American Football', 'Baseball', 'Ice Hockey', 'Tennis', 'Cricket', 'Rugby'];
 
     const state = {
         currentShow: null,
         currentSeason: 1,
         currentEpisode: null,
-        currentServer: 'server1', 
+        currentServer: 'server1',
         trending: [],
         browseDefault: [], // Used for top 50 TMDB items
         posterFallback: 'https://via.placeholder.com/300x450/000000/0070FF?text=No+Poster',
@@ -8063,7 +8037,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     // --- Utility Method to Randomize Arrays ---
     function shuffleList(array) {
-        const shuffled = [...array]; 
+        const shuffled = [...array];
         for (let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -8107,25 +8081,25 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 ];
             // 1. Randomize the list
             const randomizedList = shuffleList(myFeaturedList);
-            
+           
             // 2. Create an array of pending promises
-            const fetchPromises = randomizedList.map(item => 
+            const fetchPromises = randomizedList.map(item =>
                 ShowService.getDetails(item.id, item.type)
             );
-            
+           
             // 3. Wait for all of them to finish at the same time
             const results = await Promise.all(fetchPromises);
-            
+           
             return results;
         },
 
         fetchTopContent: async () => {
-            const promises = [1, 2, 3].map(page => 
+            const promises = [1, 2, 3].map(page =>
                 fetch(`${TMDB_BASE}/trending/all/week?api_key=${TMDB_API_KEY}&page=${page}`).then(r=>r.json())
             );
             const results = await Promise.all(promises);
             const combined = results.flatMap(res => res.results);
-            
+           
             return combined.map(normalizeTMDB).filter(i => i !== null).slice(0, 50);
         },
 
@@ -8143,7 +8117,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             const data = await res.json();
             const year = (data.release_date || data.first_air_date || '').split('-')[0] || '';
             const hasRating = typeof data.vote_average === 'number' && data.vote_average > 0;
-            
+           
             const normalized = {
                 id: data.id,
                 type: type,
@@ -8175,7 +8149,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     // ==========================================
     // 3. LOCAL STORAGE SAVE LOGIC
     // ==========================================
-    
+   
     window.addEventListener('beforeunload', saveProgress);
 
     function saveProgress() {
@@ -8235,7 +8209,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     // ==========================================
     // 4. CONTROLLER & ROUTER
     // ==========================================
-    
+   
     function router(viewName, param) {
         const activeView = document.querySelector('.view-section.active');
         const activeViewName = activeView ? activeView.id.replace('view-', '') : '';
@@ -8249,7 +8223,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        
+       
         const target = document.getElementById(`view-${viewName}`);
         if(target) target.classList.add('active');
 
@@ -8263,7 +8237,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         } else if(viewName === 'browse') {
             document.getElementById('browse-search').focus();
             const grid = document.getElementById('browse-grid');
-            
+           
             // Generate Top 50 default list instead of featured list
             if(state.browseDefault.length === 0) {
                 grid.innerHTML = '<div style="color:var(--neon-blue); font-family:\'JetBrains Mono\'; grid-column: 1/-1;">LOADING TOP 50 DATABASE...</div>';
@@ -8276,7 +8250,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             } else if (document.getElementById('browse-search').value.trim() === '') {
                 renderGrid(state.browseDefault, 'browse-grid');
             }
-            
+           
         } else if(viewName === 'continue') {
             renderContinueWatching();
         } else if(viewName === 'sports') {
@@ -8334,6 +8308,79 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         return response.json();
     }
 
+    function getSportsApiDateValue() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function getSportsDbSportName(sportOverride) {
+        const safeSport = String(sportOverride || sportsState.sport || 'all').trim();
+        if (!safeSport || safeSport === 'all') {
+            return 'All Sports';
+        }
+
+        const normalized = safeSport.toLowerCase();
+        const labelMap = {
+            football: 'Soccer',
+            'american-football': 'American Football',
+            basketball: 'Basketball',
+            baseball: 'Baseball',
+            hockey: 'Ice Hockey',
+            'ice-hockey': 'Ice Hockey',
+            tennis: 'Tennis',
+            cricket: 'Cricket',
+            rugby: 'Rugby',
+            mma: 'Mixed Martial Arts',
+            boxing: 'Boxing',
+            motorsport: 'Motorsport',
+            f1: 'Motorsport'
+        };
+
+        if (labelMap[normalized]) {
+            return labelMap[normalized];
+        }
+
+        const fromCatalog = sportsState.sports.find((entry) => String(entry.id || '').toLowerCase() === normalized);
+        if (fromCatalog && fromCatalog.name) {
+            return String(fromCatalog.name).trim() || 'Soccer';
+        }
+
+        return safeSport.replace(/-/g, ' ').replace(/\b\w/g, function (char) { return char.toUpperCase(); });
+    }
+
+    function getSportsDbEventsEndpoint(sportOverride) {
+        const sport = encodeURIComponent(getSportsDbSportName(sportOverride));
+        const date = encodeURIComponent(getSportsApiDateValue());
+        return `${SPORTS_DB_API_BASE}/eventsday.php?d=${date}&s=${sport}`;
+    }
+
+    function getSportsDbScopes(sportOverride) {
+        const safeSport = String(sportOverride || sportsState.sport || 'all').trim();
+        if (!safeSport || safeSport === 'all') {
+            return SPORTS_DB_ALL_SPORTS.slice();
+        }
+        return [getSportsDbSportName(safeSport)];
+    }
+
+    async function fetchSportsDbEventsForScopes(scopes) {
+        const safeScopes = Array.isArray(scopes) ? scopes.filter(Boolean) : [];
+        const allEvents = [];
+
+        for (const sportName of safeScopes) {
+            const date = encodeURIComponent(getSportsApiDateValue());
+            const sport = encodeURIComponent(String(sportName));
+            const endpoint = `${SPORTS_DB_API_BASE}/eventsday.php?d=${date}&s=${sport}`;
+            try {
+                const payload = await fetchSportsJson(endpoint);
+                const events = Array.isArray(payload?.events) ? payload.events : [];
+                allEvents.push.apply(allEvents, events);
+            } catch (error) {
+                console.error('SportsDB scope load failed:', sportName, error);
+            }
+        }
+
+        return allEvents;
+    }
+
     function getSportsMatchesEndpoint(scopeOverride) {
         const scope = String(scopeOverride || (sportsState.sport !== 'all' ? sportsState.sport : sportsState.feed));
         let endpoint = `${STREAMED_API_BASE}/matches/${encodeURIComponent(scope)}`;
@@ -8377,6 +8424,8 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     function getBadgeUrl(badgeId) {
         if (!badgeId) return '';
+        const rawBadge = String(badgeId).trim();
+        if (/^https?:\/\//i.test(rawBadge)) return rawBadge;
         return `${STREAMED_API_BASE}/images/badge/${encodeURIComponent(badgeId)}.webp`;
     }
 
@@ -8403,6 +8452,46 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         }
 
         return '';
+    }
+
+    function toSportsTimestamp(eventItem) {
+        const datePart = String(eventItem?.dateEvent || '').trim();
+        const timePart = String(eventItem?.strTime || '').trim();
+        const combined = datePart && timePart ? `${datePart}T${timePart}` : (datePart || '');
+        const parsed = combined ? Date.parse(combined) : NaN;
+        if (Number.isFinite(parsed)) return parsed;
+        return Date.now();
+    }
+
+    function buildSportsDbMatch(eventItem, requestedSportId) {
+        const homeName = String(eventItem?.strHomeTeam || '').trim() || 'Home';
+        const awayName = String(eventItem?.strAwayTeam || '').trim() || 'Away';
+        const eventId = String(eventItem?.idEvent || `${homeName}-${awayName}-${eventItem?.dateEvent || ''}`).trim();
+        const categoryName = String(eventItem?.strSport || '').trim() || getSportsDbSportName(requestedSportId);
+
+        return {
+            id: eventId,
+            title: String(eventItem?.strEvent || `${homeName} vs ${awayName}`).trim(),
+            category: categoryName,
+            date: toSportsTimestamp(eventItem),
+            poster: String(eventItem?.strBanner || eventItem?.strPoster || eventItem?.strThumb || '').trim(),
+            teams: {
+                home: {
+                    name: homeName,
+                    badge: String(eventItem?.strHomeTeamBadge || '').trim()
+                },
+                away: {
+                    name: awayName,
+                    badge: String(eventItem?.strAwayTeamBadge || '').trim()
+                }
+            },
+            sources: [
+                {
+                    source: 'embedsports',
+                    id: eventId
+                }
+            ]
+        };
     }
 
     function slugifySportsText(value) {
@@ -8436,7 +8525,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const sandboxAttr = opts.disableInnerSandbox
             ? ''
             : ' sandbox="allow-same-origin allow-scripts allow-forms allow-presentation allow-pointer-lock"';
-        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="no-referrer"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
     }
 
     function setLockedEmbedFrame(frame, targetUrl, options) {
@@ -8518,7 +8607,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
         frame.src = 'about:blank';
     const primaryAttr = escapeHtmlAttribute(normalizedUrl);
-    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="no-referrer"></iframe></body></html>';
+    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe></body></html>';
     }
 
     function formatMatchTime(timestamp) {
@@ -8702,30 +8791,31 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     async function refreshSportsMatches() {
         setSportsStatus('Loading matches...', false);
+        sportsState.sourceStreamsCache = {};
         resetSportsPlayer();
 
         try {
-            const endpoint = getSportsMatchesEndpoint();
-            const matches = await fetchSportsJson(endpoint);
-            sportsState.matches = Array.isArray(matches) ? matches : [];
+            const scopes = getSportsDbScopes();
+            const events = await fetchSportsDbEventsForScopes(scopes);
+            const seenEventIds = new Set();
+            sportsState.matches = events
+                .filter((eventItem) => {
+                    const key = String(eventItem?.idEvent || '').trim() || String(eventItem?.strEvent || '').trim();
+                    if (!key) return false;
+                    if (seenEventIds.has(key)) return false;
+                    seenEventIds.add(key);
+                    return true;
+                })
+                .map((eventItem) => buildSportsDbMatch(eventItem, sportsState.sport));
+
+            sportsState.matches.sort(function (a, b) {
+                return Number(a.date || 0) - Number(b.date || 0);
+            });
+
             sportsState.selectedMatchId = null;
             renderSportsMatches();
             setSportsStatus(`Loaded ${sportsState.matches.length} matches.`, false);
         } catch (error) {
-            if (sportsState.sport !== 'all') {
-                try {
-                    const fallbackEndpoint = getSportsMatchesEndpoint(sportsState.feed);
-                    const fallbackMatches = await fetchSportsJson(fallbackEndpoint);
-                    sportsState.matches = Array.isArray(fallbackMatches) ? fallbackMatches : [];
-                    sportsState.selectedMatchId = null;
-                    renderSportsMatches();
-                    setSportsStatus(`${getSportLabelById(sportsState.sport)} currently unavailable. Showing ${String(sportsState.feed).toUpperCase()} feed with ${sportsState.matches.length} matches.`, false);
-                    return;
-                } catch (fallbackError) {
-                    console.error('Sports fallback load failed:', fallbackError);
-                }
-            }
-
             sportsState.matches = [];
             renderSportsMatches();
             setSportsStatus('Failed to load sports matches. Try again.', true);
@@ -8780,17 +8870,20 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const sourceId = parts.slice(1).join('::');
         const cacheKey = `${sourceName}::${sourceId}`;
         let streams = sportsState.sourceStreamsCache[cacheKey];
+        const selectedMatch = sportsState.matches.find((m) => String(m.id) === String(sportsState.selectedMatchId));
 
         setSportsPlayerStatus('Loading stream list...');
         if (!Array.isArray(streams)) {
-            try {
-                streams = await fetchSportsJson(`${STREAMED_API_BASE}/stream/${encodeURIComponent(sourceName)}/${encodeURIComponent(sourceId)}`);
-                sportsState.sourceStreamsCache[cacheKey] = Array.isArray(streams) ? streams : [];
-            } catch (error) {
-                sportsState.sourceStreamsCache[cacheKey] = [];
-                streams = [];
-                console.error('Sports stream load failed:', error);
-            }
+            const streamNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
+            streams = streamNumbers.map(function (streamNo) {
+                return {
+                    streamNo: streamNo,
+                    language: 'Auto',
+                    hd: true,
+                    embedUrl: buildEmbedSportsMatchUrl(selectedMatch, streamNo)
+                };
+            });
+            sportsState.sourceStreamsCache[cacheKey] = streams;
         }
 
         streamSelect.innerHTML = '';
@@ -8854,6 +8947,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     function onSportsCategoryChanged(value) {
         sportsState.sport = String(value || 'all');
+        sportsState.sourceStreamsCache = {};
         renderSportsQuickChips();
         refreshSportsMatches();
     }
@@ -8912,14 +9006,14 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     async function loadMedia({ id, type, season, epNumber }) {
         document.getElementById('view-details').innerHTML = '<div style="text-align:center; padding:50px; color:var(--neon-blue);">ACCESSING DATA...</div>';
-        
+       
         try {
             state.currentShow = await ShowService.getDetails(id, type);
-            
+           
             if (type === 'tv') {
                 const targetSeason = season || 1;
                 state.currentSeason = targetSeason;
-                
+               
                 const eps = await ShowService.getSeasonEpisodes(id, targetSeason);
                 state.currentShow.episodes[targetSeason] = eps;
 
@@ -8931,7 +9025,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             } else {
                 saveProgress();
             }
-            
+           
             renderDetailsView();
 
             if (state.currentShow && state.currentShow.title) {
@@ -8969,7 +9063,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             show.rating ? `<span style="color:var(--warning-gold);">RATING ${show.rating}</span>` : '',
             show.year ? `<span>${show.year}</span>` : ''
         ].filter(Boolean).join('<span>|</span>');
-        
+       
         container.innerHTML = `
             <div class="hero-banner">
                 <div class="hero-bg" style="background-image: url('${show.backdrop}')"></div>
@@ -8989,13 +9083,13 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     function renderGrid(shows, containerId) {
         const container = document.getElementById(containerId);
         container.innerHTML = '';
-        
+       
         shows.forEach(show => {
             const card = document.createElement('div');
             card.className = 'tv-card';
             card.onclick = () => router('details', { id: show.id, type: show.type });
             const metaParts = [show.year, show.rating ? `RATING ${show.rating}` : '', (show.type || '').toUpperCase()].filter(Boolean);
-            
+           
             card.innerHTML = `
                 <img src="${show.poster}" loading="lazy">
                 <div class="card-overlay">
@@ -9010,7 +9104,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     function renderContinueWatching() {
         const container = document.getElementById('continue-grid');
         const cwList = getContinueWatching();
-        
+       
         if (cwList.length === 0) {
             container.innerHTML = `
                 <div style="color:var(--text-grey); font-family:'JetBrains Mono'; grid-column: 1 / -1; padding: 40px 0;">
@@ -9024,9 +9118,9 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             const card = document.createElement('div');
             card.className = 'tv-card';
             card.onclick = () => router('details', { id: item.id, type: item.type, season: item.season, epNumber: item.episodeNumber });
-            
+           
             const metaText = item.type === 'movie' ? 'MOVIE' : `S${item.season}:E${item.episodeNumber}`;
-            
+           
             card.innerHTML = `
                 <img src="${item.poster}" loading="lazy">
                 <div class="card-overlay">
@@ -9047,10 +9141,10 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             show.year ? `<span>${show.year}</span>` : '',
             !isMovie ? `<span>${show.totalSeasons} SEASONS</span>` : ''
         ].filter(Boolean).join('<span>|</span>');
-        
+       
         let providerUrl = '';
         let episodeTitleText = '';
-        
+       
         if (isMovie) {
             providerUrl = getProviderUrl(show.imdbId, show.tmdbId, 'movie');
             episodeTitleText = 'FEATURE FILM';
@@ -9058,12 +9152,18 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             providerUrl = getProviderUrl(show.imdbId, show.tmdbId, 'tv', state.currentSeason, state.currentEpisode.number);
             episodeTitleText = `S${state.currentSeason}:E${state.currentEpisode.number} - ${state.currentEpisode.title}`;
         }
-        
+       
         container.innerHTML = `
             <button onclick="router('home')" style="background:none; border:none; color:var(--text-grey); cursor:pointer; margin-bottom:20px; font-family:'JetBrains Mono';">
                 < BACK
             </button>
-            
+
+            <div class="sports-ad-warning" style="margin-top:0;">
+                With Horion TV, use an ad blocker, as TV streams are embedded with ads outside Horion jurisdiction.
+                Most school devices have adblockers built in.
+                <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
+            </div>
+           
             <div class="details-layout" style="${isMovie ? 'grid-template-columns: 1fr;' : ''}">
                 <!-- LEFT/MAIN: PLAYER -->
                 <div>
@@ -9080,7 +9180,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
                             <button onclick="switchServer('server2')" class="btn-secondary ${state.currentServer === 'server2' ? 'active' : ''}">S2</button>
                         </div>
                     </div>
-                    
+                   
                     <div style="margin-top:30px;">
                         <div style="color:var(--hacker-blue); font-family:'JetBrains Mono'; letter-spacing:2px; margin-bottom:5px;">
                             ${isMovie ? 'MOVIE' : 'TV SERIES'}
@@ -9097,7 +9197,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
                     <div class="season-header">
                         <span style="font-family:'JetBrains Mono'; font-weight:bold;">EPISODES</span>
                         <select id="season-select" class="season-select" onchange="changeSeason(this.value)">
-                            ${Array.from({length: show.totalSeasons}, (_, i) => i + 1).map(s => 
+                            ${Array.from({length: show.totalSeasons}, (_, i) => i + 1).map(s =>
                                 `<option value="${s}" ${s == state.currentSeason ? 'selected' : ''}>SEASON ${s}</option>`
                             ).join('')}
                         </select>
@@ -9110,15 +9210,18 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             </div>
         `;
 
-        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl);
-        
+        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl, {
+            disableOuterSandbox: true,
+            disableInnerSandbox: true
+        });
+       
         if (!isMovie) renderEpisodeList();
     }
 
     function renderEpisodeList() {
         const container = document.getElementById('episodes-scroll');
         const episodes = state.currentShow.episodes[state.currentSeason] || [];
-        
+       
         if(episodes.length === 0) {
             container.innerHTML = '<div style="padding:20px; color:grey; text-align:center;">NO DATA AVAILABLE</div>';
             return;
@@ -9141,11 +9244,11 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     async function changeSeason(season) {
         state.currentSeason = parseInt(season);
-        
+       
         if (!state.currentShow.episodes[state.currentSeason]) {
             const container = document.getElementById('episodes-scroll');
             container.innerHTML = '<div style="padding:20px; color:var(--neon-blue); text-align:center; font-family:\'JetBrains Mono\';">LOADING...</div>';
-            
+           
             const eps = await ShowService.getSeasonEpisodes(state.currentShow.id, state.currentSeason);
             state.currentShow.episodes[state.currentSeason] = eps;
         }
@@ -9169,8 +9272,8 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     function playEpisode(season, index) {
         state.currentSeason = season;
         state.currentEpisode = state.currentShow.episodes[season][index];
-        saveProgress(); 
-        renderDetailsView(); 
+        saveProgress();
+        renderDetailsView();
         window.scrollTo(0,0);
 
         try {
@@ -9195,12 +9298,13 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     function getProviderUrl(imdbId, tmdbId, type, season = null, episode = null) {
         const idToUse = tmdbId || imdbId;
-        
+       
         if (state.currentServer === 'server1') {
+            const tmdbValue = encodeURIComponent(String(tmdbId || idToUse || ''));
             if (type === 'movie') {
-                return `https://vidsrc.cc/v2/embed/movie/${idToUse}`;
+                return `https://vidsrcme.ru/embed/movie?tmdb=${tmdbValue}`;
             } else {
-                return `https://vidsrc.cc/v2/embed/tv/${idToUse}/${season}/${episode}`;
+                return `https://vidsrcme.ru/embed/tv?tmdb=${tmdbValue}&season=${encodeURIComponent(String(season || 1))}&episode=${encodeURIComponent(String(episode || 1))}`;
             }
         } else {
             if (type === 'movie') {
@@ -9211,7 +9315,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         }
     }
 
-    // ========================================== 
+    // ==========================================
     // 7. YOUTUBE NAV LAUNCHER LOGIC
     // ==========================================
 
@@ -9281,7 +9385,7 @@ function launchSite(targetUrl, options) {
     </style>
 </head>
 <body>
-    <iframe id="horion-tv-popup-frame" src="${safeUrlAttr}" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-presentation" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" referrerpolicy="no-referrer"></iframe>
+    <iframe id="horion-tv-popup-frame" src="${safeUrlAttr}"> </iframe>
     <script>
     (function () {
         const frame = document.getElementById('horion-tv-popup-frame');
@@ -9376,7 +9480,7 @@ function launchSite(targetUrl, options) {
     win.document.open();
     win.document.write(wrapperHtml);
     win.document.close();
-    
+   
     return true;
 }
 
@@ -9693,22 +9797,22 @@ function openOriginalSports(event) {
     // ==========================================
     const searchInput = document.getElementById('browse-search');
     let debounceTimer;
-    
+   
     searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
             const query = e.target.value.trim();
             const container = document.getElementById('browse-grid');
-            
+           
             // Revert back to top 50 default list if search is empty
             if(!query) {
                 renderGrid(state.browseDefault, 'browse-grid');
                 return;
             }
-            
+           
             container.innerHTML = '<div style="color:var(--neon-blue); font-family:\'JetBrains Mono\'; grid-column: 1/-1;">SCANNING DATABASE...</div>';
             const results = await ShowService.searchShows(query);
-            
+           
             if (results.length === 0) {
                  container.innerHTML = '<div style="color:var(--text-grey); font-family:\'JetBrains Mono\'; grid-column: 1/-1;">No results found in database.</div>';
             } else {
@@ -10589,5 +10693,3 @@ function openOriginalSports(event) {
     </script>
 </body>
 </html>
-
-
