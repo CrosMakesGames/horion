@@ -1221,6 +1221,13 @@ body {
     box-shadow: 0 0 14px rgba(0, 112, 255, 0.12);
 }
 
+.database-note {
+    border: 1px solid rgba(255, 193, 7, 0.45);
+    background: rgba(255, 193, 7, 0.12);
+    color: #ffe9a6;
+    box-shadow: 0 0 14px rgba(255, 193, 7, 0.14);
+}
+
 .featured-game-view {
     max-width: none;
     width: 100%;
@@ -1356,10 +1363,6 @@ body {
     justify-content: center;
     gap: 0;
     font-size: 0;
-}
-
-.featured-game-btn.refresh-btn {
-    height: 42px;
 }
 
 .featured-game-btn:hover {
@@ -1575,9 +1578,10 @@ canvas {
         </div>
 
         <div class="recent-changes-container">
-            <div class="recent-label">RECENT CHANGES: 2.2.1</div>
+            <div class="recent-label">RECENT CHANGES: 2.4.1</div>
             <div class="change-log">
-                > Bug fixes after 2.2
+                > Updated the doc so actually can't get blocked, but might be kinda complex<br>
+                > Bug fixes
             </div>
         </div>
     </div>
@@ -1618,6 +1622,7 @@ canvas {
         <span class="featured-game-back" onclick="switchView('featured')">Back to Featured</span>
         <div class="featured-game-layout">
             <div class="featured-game-main">
+                <p class="featured-game-notice">If it says it's blocked, please refresh and try again.</p>
                 <div class="featured-game-frame-wrap">
                     <iframe id="featured-game-frame" class="featured-game-frame" src="about:blank" title="Featured Game Player" sandbox="allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-downloads" allow="autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture; gamepad; picture-in-picture; screen-wake-lock" referrerpolicy="strict-origin-when-cross-origin" scrolling="no"></iframe>
                 </div>
@@ -1626,7 +1631,7 @@ canvas {
 
             <div class="featured-game-actions">
                 <button id="featured-game-fullscreen" class="featured-game-btn fullscreen-btn" type="button" aria-label="Fullscreen" title="Fullscreen"></button>
-                <button id="featured-game-refresh" class="featured-game-btn refresh-btn" type="button">Refresh</button>
+                <button id="featured-game-refresh" class="featured-game-btn" type="button">Refresh</button>
                 <button id="featured-game-aboutblank" class="featured-game-btn" type="button">Open in about:blank</button>
                 <div id="featured-lobby-wrap" class="featured-lobby-wrap">
                     <input type="text" id="featured-lobby-input" class="featured-lobby-input" placeholder="Enter Lobby Code / Link" autocomplete="off" spellcheck="false">
@@ -1649,6 +1654,7 @@ canvas {
 <div id="view-database" class="view-section">
     <div class="content-container">
         <input type="text" id="searchDatabase" placeholder="Search Database..." autocomplete="off" spellcheck="false">
+        <h3 class="featured-note database-note">Notice: some database games may not work or be very buggy.</h3>
         <div id="sections-container">
              <!-- Populated via JS -->
         </div>
@@ -1671,11 +1677,11 @@ canvas {
     <div class="info-grid">
         <div class="info-card">
             <span class="card-label">CURRENT BUILD</span>
-            <span class="card-value">v2.2.1</span>
+            <span class="card-value">v2.4.1</span>
         </div>
         <div class="info-card">
-            <span class="card-label">SELECTED SERVER</span>
-            <span id="selected-server-value" class="card-value">FreeDNS</span>
+            <span class="card-label">POWERED BY</span>
+            <span id="selected-server-value" class="card-value">GOOGLE DOCS</span>
         </div>
         <div class="info-card">
             <span class="card-label">DATABASE ENTRIES</span>
@@ -1683,7 +1689,7 @@ canvas {
         </div>
         <div class="info-card">
             <span class="card-label">LAST UPDATE</span>
-            <span class="card-value">2026.4.20</span>
+            <span class="card-value">2026.4.29</span>
         </div>
     </div>
 
@@ -1717,7 +1723,6 @@ canvas {
         <div class="site-footer-links">
             <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
             <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
-            <a href="https://discord.gg/hDFhKTe2se" target="_blank" rel="noopener noreferrer">Discord</a>
         </div>
     </div>
 </footer>
@@ -1727,6 +1732,7 @@ canvas {
     // 1. DATA CONFIGURATION
     // ==========================================
     const OFFICIAL_GITHUB_URL = 'https://crosmakesgames.github.io/horion/';
+    const DATABASE_GAME_BASE_URL = 'https://crosmakesgames.github.io/ugs-singlefile/UGS-Files/';
     const PORTAL_DOC_URL = 'https://docs.google.com/document/d/e/2PACX-1vS7zNM-V5HT60eoCjMcBXUL9oeXFQRWDeCW2wxKtCp5zlxjM2VhqhsipZLXXZ51q-HWi48ti90deumm/pub';
     const LAUNCHER_URL = 'https://example.com/launcher';
     let launchedFromAboutBlankBridge = false;
@@ -1801,6 +1807,7 @@ canvas {
     { filename: 'westernroulette.html', displayname: 'Western Roulette', desc: 'Western Roulette is a cowboy dueling game made by CMG built around fast reactions and high-stakes timing.', image: 'https://static.vecteezy.com/system/resources/previews/050/005/195/non_2x/pixelated-cowboy-roulette-pistol-vector.jpg', type: 'special', recommended: ['Gun Blood', '10 Bullets', 'Gun Spin'] },
     { filename: 'https://cmakesg.neocities.org/intothedeep', displayname: 'Into The Deep', desc: 'Into The Deep was the first game made by CMG and is very fun extraction game.', image: 'https://i.pinimg.com/originals/39/af/84/39af8424bb91a3b0a6ec1977ed95e1bb.png', type: 'special', recommended: ['Dud', 'Gun Knight', 'Die In The Dungeon'] },
 { filename: 'https://songl.io/', displayname: 'Songl.io', desc: 'Songl.io is a multiplayer rhythm game where you listen to clips of songs and guess.', image: 'https://ph-files.imgix.net/10ae9632-5e22-407a-a123-b917b4f20b5d.jpeg?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=64&h=64&fit=crop&frame=1&dpr=2', type: 'special', recommended: ['Gartic Phone', 'skribbl.io', 'Secret Hitler'] },
+{ filename: 'https://wiki-race.com/', displayname: 'Wiki Race', desc: 'Wiki Race is a browser challenge where you jump between Wikipedia articles as fast as possible to reach a target page.', image: 'https://static.wikia.nocookie.net/pokebeach-bb/images/c/c2/Wikirace.png/revision/latest?cb=20220413003455', type: 'special', recommended: ['OpenGuessr', 'skribbl.io', '2048'] },
 
   { filename: 'clfnafucn', displayname: 'FNAF: UCN', desc: 'Ultimate Custom Night is a Five Nights at Freddy’s survival challenge where you manage dozens of animatronics at once.', image: 'https://play-lh.googleusercontent.com/pB7dsLLcRgADtFpEPeKc5mSyAn1E1JzrdQ1V7-Y5hizgub3G8e9UJIc5opC9mYXKSBw=w240-h480-rw', recommended: ['Fnaf 2', 'Fnaf 3', 'Fnaf 4'] },
 
@@ -1852,7 +1859,7 @@ canvas {
 
   { filename: 'cldriftboss', displayname: 'Drift Boss', desc: 'Drift Boss is a one-button drifting game focused on timing turns on narrow tracks.', image: 'https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g=w240-h480-rw', recommended: ['Drive Mad', 'Polytrack', 'Highway Racer'] },
 
-  { filename: 'clstacktris', displayname: 'Stacktris', desc: 'Stacktris is a physics-based stacking puzzle inspired by Tetris with unstable block placement.', image: 'https://pizzaedition.win/images/games/stacktris-min.png', recommended: ['Tetris', '2048', 'Shapez.io'] },
+  { filename: 'https://embed.stacktris.net/stacktris/', displayname: 'Stacktris', desc: 'Stacktris is a physics-based stacking puzzle inspired by Tetris with unstable block placement.', image: 'https://pizzaedition.win/images/games/stacktris-min.png', recommended: ['Tetris', '2048', 'Shapez.io'], type: 'special' },
 
   { filename: 'clFNAF', displayname: 'FNAF', desc: 'Five Nights at Freddy’s is a survival horror game where you monitor animatronics through cameras.', image: 'https://pizzaedition.win/images/games/fnaf-min.jpg', recommended: ['Fnaf 2', 'Fnaf 3', 'Fnaf 4'] },
 
@@ -1878,7 +1885,7 @@ canvas {
 
     { filename: 'clhobo7', displayname: 'Hobo 7', desc: 'Hobo 7 is a beat ’em up action game with chaotic combat and combo attacks.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsnGUydR2WLlCH2MDLOudQT9mdKkklk_HGaQ&s', recommended: ['Gun Blood', 'Gladihoppers', 'Gun Spin'] },
 
-  { filename: 'clovo', displayname: 'OVO', desc: 'OVO is a precision platformer focused on parkour movement and speedrunning mechanics.', image: 'https://www.hoodamath.com/large/1024/ovo_1024.png', recommended: ['Run 3', 'Level Devil', 'Tunnel Rush'] },
+  { filename: 'clovo', displayname: 'OVO', desc: 'OVO is a precision platformer focused on parkour movement and speedrunning mechanics.', image: 'https://www.hoodamath.com/large/300/ovo_300.png', recommended: ['Run 3', 'Level Devil', 'Tunnel Rush'] },
 
   { filename: 'clbloonsTD4', displayname: 'Bloons TD4', desc: 'Bloons TD4 is a tower defense game where you place defenses to stop waves of balloons.', image: 'https://gameforge.com/de-DE/littlegames/includes/images/games/13426_5ec634fec15e3.jpg', recommended: ['Plants VS Zombies', 'Zombs.io', 'Shapez.io'] },
 
@@ -1910,7 +1917,7 @@ canvas {
 
   { filename: 'https://nerd.com', displayname: "Nerd.com Videos", desc: 'Nerd.com Videos is a web-based entertainment hub with quick-access video content.', image: 'https://www.nerd.com/img/nerd/pwa-512x512.png', type: 'special', recommended: ['Skribbl.io', 'Gartic Phone', 'Ink Game'] },
 
-    { filename: 'cl10morebullets', displayname: "10 Bullets", desc: '10 Bullets is an arcade shooter where chain reactions and timing create massive explosions.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS2tFiDxHiykGIEajSXpaYIRXpOHCT6vZv6g&s', recommended: ['Gun Spin', 'Western Roulette', 'Gun Blood'] },
+    { filename: 'clbrotato', displayname: 'Brotato', desc: 'Brotato is a top-down arena roguelite where you survive enemy waves by stacking fast weapon builds.', image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1942280/header.jpg', recommended: ['Balatro', 'Die In The Dungeon', 'Dungeon Deck'] },
 
   { filename: 'https://mehmetmhy.github.io/tetris/', displayname: "Tetris", desc: 'Tetris is a classic puzzle game where you arrange falling blocks to clear lines.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSJVXUjr9K0zjk9F96LagL6iTk_hu4_yNLkQ&s', type: 'special', recommended: ['2048', 'Stacktris', 'Shapez.io'] },
 
@@ -1942,7 +1949,9 @@ canvas {
 
   { filename: 'sandboxels.html', displayname: 'Sandboxels', desc: 'Sandboxels is a falling-sand simulation game where elements interact in complex physics systems.', image: 'https://substackcdn.com/image/fetch/$s_!3uou!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb143b429-a854-43e5-9599-fcba40f40d48_960x918.jpeg', type: 'special', recommended: ['Shapez.io', 'Space Company', 'Stacktris'] },
 
-  { filename: 'https://slither.io/', displayname: "slither.io", desc: 'slither.io is a multiplayer snake game where you grow by consuming pellets and other players.', image: 'https://www.google.com/s2/favicons?domain=slither.io&sz=256', type: 'special', recommended: ['MooMoo.io', 'Zombs Royale', 'ev.io'] },
+    { filename: 'clslitherio', displayname: 'slither.io', desc: 'slither.io is a multiplayer snake game where you grow by consuming pellets and other players.', image: 'https://www.google.com/s2/favicons?domain=slither.io&sz=256', recommended: ['MooMoo.io', 'Zombs Royale', 'ev.io'] },
+
+    { filename: 'https://crazy-cattle.co/embed/crazy-cattle', displayname: 'Crazy Cattle 3D', desc: 'Crazy Cattle 3D is an arcade animal chaos game with fast movement and unpredictable matches.', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK9z5DmZK-Oj5KC3XjwQQbY10_72m8BGqzsQ&s', recommended: ['Ragdoll Archers', 'Cluster Rush', 'Hobo 7'], type: 'special' },
 
   { filename: 'https://ev.io', displayname: "ev.io", desc: 'ev.io is a futuristic browser FPS focused on fast movement and arena shooting.', image: 'https://static.keygames.com/0/114810/100607/1024x1024/evio.webp', type: 'special', recommended: ['Krunker', 'Zombs Royale', 'Gun Knight'] },
 
@@ -1952,8 +1961,9 @@ canvas {
 
   { filename: 'cldungeonsanddegenerategamblers', displayname: "Dungeons and Degenerate Gamblers", desc: 'Dungeons and Degenerate Gamblers is a card-based roguelike focused on risky gambling mechanics.', image: 'https://assets-prd.ignimgs.com/2024/05/27/dungeons-and-degenerate-gamblers-button-1716811260241.jpg', recommended: ['Balatro', 'Dungeon Deck', 'Die In The Dungeon'] },
 
-  { filename: 'https://uberspot.github.io/2048/', displayname: "2048", desc: '2048 is a number puzzle game where you merge tiles to reach 2048.', image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg', type: 'special', recommended: ['Stacktris', 'Tetris', 'Cookie Clicker'] },
-   { filename: 'https://wiki-race.com', displayname: "Wiki Race", desc: 'Wiki Race is a game where you race to navigate from one Wikipedia page to another.', image: 'https://i.kym-cdn.com/photos/images/original/000/333/116/e57.png', type: 'special', recommended: ['OpenGuessr', 'Gartic Phone', 'Skribbl.io'] },
+  { filename: 'https://crosmakesgames.github.io/2048/', displayname: "2048", desc: '2048 is a number puzzle game where you merge tiles to reach 2048.', image: 'https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg', type: 'special', recommended: ['Stacktris', 'Tetris', 'Cookie Clicker'] },
+
+    { filename: 'clpapaswingeria', displayname: "Papa's Wingeria", desc: 'Papa\'s Wingeria is a restaurant management game where you cook and serve wings.', image: 'https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/0ef4d3c4bd35cc2e9b65f3da07448fc2/papas-wingeria.jfif', recommended: ['Papa\'s Cheeseria', 'Burrito Bison: Launcha Libre', 'Cookie Clicker'] },
 ];
 
     const databaseFiles = [
@@ -4958,6 +4968,11 @@ canvas {
         const frameEl = document.getElementById('featured-game-frame');
         if (!frameEl) return;
 
+        if (featuredGameBlobUrl) {
+            try { URL.revokeObjectURL(featuredGameBlobUrl); } catch (err) {}
+            featuredGameBlobUrl = '';
+        }
+
         featuredFrameSessionKey = '';
         setFeaturedFrameSandbox(frameEl, null);
         frameEl.removeAttribute('srcdoc');
@@ -4971,12 +4986,19 @@ canvas {
     let currentFeaturedGameUrlOverride = null;
     let featuredFrameLoadToken = 0;
     let featuredFrameSessionKey = '';
+    let featuredGameBlobUrl = '';
 
     const FEATURED_FRAME_DEFAULT_SANDBOX = 'allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-downloads';
     const FEATURED_FRAME_SPECIAL_SANDBOX = FEATURED_FRAME_DEFAULT_SANDBOX + ' allow-same-origin';
 
     function getFeaturedRouteId(displayName) {
         return String(displayName || '').trim().replace(/\s+/g, '_').toLowerCase();
+    }
+
+    function buildDatabaseGameUrl(gameId) {
+        const safeId = String(gameId || '').trim();
+        if (!safeId) return 'about:blank';
+        return DATABASE_GAME_BASE_URL + encodeURIComponent(safeId) + '.html';
     }
 
     function findFeaturedGameByRouteId(routeId) {
@@ -5020,7 +5042,7 @@ canvas {
             return rawFilename;
         }
 
-        return `https://crosmakesgames.github.io/ugs-singlefile/UGS-Files/${encodeURIComponent(rawFilename)}.html`;
+        return buildDatabaseGameUrl(rawFilename);
     }
 
     function getFeaturedFrameSessionKey(game) {
@@ -5052,7 +5074,8 @@ canvas {
         if (!frameEl || !game) return;
 
         const targetUrl = resolveFeaturedIframeUrl(game);
-        const activeLoadToken = ++featuredFrameLoadToken;
+        ++featuredFrameLoadToken;
+
         featuredFrameSessionKey = getFeaturedFrameSessionKey(game);
         setFeaturedFrameSandbox(frameEl, game);
         frameEl.removeAttribute('srcdoc');
@@ -5065,24 +5088,26 @@ canvas {
         }
 
         frameEl.src = 'about:blank';
-        frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;color:#9ab7cf;font-family:Inter,sans-serif;letter-spacing:.03em}</style></head><body>Loading game...</body></html>';
+        frameEl.srcdoc = buildSpecialFeaturedSrcDoc(targetUrl || 'about:blank');
+        updateFeaturedFrameScrollMode();
+    }
 
-        fetch(targetUrl, { cache: 'no-store' })
-            .then(function (response) {
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                return response.text();
-            })
-            .then(function (htmlText) {
-                if (activeLoadToken !== featuredFrameLoadToken) return;
-                frameEl.srcdoc = buildRunnableFetchedHtml(htmlText, targetUrl);
-                updateFeaturedFrameScrollMode();
-            })
-            .catch(function () {
-                if (activeLoadToken !== featuredFrameLoadToken) return;
-                frameEl.removeAttribute('srcdoc');
-                frameEl.src = targetUrl || 'about:blank';
-                updateFeaturedFrameScrollMode();
-            });
+    function refreshFeaturedGameFrame() {
+        const frameEl = document.getElementById('featured-game-frame');
+        if (!frameEl) return;
+
+        const overrideUrl = String(currentFeaturedGameUrlOverride || '').trim();
+        if (overrideUrl) {
+            frameEl.removeAttribute('srcdoc');
+            frameEl.src = 'about:blank';
+            frameEl.srcdoc = buildSpecialFeaturedSrcDoc(overrideUrl);
+            updateFeaturedFrameScrollMode();
+            return;
+        }
+
+        if (currentFeaturedGame) {
+            loadFeaturedGameIntoFrame(currentFeaturedGame);
+        }
     }
 
     function isFeaturedFrameFullscreen(frameEl) {
@@ -5339,7 +5364,9 @@ canvas {
 
     function toggleSort() {
         isAscending = !isAscending; // Flip the state
-        generateFeaturedGrid();     // Re-run the generation
+        const searchFeaturedInput = document.getElementById('searchFeatured');
+        const searchValue = searchFeaturedInput ? searchFeaturedInput.value.trim().toLowerCase() : '';
+        generateFeaturedGrid(searchValue);
     }
 
     function getFeaturedRowColumns() {
@@ -5370,9 +5397,10 @@ canvas {
         });
     }
 
-    function generateFeaturedGrid() {
+    function generateFeaturedGrid(searchValue) {
         const container = document.getElementById('featured-grid');
         const sortBtn = document.getElementById('sort-btn');
+        const safeSearch = String(searchValue || '').trim().toLowerCase();
        
         container.innerHTML = '';
 
@@ -5386,7 +5414,11 @@ canvas {
                 : b.displayname.localeCompare(a.displayname);
         });
 
-        const cards = sortedGames.map(game => createGameCard(game));
+        const visibleGames = safeSearch
+            ? sortedGames.filter(game => String(game.displayname || '').toLowerCase().includes(safeSearch))
+            : sortedGames;
+
+        const cards = visibleGames.map(game => createGameCard(game));
         renderFeaturedRows(container, cards);
     }
 
@@ -5716,45 +5748,11 @@ if(window.HTMLAnchorElement) patchUrlProperty(HTMLAnchorElement.prototype,'href'
 
         const targetUrl = /^https?:\/\//i.test(resolvedId)
             ? resolvedId
-            : `https://crosmakesgames.github.io/ugs-singlefile/UGS-Files/${encodeURIComponent(resolvedId)}.html?t=${Date.now()}`;
+            : buildDatabaseGameUrl(resolvedId);
 
-        const popup = window.open('about:blank', '_blank');
-        if (!popup) {
-            launchSite(targetUrl, resolvedId, { blockNewTabs: true });
-            return;
-        }
-
-        try {
-            popup.opener = null;
-        } catch (err) {
-            // Ignore opener assignment restrictions.
-        }
-
-        popup.document.open();
-        popup.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + resolvedId + '</title><style>html,body{margin:0;padding:0;background:#000;color:#9ab7cf;font-family:Inter,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;letter-spacing:.03em}</style></head><body>Loading game...</body></html>');
-        popup.document.close();
-
-        fetch(targetUrl, { cache: 'no-store' })
-            .then(function (response) {
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                return response.text();
-            })
-            .then(function (htmlText) {
-                const runnableHtml = buildRunnableFetchedHtml(htmlText, targetUrl);
-                if (!popup || popup.closed) return;
-                popup.document.open();
-                popup.document.write(runnableHtml);
-                popup.document.close();
-            })
-            .catch(function () {
-                if (!popup || popup.closed) {
-                    launchSite(targetUrl, resolvedId, { blockNewTabs: true });
-                    return;
-                }
-                popup.close();
-                launchSite(targetUrl, resolvedId, { blockNewTabs: true });
-            });
+        launchSite(targetUrl, resolvedId, { blockNewTabs: true });
     }
+
 function launchSite(targetUrl, pageTitle, options) {
     const normalizedUrl = String(targetUrl || '').trim();
     if (!normalizedUrl) return false;
@@ -6513,130 +6511,6 @@ function openEvIOLobbyPopup(defaultUrl, titleText) {
         joinInput.focus();
 }
 
-function openBloobLobbyPopup(defaultUrl, titleText) {
-        const safeDefault = String(defaultUrl || 'https://bloob.io/').trim() || 'https://bloob.io/';
-    const safeTitle = String(titleText || 'bloob.io');
-        const existingOverlay = document.getElementById('bloob-lobby-overlay');
-        if (existingOverlay) existingOverlay.remove();
-
-        const overlay = document.createElement('div');
-        overlay.id = 'bloob-lobby-overlay';
-        overlay.style.position = 'fixed';
-        overlay.style.inset = '0';
-        overlay.style.background = 'rgba(0, 0, 0, 0.78)';
-        overlay.style.backdropFilter = 'blur(4px)';
-        overlay.style.zIndex = '99999';
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'center';
-        overlay.style.justifyContent = 'center';
-        overlay.style.padding = '16px';
-
-        overlay.innerHTML = `
-            <div id="bloob-lobby-panel" style="width:min(460px,100%);border:1px solid rgba(80,180,255,0.35);background:rgba(8,20,34,0.95);border-radius:12px;padding:16px;box-shadow:0 0 24px rgba(0,149,255,0.2);font-family:Inter,sans-serif;color:#eaf6ff;">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
-                    <h2 style="margin:0;font-size:1.05rem;letter-spacing:0.04em;">bloob.io Lobby Options</h2>
-                    <button id="bloob-close-btn" type="button" style="border:1px solid rgba(120,160,190,0.5);border-radius:8px;background:rgba(5,10,16,0.8);color:#d6ecff;width:34px;height:34px;cursor:pointer;font-size:1rem;line-height:1;">x</button>
-                </div>
-                <p style="margin:0 0 14px;font-size:0.85rem;color:#9dc3dc;line-height:1.5;">Start a new lobby, or enter a Match ID to join one.</p>
-                <button id="bloob-create-btn" type="button" style="width:100%;border:1px solid rgba(78,208,255,0.55);border-radius:10px;background:linear-gradient(135deg,rgba(0,123,255,0.28),rgba(0,218,255,0.16));color:#e8fbff;padding:11px 12px;font-weight:700;cursor:pointer;margin-bottom:12px;">Start Lobby</button>
-                <div style="height:1px;background:rgba(160,208,235,0.22);margin:10px 0 12px;"></div>
-                <label for="bloob-join-code" style="display:block;margin-bottom:6px;font-size:0.78rem;color:#9fc4db;letter-spacing:0.04em;">Match ID or Invite Link</label>
-                <input id="bloob-join-code" type="text" placeholder="Enter Match ID or paste bloob.io URL" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid rgba(128,174,202,0.45);background:rgba(0,0,0,0.34);color:#eef8ff;outline:none;margin-bottom:10px;" />
-                <button id="bloob-continue-btn" type="button" disabled style="width:100%;border-radius:10px;padding:11px 12px;font-weight:700;margin-bottom:0;opacity:0.5;cursor:not-allowed;border:1px solid rgba(121,121,121,0.45);background:rgba(80,80,80,0.28);color:#e8fbff;">Join Lobby</button>
-                <div style="margin-top:8px;font-size:0.75rem;color:#7ea3bb;">Tip: If auto-join fails, paste the full invite URL from bloob.io.</div>
-            </div>
-        `;
-
-        const getSafeOrigin = function (urlValue) {
-            try {
-                const parsed = new URL(String(urlValue || '').trim());
-                const host = parsed.hostname.toLowerCase();
-                if (host === 'bloob.io' || host.endsWith('.bloob.io')) {
-                    return parsed.origin;
-                }
-            } catch (err) {
-                // Ignore invalid URL values.
-            }
-            return 'https://bloob.io';
-        };
-
-        const baseOrigin = getSafeOrigin(safeDefault);
-
-        const normalizeJoinTarget = function (value) {
-            const rawValue = String(value || '').trim();
-            if (!rawValue) return null;
-
-            const code = extractLobbyCodeFromValue(rawValue, {
-                reservedWords: ['bloob'],
-                minLength: 3
-            });
-            if (!code) return null;
-            return `${baseOrigin}/?matchId=${encodeURIComponent(code)}`;
-        };
-
-        document.body.appendChild(overlay);
-
-        const panel = document.getElementById('bloob-lobby-panel');
-        const closeBtn = document.getElementById('bloob-close-btn');
-        const createBtn = document.getElementById('bloob-create-btn');
-        const continueBtn = document.getElementById('bloob-continue-btn');
-        const codeInput = document.getElementById('bloob-join-code');
-
-        const closeModal = function () {
-            document.removeEventListener('keydown', keyHandler);
-            overlay.remove();
-        };
-
-        const keyHandler = function (event) {
-            if (event.key === 'Enter' && document.activeElement === codeInput && !continueBtn.disabled) {
-                event.preventDefault();
-                continueBtn.click();
-            }
-        };
-
-        const refreshContinueState = function () {
-            const targetUrl = normalizeJoinTarget(codeInput.value);
-            if (targetUrl) {
-                continueBtn.disabled = false;
-                continueBtn.dataset.targetUrl = targetUrl;
-                continueBtn.style.opacity = '1';
-                continueBtn.style.cursor = 'pointer';
-                continueBtn.style.borderColor = 'rgba(78,208,255,0.55)';
-                continueBtn.style.background = 'linear-gradient(135deg, rgba(0,123,255,0.28), rgba(0,218,255,0.16))';
-            } else {
-                continueBtn.disabled = true;
-                continueBtn.dataset.targetUrl = '';
-                continueBtn.style.opacity = '0.5';
-                continueBtn.style.cursor = 'not-allowed';
-                continueBtn.style.borderColor = 'rgba(121,121,121,0.45)';
-                continueBtn.style.background = 'rgba(80,80,80,0.28)';
-            }
-        };
-
-        closeBtn.addEventListener('click', closeModal);
-        createBtn.addEventListener('click', function () {
-            closeModal();
-            launchSite(safeDefault, safeTitle);
-        });
-        continueBtn.addEventListener('click', function () {
-            const target = continueBtn.dataset.targetUrl;
-            if (!target) return;
-            closeModal();
-            launchSite(target, safeTitle);
-        });
-        codeInput.addEventListener('input', refreshContinueState);
-        overlay.addEventListener('click', function () {
-            // Locked modal: close only via X button.
-        });
-        panel.addEventListener('click', function (event) {
-            event.stopPropagation();
-        });
-        document.addEventListener('keydown', keyHandler);
-
-        refreshContinueState();
-        codeInput.focus();
-}
-
 function openSpecial(gamelink, gameTitle) {
     const rawLink = String(gamelink || '').trim();
     if (!rawLink) return;
@@ -6775,19 +6649,8 @@ function openSpecial(gamelink, gameTitle) {
             updateFeaturedFrameScrollMode();
         }
 
-        if (refreshBtn && featuredFrame) {
-            refreshBtn.addEventListener('click', () => {
-                if (currentFeaturedGameUrlOverride) {
-                    featuredFrame.removeAttribute('srcdoc');
-                    featuredFrame.src = 'about:blank';
-                    featuredFrame.srcdoc = buildSpecialFeaturedSrcDoc(currentFeaturedGameUrlOverride);
-                    updateFeaturedFrameScrollMode();
-                    return;
-                }
-
-                if (!currentFeaturedGame) return;
-                loadFeaturedGameIntoFrame(currentFeaturedGame);
-            });
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', refreshFeaturedGameFrame);
         }
 
         if (aboutBlankBtn) {
@@ -6800,37 +6663,7 @@ function openSpecial(gamelink, gameTitle) {
                 if (currentFeaturedGame.type === 'special' || currentFeaturedGameUrlOverride) {
                     launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
                 } else {
-                    const popup = window.open('about:blank', '_blank');
-                    if (!popup) {
-                        launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
-                        return;
-                    }
-
-                    try { popup.opener = null; } catch (err) {}
-                    popup.document.open();
-                    popup.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + currentFeaturedGame.displayname + '</title><style>html,body{margin:0;padding:0;background:#000;color:#9ab7cf;font-family:Inter,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;letter-spacing:.03em}</style></head><body>Loading game...</body></html>');
-                    popup.document.close();
-
-                    fetch(targetUrl, { cache: 'no-store' })
-                        .then(function (response) {
-                            if (!response.ok) throw new Error('HTTP ' + response.status);
-                            return response.text();
-                        })
-                        .then(function (htmlText) {
-                            const runnableHtml = buildRunnableFetchedHtml(htmlText, targetUrl);
-                            if (!popup || popup.closed) return;
-                            popup.document.open();
-                            popup.document.write(runnableHtml);
-                            popup.document.close();
-                        })
-                        .catch(function () {
-                            if (!popup || popup.closed) {
-                                launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
-                                return;
-                            }
-                            popup.close();
-                            launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
-                        });
+                    launchSite(targetUrl, currentFeaturedGame.displayname, { blockNewTabs: true });
                 }
             });
         }
@@ -6850,11 +6683,8 @@ function openSpecial(gamelink, gameTitle) {
         const searchFeaturedInput = document.getElementById('searchFeatured');
         if (searchFeaturedInput) {
             searchFeaturedInput.addEventListener('input', e => {
-                const search = e.target.value.toLowerCase();
-                document.querySelectorAll('#featured-grid .game-card').forEach(card => {
-                    card.style.display = card.dataset.name.includes(search) ? 'block' : 'none';
-                });
-                refreshFeaturedRowVisibility(document.getElementById('featured-grid'));
+                const search = String(e.target.value || '').toLowerCase();
+                generateFeaturedGrid(search);
             });
         }
 
@@ -6863,16 +6693,9 @@ function openSpecial(gamelink, gameTitle) {
             const nextFeaturedCols = getFeaturedRowColumns();
             if (nextFeaturedCols !== featuredCols) {
                 featuredCols = nextFeaturedCols;
-                generateFeaturedGrid();
-                updateFavoritesView();
-
                 const searchValue = searchFeaturedInput ? searchFeaturedInput.value.trim().toLowerCase() : '';
-                if (searchValue) {
-                    document.querySelectorAll('#featured-grid .game-card').forEach(card => {
-                        card.style.display = card.dataset.name.includes(searchValue) ? 'block' : 'none';
-                    });
-                    refreshFeaturedRowVisibility(document.getElementById('featured-grid'));
-                }
+                generateFeaturedGrid(searchValue);
+                updateFavoritesView();
             }
         });
 
@@ -7437,6 +7260,19 @@ function openSpecial(gamelink, gameTitle) {
             line-height: 1.5;
         }
 
+        .sports-primary-warning {
+            font-size: 0.95rem;
+            font-weight: 800;
+            line-height: 1.65;
+            border-width: 2px;
+            background: rgba(255, 193, 7, 0.16);
+            box-shadow: 0 0 16px rgba(255, 193, 7, 0.18);
+        }
+
+        .sports-hidden-warning {
+            display: none;
+        }
+
         .sports-ad-warning a {
             color: #ffd35e;
             text-decoration: underline;
@@ -7866,7 +7702,12 @@ function openSpecial(gamelink, gameTitle) {
     <div id="view-sports" class="view-section">
         <h2 style="font-weight:300; letter-spacing:4px; border-bottom:1px solid #333; padding-bottom:10px; margin-top:0;">LIVE SPORTS</h2>
 
-        <div class="sports-ad-warning">
+        <div class="sports-ad-warning sports-primary-warning">
+            Horion Live Sports is VERY buggy at the moment. Please consider using this link instead for now.
+            <a href="#" onclick="launchSite('https://streami.su/'); return false;">Open Streami.su in about:blank</a>
+        </div>
+
+        <div class="sports-ad-warning sports-hidden-warning">
             With live sports, use an ad blocker, as sport streams are embedded with ads outside Horion jurisdiction.
             Most school devices have adblockers built in.
             <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
@@ -7938,7 +7779,6 @@ function openSpecial(gamelink, gameTitle) {
         <div class="tv-site-footer-links">
             <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
             <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
-            <a href="https://discord.gg/hDFhKTe2se" target="_blank" rel="noopener noreferrer">Discord</a>
         </div>
     </div>
 </footer>
@@ -8046,6 +7886,8 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
     const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
     const IMG_ORIGINAL = 'https://image.tmdb.org/t/p/original';
     const STREAMED_API_BASE = 'https://streamed.pk/api';
+    const SPORTS_DB_API_BASE = 'https://www.thesportsdb.com/api/v1/json/3';
+    const SPORTS_DB_ALL_SPORTS = ['Soccer', 'Basketball', 'American Football', 'Baseball', 'Ice Hockey', 'Tennis', 'Cricket', 'Rugby'];
 
     const state = {
         currentShow: null,
@@ -8493,11 +8335,106 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         return response.json();
     }
 
+    function getSportsApiDateValue() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function getSportsDbSportName(sportOverride) {
+        const safeSport = String(sportOverride || sportsState.sport || 'all').trim();
+        if (!safeSport || safeSport === 'all') {
+            return 'All Sports';
+        }
+
+        const normalized = safeSport.toLowerCase();
+        const labelMap = {
+            football: 'Soccer',
+            'american-football': 'American Football',
+            basketball: 'Basketball',
+            baseball: 'Baseball',
+            hockey: 'Ice Hockey',
+            'ice-hockey': 'Ice Hockey',
+            tennis: 'Tennis',
+            cricket: 'Cricket',
+            rugby: 'Rugby',
+            mma: 'Mixed Martial Arts',
+            boxing: 'Boxing',
+            motorsport: 'Motorsport',
+            f1: 'Motorsport'
+        };
+
+        if (labelMap[normalized]) {
+            return labelMap[normalized];
+        }
+
+        const fromCatalog = sportsState.sports.find((entry) => String(entry.id || '').toLowerCase() === normalized);
+        if (fromCatalog && fromCatalog.name) {
+            return String(fromCatalog.name).trim() || 'Soccer';
+        }
+
+        return safeSport.replace(/-/g, ' ').replace(/\b\w/g, function (char) { return char.toUpperCase(); });
+    }
+
+    function getSportsDbEventsEndpoint(sportOverride) {
+        const sport = encodeURIComponent(getSportsDbSportName(sportOverride));
+        const date = encodeURIComponent(getSportsApiDateValue());
+        return `${SPORTS_DB_API_BASE}/eventsday.php?d=${date}&s=${sport}`;
+    }
+
+    function getSportsDbScopes(sportOverride) {
+        const safeSport = String(sportOverride || sportsState.sport || 'all').trim();
+        if (!safeSport || safeSport === 'all') {
+            return SPORTS_DB_ALL_SPORTS.slice();
+        }
+        return [getSportsDbSportName(safeSport)];
+    }
+
+    async function fetchSportsDbEventsForScopes(scopes) {
+        const safeScopes = Array.isArray(scopes) ? scopes.filter(Boolean) : [];
+        const allEvents = [];
+
+        for (const sportName of safeScopes) {
+            const date = encodeURIComponent(getSportsApiDateValue());
+            const sport = encodeURIComponent(String(sportName));
+            const endpoint = `${SPORTS_DB_API_BASE}/eventsday.php?d=${date}&s=${sport}`;
+            try {
+                const payload = await fetchSportsJson(endpoint);
+                const events = Array.isArray(payload?.events) ? payload.events : [];
+                allEvents.push.apply(allEvents, events);
+            } catch (error) {
+                console.error('SportsDB scope load failed:', sportName, error);
+            }
+        }
+
+        return allEvents;
+    }
+
     function getSportsMatchesEndpoint(scopeOverride) {
         const scope = String(scopeOverride || (sportsState.sport !== 'all' ? sportsState.sport : sportsState.feed));
         let endpoint = `${STREAMED_API_BASE}/matches/${encodeURIComponent(scope)}`;
         if (sportsState.popularOnly) endpoint += '/popular';
         return endpoint;
+    }
+
+    function getSportsStreamEndpoint(sourceName, sourceId) {
+        return `${STREAMED_API_BASE}/stream/${encodeURIComponent(String(sourceName || '').trim())}/${encodeURIComponent(String(sourceId || '').trim())}`;
+    }
+
+    function buildSportsStreamFallbacks(sourceName, sourceId) {
+        const safeSource = String(sourceName || '').trim();
+        const safeId = String(sourceId || '').trim();
+        if (!safeSource || !safeId) return [];
+
+        return [1, 2, 3, 4].map(function (streamNo) {
+            return {
+                id: safeId,
+                streamNo: streamNo,
+                language: 'Auto',
+                hd: true,
+                embedUrl: `https://embedsports.top/embed/${encodeURIComponent(safeSource)}/${encodeURIComponent(safeId)}/${streamNo}`,
+                source: safeSource,
+                viewers: 0
+            };
+        });
     }
 
     function sanitizeSportsCatalogEntry(entry) {
@@ -8534,8 +8471,71 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         return found ? found.name : sportId;
     }
 
+    function normalizeSportsMatch(match) {
+        if (!match || typeof match !== 'object') return null;
+
+        const id = String(match.id || '').trim();
+        if (!id) return null;
+
+        const categoryId = String(match.category || '').trim() || 'other';
+        const homeName = String(match?.teams?.home?.name || '').trim() || 'Home';
+        const awayName = String(match?.teams?.away?.name || '').trim() || 'Away';
+        const title = String(match.title || `${homeName} vs ${awayName}`).trim() || `${homeName} vs ${awayName}`;
+        const sources = Array.isArray(match.sources)
+            ? match.sources
+                .map(function (entry) {
+                    const sourceName = String(entry && entry.source ? entry.source : '').trim();
+                    const sourceId = String(entry && entry.id ? entry.id : '').trim();
+                    if (!sourceName || !sourceId) return null;
+                    return {
+                        source: sourceName,
+                        id: sourceId
+                    };
+                })
+                .filter(Boolean)
+            : [];
+
+        return {
+            id: id,
+            title: title,
+            category: categoryId,
+            date: Number(match.date || 0),
+            popular: Boolean(match.popular),
+            poster: String(match.poster || '').trim(),
+            teams: {
+                home: {
+                    name: homeName,
+                    badge: String(match?.teams?.home?.badge || '').trim()
+                },
+                away: {
+                    name: awayName,
+                    badge: String(match?.teams?.away?.badge || '').trim()
+                }
+            },
+            sources: sources
+        };
+    }
+
+    function normalizeSportsStream(stream) {
+        if (!stream || typeof stream !== 'object') return null;
+        const embedUrl = String(stream.embedUrl || '').trim();
+        if (!embedUrl) return null;
+
+        return {
+            id: String(stream.id || '').trim(),
+            streamNo: Number.isFinite(Number(stream.streamNo)) ? Number(stream.streamNo) : null,
+            language: String(stream.language || '').trim() || 'Auto',
+            hd: Boolean(stream.hd),
+            embedUrl: embedUrl,
+            source: String(stream.source || '').trim(),
+            viewers: Number.isFinite(Number(stream.viewers)) ? Number(stream.viewers) : 0
+        };
+    }
+
     function getBadgeUrl(badgeId) {
         if (!badgeId) return '';
+        const rawBadge = String(badgeId).trim();
+        if (/^https?:\/\//i.test(rawBadge)) return rawBadge;
         return `${STREAMED_API_BASE}/images/badge/${encodeURIComponent(badgeId)}.webp`;
     }
 
@@ -8562,6 +8562,46 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         }
 
         return '';
+    }
+
+    function toSportsTimestamp(eventItem) {
+        const datePart = String(eventItem?.dateEvent || '').trim();
+        const timePart = String(eventItem?.strTime || '').trim();
+        const combined = datePart && timePart ? `${datePart}T${timePart}` : (datePart || '');
+        const parsed = combined ? Date.parse(combined) : NaN;
+        if (Number.isFinite(parsed)) return parsed;
+        return Date.now();
+    }
+
+    function buildSportsDbMatch(eventItem, requestedSportId) {
+        const homeName = String(eventItem?.strHomeTeam || '').trim() || 'Home';
+        const awayName = String(eventItem?.strAwayTeam || '').trim() || 'Away';
+        const eventId = String(eventItem?.idEvent || `${homeName}-${awayName}-${eventItem?.dateEvent || ''}`).trim();
+        const categoryName = String(eventItem?.strSport || '').trim() || getSportsDbSportName(requestedSportId);
+
+        return {
+            id: eventId,
+            title: String(eventItem?.strEvent || `${homeName} vs ${awayName}`).trim(),
+            category: categoryName,
+            date: toSportsTimestamp(eventItem),
+            poster: String(eventItem?.strBanner || eventItem?.strPoster || eventItem?.strThumb || '').trim(),
+            teams: {
+                home: {
+                    name: homeName,
+                    badge: String(eventItem?.strHomeTeamBadge || '').trim()
+                },
+                away: {
+                    name: awayName,
+                    badge: String(eventItem?.strAwayTeamBadge || '').trim()
+                }
+            },
+            sources: [
+                {
+                    source: 'embedsports',
+                    id: eventId
+                }
+            ]
+        };
     }
 
     function slugifySportsText(value) {
@@ -8595,7 +8635,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const sandboxAttr = opts.disableInnerSandbox
             ? ''
             : ' sandbox="allow-same-origin allow-scripts allow-forms allow-presentation allow-pointer-lock"';
-        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="no-referrer"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + safeUrl + '"' + sandboxAttr + ' allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe><script>(function(){const frame=document.querySelector("iframe");if(!frame){return;}const enforceSelf=function(){try{const win=frame.contentWindow;if(!win){return;}win.open=function(url){if(url){win.location.assign(url);}return win;};}catch(err){}};frame.addEventListener("load",enforceSelf);enforceSelf();})();<\/script></body></html>';
     }
 
     function setLockedEmbedFrame(frame, targetUrl, options) {
@@ -8677,7 +8717,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
         frame.src = 'about:blank';
     const primaryAttr = escapeHtmlAttribute(normalizedUrl);
-    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="no-referrer"></iframe></body></html>';
+    frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base target="_self"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block;background:#000}</style></head><body><iframe src="' + primaryAttr + '" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe></body></html>';
     }
 
     function formatMatchTime(timestamp) {
@@ -8788,7 +8828,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
             const meta = document.createElement('div');
             meta.className = 'sports-match-meta';
-            meta.textContent = `${String(match.category || '').toUpperCase()} | ${formatMatchTime(match.date)}`;
+            meta.textContent = `${String(getSportLabelById(match.category) || match.category || '').toUpperCase()} | ${formatMatchTime(match.date)}`;
             card.appendChild(meta);
 
             const teamsRow = document.createElement('div');
@@ -8861,30 +8901,30 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     async function refreshSportsMatches() {
         setSportsStatus('Loading matches...', false);
+        sportsState.sourceStreamsCache = {};
         resetSportsPlayer();
 
         try {
-            const endpoint = getSportsMatchesEndpoint();
-            const matches = await fetchSportsJson(endpoint);
-            sportsState.matches = Array.isArray(matches) ? matches : [];
+            const payload = await fetchSportsJson(getSportsMatchesEndpoint());
+            const seenMatchIds = new Set();
+            sportsState.matches = (Array.isArray(payload) ? payload : [])
+                .map(normalizeSportsMatch)
+                .filter(Boolean)
+                .filter(function (match) {
+                    if (sportsState.popularOnly && !match.popular) return false;
+                    if (seenMatchIds.has(match.id)) return false;
+                    seenMatchIds.add(match.id);
+                    return true;
+                });
+
+            sportsState.matches.sort(function (a, b) {
+                return Number(a.date || 0) - Number(b.date || 0);
+            });
+
             sportsState.selectedMatchId = null;
             renderSportsMatches();
             setSportsStatus(`Loaded ${sportsState.matches.length} matches.`, false);
         } catch (error) {
-            if (sportsState.sport !== 'all') {
-                try {
-                    const fallbackEndpoint = getSportsMatchesEndpoint(sportsState.feed);
-                    const fallbackMatches = await fetchSportsJson(fallbackEndpoint);
-                    sportsState.matches = Array.isArray(fallbackMatches) ? fallbackMatches : [];
-                    sportsState.selectedMatchId = null;
-                    renderSportsMatches();
-                    setSportsStatus(`${getSportLabelById(sportsState.sport)} currently unavailable. Showing ${String(sportsState.feed).toUpperCase()} feed with ${sportsState.matches.length} matches.`, false);
-                    return;
-                } catch (fallbackError) {
-                    console.error('Sports fallback load failed:', fallbackError);
-                }
-            }
-
             sportsState.matches = [];
             renderSportsMatches();
             setSportsStatus('Failed to load sports matches. Try again.', true);
@@ -8939,17 +8979,28 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const sourceId = parts.slice(1).join('::');
         const cacheKey = `${sourceName}::${sourceId}`;
         let streams = sportsState.sourceStreamsCache[cacheKey];
+        const selectedMatch = sportsState.matches.find((m) => String(m.id) === String(sportsState.selectedMatchId));
 
         setSportsPlayerStatus('Loading stream list...');
         if (!Array.isArray(streams)) {
             try {
-                streams = await fetchSportsJson(`${STREAMED_API_BASE}/stream/${encodeURIComponent(sourceName)}/${encodeURIComponent(sourceId)}`);
-                sportsState.sourceStreamsCache[cacheKey] = Array.isArray(streams) ? streams : [];
+                const payload = await fetchSportsJson(getSportsStreamEndpoint(sourceName, sourceId));
+                streams = (Array.isArray(payload) ? payload : [])
+                    .map(normalizeSportsStream)
+                    .filter(Boolean)
+                    .sort(function (a, b) {
+                        return Number(a.streamNo || 0) - Number(b.streamNo || 0);
+                    });
             } catch (error) {
-                sportsState.sourceStreamsCache[cacheKey] = [];
-                streams = [];
                 console.error('Sports stream load failed:', error);
+                streams = [];
             }
+
+            if (!streams.length) {
+                streams = buildSportsStreamFallbacks(sourceName, sourceId);
+            }
+
+            sportsState.sourceStreamsCache[cacheKey] = streams;
         }
 
         streamSelect.innerHTML = '';
@@ -9013,6 +9064,7 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
 
     function onSportsCategoryChanged(value) {
         sportsState.sport = String(value || 'all');
+        sportsState.sourceStreamsCache = {};
         renderSportsQuickChips();
         refreshSportsMatches();
     }
@@ -9222,12 +9274,23 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             <button onclick="router('home')" style="background:none; border:none; color:var(--text-grey); cursor:pointer; margin-bottom:20px; font-family:'JetBrains Mono';">
                 < BACK
             </button>
+
+            <div class="sports-ad-warning" style="margin-top:0;">
+                With Horion TV, use an ad blocker, as TV streams are embedded with ads outside Horion jurisdiction.
+                Most school devices have adblockers built in.
+                <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer">Get uBlock Origin</a>
+            </div>
            
             <div class="details-layout" style="${isMovie ? 'grid-template-columns: 1fr;' : ''}">
                 <!-- LEFT/MAIN: PLAYER -->
                 <div>
                     <div class="video-container">
                         <iframe id="video-player" src="about:blank" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; margin-bottom:16px;">
+                        <button type="button" class="btn-secondary" onclick="openTvPlayerFullscreen()">FULLSCREEN</button>
+                        <button type="button" class="btn-secondary" onclick="refreshTvPlayer()">REFRESH</button>
+                        <button type="button" class="btn-secondary" onclick="openTvPlayerInAboutBlank()">OPEN IN ABOUT:BLANK</button>
                     </div>
                     <div class="server-bar">
                         <div>
@@ -9269,9 +9332,52 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
             </div>
         `;
 
-        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl);
+        setLockedEmbedFrame(document.getElementById('video-player'), providerUrl, {
+            disableOuterSandbox: true,
+            disableInnerSandbox: true
+        });
        
         if (!isMovie) renderEpisodeList();
+    }
+
+    function getCurrentProviderUrl() {
+        if (!state.currentShow) return '';
+
+        const show = state.currentShow;
+        if (show.type === 'movie') {
+            return getProviderUrl(show.imdbId, show.tmdbId, 'movie');
+        }
+
+        if (!state.currentEpisode) return '';
+        return getProviderUrl(show.imdbId, show.tmdbId, 'tv', state.currentSeason, state.currentEpisode.number);
+    }
+
+    function openTvPlayerFullscreen() {
+        const frame = document.getElementById('video-player');
+        if (!frame) return;
+
+        if (frame.requestFullscreen) {
+            frame.requestFullscreen();
+        } else if (frame.webkitRequestFullscreen) {
+            frame.webkitRequestFullscreen();
+        }
+    }
+
+    function refreshTvPlayer() {
+        const frame = document.getElementById('video-player');
+        const providerUrl = getCurrentProviderUrl();
+        if (!frame || !providerUrl) return;
+
+        setLockedEmbedFrame(frame, providerUrl, {
+            disableOuterSandbox: true,
+            disableInnerSandbox: true
+        });
+    }
+
+    function openTvPlayerInAboutBlank() {
+        const providerUrl = getCurrentProviderUrl();
+        if (!providerUrl) return;
+        launchSite(providerUrl);
     }
 
     function renderEpisodeList() {
@@ -9356,10 +9462,11 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         const idToUse = tmdbId || imdbId;
        
         if (state.currentServer === 'server1') {
+            const tmdbValue = encodeURIComponent(String(tmdbId || idToUse || ''));
             if (type === 'movie') {
-                return `https://vidsrc.cc/v2/embed/movie/${idToUse}`;
+                return `https://vidsrcme.ru/embed/movie?tmdb=${tmdbValue}`;
             } else {
-                return `https://vidsrc.cc/v2/embed/tv/${idToUse}/${season}/${episode}`;
+                return `https://vidsrcme.ru/embed/tv?tmdb=${tmdbValue}&season=${encodeURIComponent(String(season || 1))}&episode=${encodeURIComponent(String(episode || 1))}`;
             }
         } else {
             if (type === 'movie') {
