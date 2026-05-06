@@ -871,7 +871,7 @@
 
         <div class="sports-ad-warning sports-primary-warning">
             Horion Live Sports is VERY buggy at the moment. Please consider using this link instead for now.
-            <a href="#" onclick="launchSite('https://streamed.st/'); return false;">Open Streamed.st in about:blank</a>
+            <a href="#" onclick="launchSite('https://streami.su/'); return false;">Open Streami.su in about:blank</a>
         </div>
 
         <div class="sports-ad-warning sports-hidden-warning">
@@ -945,6 +945,7 @@
             <img src="../cmg.png" alt="CMG" class="site-footer-logo">
         </div>
         <div class="site-footer-links">
+            <a href="https://www.youtube.com/channel/UC19axu6m6KscPGbNxfUm3Dg" target="_blank" rel="noopener noreferrer">YouTube</a>
             <a href="https://www.tiktok.com/@horiongames" target="_blank" rel="noopener noreferrer">TikTok</a>
         </div>
     </div>
@@ -1597,6 +1598,28 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         return endpoint;
     }
 
+    function getSportsStreamEndpoint(sourceName, sourceId) {
+        return `${STREAMED_API_BASE}/stream/${encodeURIComponent(String(sourceName || '').trim())}/${encodeURIComponent(String(sourceId || '').trim())}`;
+    }
+
+    function buildSportsStreamFallbacks(sourceName, sourceId) {
+        const safeSource = String(sourceName || '').trim();
+        const safeId = String(sourceId || '').trim();
+        if (!safeSource || !safeId) return [];
+
+        return [1, 2, 3, 4].map(function (streamNo) {
+            return {
+                id: safeId,
+                streamNo: streamNo,
+                language: 'Auto',
+                hd: true,
+                embedUrl: `https://embedsports.top/embed/${encodeURIComponent(safeSource)}/${encodeURIComponent(safeId)}/${streamNo}`,
+                source: safeSource,
+                viewers: 0
+            };
+        });
+    }
+
     function sanitizeSportsCatalogEntry(entry) {
         if (!entry || typeof entry !== 'object') return null;
         const rawId = String(entry.id || '').trim();
@@ -2040,13 +2063,18 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         setSportsPlayerStatus('Loading stream list...');
         if (!Array.isArray(streams)) {
             try {
-                streams = await fetchSportsJson(`${STREAMED_API_BASE}/stream/${encodeURIComponent(sourceName)}/${encodeURIComponent(sourceId)}`);
-                sportsState.sourceStreamsCache[cacheKey] = Array.isArray(streams) ? streams : [];
+                streams = await fetchSportsJson(getSportsStreamEndpoint(sourceName, sourceId));
+                streams = Array.isArray(streams) ? streams : [];
             } catch (error) {
-                sportsState.sourceStreamsCache[cacheKey] = [];
                 streams = [];
                 console.error('Sports stream load failed:', error);
             }
+
+            if (!streams.length) {
+                streams = buildSportsStreamFallbacks(sourceName, sourceId);
+            }
+
+            sportsState.sourceStreamsCache[cacheKey] = streams;
         }
 
         streamSelect.innerHTML = '';
@@ -2333,6 +2361,11 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
                     <div class="video-container">
                         <iframe id="video-player" src="about:blank" frameborder="0" allowfullscreen></iframe>
                     </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; margin-bottom:16px;">
+                        <button type="button" class="btn-secondary" onclick="openTvPlayerFullscreen()">FULLSCREEN</button>
+                        <button type="button" class="btn-secondary" onclick="refreshTvPlayer()">REFRESH</button>
+                        <button type="button" class="btn-secondary" onclick="openTvPlayerInAboutBlank()">OPEN IN ABOUT:BLANK</button>
+                    </div>
                     <div class="server-bar">
                         <div>
                             <div style="color:white; font-weight:bold;">${episodeTitleText}</div>
@@ -2379,6 +2412,46 @@ const TMDB_API_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb'; // Public demo key
         });
         
         if (!isMovie) renderEpisodeList();
+    }
+
+    function getCurrentProviderUrl() {
+        if (!state.currentShow) return '';
+
+        const show = state.currentShow;
+        if (show.type === 'movie') {
+            return getProviderUrl(show.imdbId, show.tmdbId, 'movie');
+        }
+
+        if (!state.currentEpisode) return '';
+        return getProviderUrl(show.imdbId, show.tmdbId, 'tv', state.currentSeason, state.currentEpisode.number);
+    }
+
+    function openTvPlayerFullscreen() {
+        const frame = document.getElementById('video-player');
+        if (!frame) return;
+
+        if (frame.requestFullscreen) {
+            frame.requestFullscreen();
+        } else if (frame.webkitRequestFullscreen) {
+            frame.webkitRequestFullscreen();
+        }
+    }
+
+    function refreshTvPlayer() {
+        const frame = document.getElementById('video-player');
+        const providerUrl = getCurrentProviderUrl();
+        if (!frame || !providerUrl) return;
+
+        setLockedEmbedFrame(frame, providerUrl, {
+            disableOuterSandbox: true,
+            disableInnerSandbox: true
+        });
+    }
+
+    function openTvPlayerInAboutBlank() {
+        const providerUrl = getCurrentProviderUrl();
+        if (!providerUrl) return;
+        launchSite(providerUrl);
     }
 
     function renderEpisodeList() {
