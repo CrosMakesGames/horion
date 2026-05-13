@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Horion</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -4995,7 +4996,7 @@ canvas {
         const activeBtn = document.getElementById(`btn-${viewName}`);
         if(activeBtn) activeBtn.classList.add('active');
 
-        if (previousViewName === 'featured-game' && viewName !== 'featured-game') {
+        if (previousViewName === 'featured-game' && viewName !== 'featured-game' && !(currentFeaturedGame && isLobbyCodeFeaturedGame(currentFeaturedGame))) {
             stopFeaturedGamePlayback();
         }
 
@@ -5093,6 +5094,15 @@ canvas {
 
     const FEATURED_FRAME_DEFAULT_SANDBOX = 'allow-scripts allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-downloads';
     const FEATURED_FRAME_SPECIAL_SANDBOX = FEATURED_FRAME_DEFAULT_SANDBOX + ' allow-same-origin';
+
+    function isLobbyCodeFeaturedGame(game) {
+        const fileName = String((game && game.filename) || '').toLowerCase();
+        return fileName.includes('skribbl.io')
+            || fileName.includes('garticphone.com')
+            || fileName.includes('ev.io')
+            || fileName.includes('zombsroyale.io')
+            || fileName.includes('songl.io');
+    }
 
     function getFeaturedRouteId(displayName) {
         return String(displayName || '').trim().replace(/\s+/g, '_').toLowerCase();
@@ -5362,12 +5372,12 @@ canvas {
         if (!game) return;
 
         const nextSessionKey = getFeaturedFrameSessionKey(game);
+        const isSameSession = Boolean(featuredFrameSessionKey) && featuredFrameSessionKey === nextSessionKey;
+        const preservedOverrideUrl = options.forceReload === true ? null : currentFeaturedGameUrlOverride;
         const shouldReloadFrame = options.forceReload === true
-            || !featuredFrameSessionKey
-            || featuredFrameSessionKey !== nextSessionKey
-            || currentFeaturedGameUrlOverride !== null;
+            || !isSameSession;
 
-        currentFeaturedGameUrlOverride = null;
+        currentFeaturedGameUrlOverride = isSameSession ? preservedOverrideUrl : null;
         currentFeaturedGame = game;
         const featuredPageId = getFeaturedRouteId(game.displayname);
 
@@ -5389,13 +5399,16 @@ canvas {
         const lobbyInput = document.getElementById('featured-lobby-input');
         if (lobbyWrap && lobbyInput) {
             const fName = String(game.filename || '').toLowerCase();
-            const isLobbyGame = fName.includes('skribbl.io') || fName.includes('garticphone.com') || fName.includes('ev.io') || fName.includes('zombsroyale.io') || fName.includes('songl.io');
+            const isLobbyGame = isLobbyCodeFeaturedGame(game);
             if (isLobbyGame) {
                 lobbyWrap.style.display = 'inline-flex';
-                lobbyInput.value = '';
+                if (!isSameSession) {
+                    lobbyInput.value = '';
+                }
                 lobbyInput.dataset.game = fName;
             } else {
                 lobbyWrap.style.display = 'none';
+                delete lobbyInput.dataset.game;
             }
         }
 
