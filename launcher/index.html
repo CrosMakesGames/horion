@@ -237,6 +237,28 @@
         grid-template-columns: 1fr;
       }
     }
+    .testing-btn {
+  display: inline-block;
+  margin-top: 12px;
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  background: rgba(0, 112, 255, 0.08);
+  color: #bfefff;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 11px 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 220px;
+}
+
+.testing-btn:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+}
   </style>
 </head>
 <body>
@@ -248,26 +270,36 @@
         Horion is a game launcher and TV platform, with a built in Youtube unblocker and Live Sports, along with loads of features, all in a about:blank frame. I'm a genius.
       </p>
 
-      <button id="launch-about-blank" class="launch-btn" type="button">Launch Horion</button>
+      <button id="launch-about-blank" class="launch-btn" type="button">
+  Launch Horion
+</button>
+
+<br>
+
+<button id="launch-testing" class="testing-btn" type="button">
+  Launch Testing Branch
+</button>
       <div id="status-log" class="status-label">Ready for injection</div>
     </section>
 
     <div class="footer-row">
       <a
         class="bug-btn"
-        href="https://docs.google.com/forms/d/e/1FAIpQLSfB9PSqEptKQutHkIWXa8QjFNBELP1fGXX-q5lzFFelRvGqIg/viewform?usp=publish-editor"
+        href="https://discord.gg/b2mRwGnNCU"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Report Bug / Request
+        Join Discord
       </a>
-      <a class="github-link" href="https://crosmakesgames.github.io/horion/index.html" target="_blank" rel="noopener noreferrer">Visit Official GitHub</a>
+      <a class="github-link" href="https://horion.crosmakesgames.com" target="_blank" rel="noopener noreferrer">Visit Official GitHub</a>
     </div>
   </div>
 
   <script>
-    const TARGET_URL = 'https://crosmakesgames.github.io/horion/index.html';
+    const TARGET_URL = 'https://horion.crosmakesgames.com';
     const TARGET_FAVICON_URL = 'https://crosmakesgames.github.io/horion/favicon.ico';
+    const TESTING_TARGET_URL = 'https://horionexp.crosmakesgames.com';
+    const testingBtn = document.getElementById('launch-testing');
 
     const statusLog = document.getElementById('status-log');
     const launchBtn = document.getElementById('launch-about-blank');
@@ -286,7 +318,7 @@
       statusLog.classList.toggle('error', Boolean(isError));
     }
 
-    function launchIntoAboutBlank() {
+    function launchIntoAboutBlank(targetUrl = TARGET_URL) {
       setStatus('Executing Horion injection...', false);
 
       const popup = window.open('about:blank', '_blank');
@@ -323,7 +355,7 @@
       body.textContent = '';
 
       const frame = doc.createElement('iframe');
-      frame.src = TARGET_URL;
+      frame.src = targetUrl;
       frame.allow = 'autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture';
       frame.setAttribute('allowfullscreen', '');
       frame.style.border = '0';
@@ -376,6 +408,11 @@
     if (launchBtn) {
       launchBtn.addEventListener('click', launchIntoAboutBlank);
     }
+    if (testingBtn) {
+  testingBtn.addEventListener('click', () => {
+    launchIntoAboutBlank(TESTING_TARGET_URL);
+  });
+}
   </script>
 </body>
 </html>
