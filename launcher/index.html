@@ -296,122 +296,135 @@
   </div>
 
   <script>
-    const TARGET_URL = 'https://horion.crosmakesgames.com';
-    const TARGET_FAVICON_URL = 'https://crosmakesgames.github.io/horion/favicon.ico';
-    const TESTING_TARGET_URL = 'https://horionexp.crosmakesgames.com';
-    const testingBtn = document.getElementById('launch-testing');
+const TARGET_URL = 'https://horion.crosmakesgames.com';
+const TARGET_FAVICON_URL = 'https://crosmakesgames.github.io/horion/favicon.ico';
+const TESTING_TARGET_URL = 'https://horionexp.crosmakesgames.com';
 
-    const statusLog = document.getElementById('status-log');
-    const launchBtn = document.getElementById('launch-about-blank');
-    const targetReadout = document.getElementById('target-readout');
+const launchBtn = document.getElementById('launch-about-blank');
+const testingBtn = document.getElementById('launch-testing');
+const statusLog = document.getElementById('status-log');
 
-    if (targetReadout) {
-      targetReadout.textContent = TARGET_URL;
-    }
+function setStatus(message, isError = false) {
+    if (!statusLog) return;
 
-    function setStatus(message, isError) {
-      if (!statusLog) {
+    statusLog.textContent = message;
+    statusLog.classList.toggle('error', isError);
+}
+
+async function launchIntoAboutBlank(targetUrl) {
+    setStatus("Executing Horion injection...");
+
+    // Must happen immediately from button click
+    const popup = window.open("about:blank", "_blank");
+
+    if (!popup) {
+        setStatus("Popup blocked. Allow popups and retry.", true);
         return;
-      }
-
-      statusLog.textContent = message;
-      statusLog.classList.toggle('error', Boolean(isError));
     }
 
-    function launchIntoAboutBlank(targetUrl = TARGET_URL) {
-      setStatus('Executing Horion injection...', false);
+    popup.document.open();
+    popup.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<title>Loading Horion...</title>
+<style>
+html,body {
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:sans-serif;
+}
+</style>
+</head>
+<body>
+Loading Horion...
+</body>
+</html>
+`);
+    popup.document.close();
 
-      const popup = window.open('about:blank', '_blank');
-      if (!popup) {
-        setStatus('Portal blocked by browser. Allow popups and try again.', true);
-        return;
-      }
+    try {
+        const response = await fetch(targetUrl);
 
-      const doc = popup.document;
-      doc.title = 'Horion';
-
-      const favicon = doc.createElement('link');
-      favicon.rel = 'icon';
-      favicon.href = TARGET_FAVICON_URL;
-      doc.head.appendChild(favicon);
-
-      const shortcutFavicon = doc.createElement('link');
-      shortcutFavicon.rel = 'shortcut icon';
-      shortcutFavicon.href = TARGET_FAVICON_URL;
-      doc.head.appendChild(shortcutFavicon);
-
-      const html = doc.documentElement;
-      const body = doc.body;
-
-      html.style.margin = '0';
-      html.style.width = '100%';
-      html.style.height = '100%';
-      body.style.margin = '0';
-      body.style.width = '100%';
-      body.style.height = '100%';
-      body.style.overflow = 'hidden';
-      body.style.background = '#000';
-
-      body.textContent = '';
-
-      const frame = doc.createElement('iframe');
-      frame.src = targetUrl;
-      frame.allow = 'autoplay; fullscreen; xr-spatial-tracking; encrypted-media; clipboard-read; clipboard-write; display-capture';
-      frame.setAttribute('allowfullscreen', '');
-      frame.style.border = '0';
-      frame.style.width = '100%';
-      frame.style.height = '100%';
-      frame.style.background = '#000';
-      body.appendChild(frame);
-
-      function postLaunchContext() {
-        try {
-          if (frame.contentWindow) {
-            frame.contentWindow.postMessage({ type: 'HORION_LAUNCH_CONTEXT', aboutBlank: true }, '*');
-          }
-        } catch (err) {
-          // Ignore cross-origin restrictions.
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
         }
-      }
 
-      frame.addEventListener('load', function () {
-        postLaunchContext();
-      });
+        let html = await response.text();
 
-      function goBackInsideFrame() {
-        try {
-          if (frame.contentWindow) {
-            frame.contentWindow.postMessage({ type: 'HORION_BROWSER_BACK' }, '*');
-          }
-          if (frame.contentWindow && frame.contentWindow.history) {
-            frame.contentWindow.history.back();
-          }
-        } catch (err) {
-          // Cross-origin restrictions can block some history access in certain browsers.
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        // Fix relative links
+        let base = doc.querySelector("base");
+
+        if (!base) {
+            base = doc.createElement("base");
+            base.href = targetUrl.endsWith("/")
+                ? targetUrl
+                : targetUrl + "/";
+
+            doc.head.prepend(base);
         }
-      }
 
-      // Keep the launched tab on about:blank while mapping browser back to iframe history.
-      popup.history.replaceState({ horion: 'root' }, '', popup.location.href);
-      popup.history.pushState({ horion: 'active' }, '', popup.location.href);
-      popup.addEventListener('popstate', function () {
-        popup.history.pushState({ horion: 'active' }, '', popup.location.href);
-        goBackInsideFrame();
-      });
+        // Change title
+        doc.title = "Horion";
 
-      // Send launch-context once immediately too, in case content is already ready.
-      setTimeout(postLaunchContext, 200);
+        // Replace favicon
+        doc.querySelectorAll('link[rel*="icon"]').forEach(e => e.remove());
 
-      setStatus('Horion Successfully Launched', false);
+        const icon = doc.createElement("link");
+        icon.rel = "icon";
+        icon.href = TARGET_FAVICON_URL;
+        doc.head.appendChild(icon);
+
+
+        popup.document.open();
+        popup.document.write(
+            "<!DOCTYPE html>" + doc.documentElement.outerHTML
+        );
+        popup.document.close();
+
+        setStatus("Horion Successfully Launched");
+
+    } catch (err) {
+        console.error(err);
+
+        popup.document.open();
+        popup.document.write(`
+<h2 style="
+font-family:sans-serif;
+color:white;
+background:black;
+padding:40px">
+Failed to load Horion.<br><br>
+${err.message}
+</h2>
+`);
+        popup.document.close();
+
+        setStatus("Failed to fetch website.", true);
     }
+}
 
-    if (launchBtn) {
-      launchBtn.addEventListener('click', launchIntoAboutBlank);
-    }
-    if (testingBtn) {
-  testingBtn.addEventListener('click', () => {
-    launchIntoAboutBlank(TESTING_TARGET_URL);
-  });
+
+if (launchBtn) {
+    launchBtn.addEventListener("click", () => {
+        launchIntoAboutBlank(TARGET_URL);
+    });
+}
+
+
+if (testingBtn) {
+    testingBtn.addEventListener("click", () => {
+        launchIntoAboutBlank(TESTING_TARGET_URL);
+    });
 }
   </script>
 </body>
